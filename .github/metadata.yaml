@@ -1,0 +1,11 @@
+# .github/metadata.yaml
+# Triaged by AI-assisted bulk pass (2026-04-29).
+description: "Swift implementation of RFC 5280: Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile."
+topics:
+  - standards
+  - rfc
+  - rfc-5280
+  - pki
+  - certificates
+  - security
+homepage: "https://swift-institute.org"
