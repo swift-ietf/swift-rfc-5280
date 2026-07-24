@@ -86,6 +86,38 @@ extension RFC_5280.NameConstraints.Test.`Edge Case` {
         #expect(try roundTrips(constraints))
     }
 
+    // Non-conformant base distances are preserved for wire fidelity, so the
+    // aggregate predicate is how a fail-closed policy layer reaches them.
+    @Test
+    func `The aggregate predicate reports non-conformant subtrees`() throws {
+        let conformant = RFC_5280.NameConstraints(
+            permittedSubtrees: [
+                RFC_5280.GeneralSubtree(base: .dNSName(try ISO_8824.IA5String("example.com")))
+            ]
+        )
+        #expect(conformant.isRFC5280Conformant)
+
+        let nonDefaultMinimum = RFC_5280.NameConstraints(
+            excludedSubtrees: [
+                RFC_5280.GeneralSubtree(
+                    base: .dNSName(try ISO_8824.IA5String("example.com")),
+                    minimum: 1
+                )
+            ]
+        )
+        #expect(!nonDefaultMinimum.isRFC5280Conformant)
+
+        let presentMaximum = RFC_5280.NameConstraints(
+            permittedSubtrees: [
+                RFC_5280.GeneralSubtree(
+                    base: .dNSName(try ISO_8824.IA5String("example.com")),
+                    maximum: 4
+                )
+            ]
+        )
+        #expect(!presentMaximum.isRFC5280Conformant)
+    }
+
     // RFC 5280 §4.2.1.10 bridge law: MUST be critical
     @Test
     func `The extension bridge defaults to critical`() throws {

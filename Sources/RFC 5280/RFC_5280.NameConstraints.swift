@@ -36,6 +36,19 @@ extension RFC_5280 {
     }
 }
 
+extension RFC_5280.NameConstraints {
+    /// Whether every subtree satisfies the §4.2.1.10 profile law — within
+    /// this profile `minimum` MUST be zero and `maximum` MUST be absent.
+    ///
+    /// Subtrees violating either are preserved for wire fidelity; this
+    /// reports their presence so a policy layer can act on it. See
+    /// ``RFC_5280/GeneralSubtree/isRFC5280Conformant``.
+    public var isRFC5280Conformant: Bool {
+        let subtrees = (self.permittedSubtrees ?? []) + (self.excludedSubtrees ?? [])
+        return subtrees.allSatisfy(\.isRFC5280Conformant)
+    }
+}
+
 extension RFC_5280.NameConstraints: ISO_8825.DER.ImplicitlyTaggable {
     public static var defaultIdentifier: ISO_8824.Identifier {
         .sequence

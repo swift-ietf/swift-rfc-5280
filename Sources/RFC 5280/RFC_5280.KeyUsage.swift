@@ -30,71 +30,73 @@ extension RFC_5280 {
         public init() {
             self.rawValue = 0
         }
+    }
+}
 
-        private subscript(bit bit: Int) -> Bool {
-            get { self.rawValue & (0x8000 >> bit) != 0 }
-            set {
-                if newValue {
-                    self.rawValue |= (0x8000 >> bit)
-                } else {
-                    self.rawValue &= ~(0x8000 >> bit)
-                }
+extension RFC_5280.KeyUsage {
+    private subscript(bit bit: Int) -> Bool {
+        get { self.rawValue & (0x8000 >> bit) != 0 }
+        set {
+            if newValue {
+                self.rawValue |= (0x8000 >> bit)
+            } else {
+                self.rawValue &= ~(0x8000 >> bit)
             }
         }
+    }
 
-        /// Named bit 0.
-        public var digitalSignature: Bool {
-            get { self[bit: 0] }
-            set { self[bit: 0] = newValue }
-        }
+    /// Named bit 0.
+    public var digitalSignature: Bool {
+        get { self[bit: 0] }
+        set { self[bit: 0] = newValue }
+    }
 
-        /// Named bit 1 (`contentCommitment` in current X.509).
-        public var nonRepudiation: Bool {
-            get { self[bit: 1] }
-            set { self[bit: 1] = newValue }
-        }
+    /// Named bit 1 (`contentCommitment` in current X.509).
+    public var nonRepudiation: Bool {
+        get { self[bit: 1] }
+        set { self[bit: 1] = newValue }
+    }
 
-        /// Named bit 2.
-        public var keyEncipherment: Bool {
-            get { self[bit: 2] }
-            set { self[bit: 2] = newValue }
-        }
+    /// Named bit 2.
+    public var keyEncipherment: Bool {
+        get { self[bit: 2] }
+        set { self[bit: 2] = newValue }
+    }
 
-        /// Named bit 3.
-        public var dataEncipherment: Bool {
-            get { self[bit: 3] }
-            set { self[bit: 3] = newValue }
-        }
+    /// Named bit 3.
+    public var dataEncipherment: Bool {
+        get { self[bit: 3] }
+        set { self[bit: 3] = newValue }
+    }
 
-        /// Named bit 4.
-        public var keyAgreement: Bool {
-            get { self[bit: 4] }
-            set { self[bit: 4] = newValue }
-        }
+    /// Named bit 4.
+    public var keyAgreement: Bool {
+        get { self[bit: 4] }
+        set { self[bit: 4] = newValue }
+    }
 
-        /// Named bit 5.
-        public var keyCertSign: Bool {
-            get { self[bit: 5] }
-            set { self[bit: 5] = newValue }
-        }
+    /// Named bit 5.
+    public var keyCertSign: Bool {
+        get { self[bit: 5] }
+        set { self[bit: 5] = newValue }
+    }
 
-        /// Named bit 6.
-        public var cRLSign: Bool {
-            get { self[bit: 6] }
-            set { self[bit: 6] = newValue }
-        }
+    /// Named bit 6.
+    public var cRLSign: Bool {
+        get { self[bit: 6] }
+        set { self[bit: 6] = newValue }
+    }
 
-        /// Named bit 7.
-        public var encipherOnly: Bool {
-            get { self[bit: 7] }
-            set { self[bit: 7] = newValue }
-        }
+    /// Named bit 7.
+    public var encipherOnly: Bool {
+        get { self[bit: 7] }
+        set { self[bit: 7] = newValue }
+    }
 
-        /// Named bit 8.
-        public var decipherOnly: Bool {
-            get { self[bit: 8] }
-            set { self[bit: 8] = newValue }
-        }
+    /// Named bit 8.
+    public var decipherOnly: Bool {
+        get { self[bit: 8] }
+        set { self[bit: 8] = newValue }
     }
 }
 
