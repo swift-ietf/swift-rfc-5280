@@ -62,3 +62,25 @@ extension RFC_5280.Extension.ID {
     /// `id-pe-authorityInfoAccess OBJECT IDENTIFIER ::= { id-pe 1 }` (§4.2.2.1).
     public static let authorityInformationAccess: ISO_8824.ObjectIdentifier = [1, 3, 6, 1, 5, 5, 7, 1, 1]
 }
+
+// MARK: - CRL extensions (§5.2) and CRL entry extensions (§5.3)
+
+extension RFC_5280.Extension.ID {
+    /// `id-ce-cRLNumber OBJECT IDENTIFIER ::= { id-ce 20 }` (§5.2.3).
+    public static let cRLNumber: ISO_8824.ObjectIdentifier = [2, 5, 29, 20]
+
+    /// `id-ce-deltaCRLIndicator OBJECT IDENTIFIER ::= { id-ce 27 }` (§5.2.4).
+    public static let deltaCRLIndicator: ISO_8824.ObjectIdentifier = [2, 5, 29, 27]
+
+    /// `id-ce-issuingDistributionPoint OBJECT IDENTIFIER ::= { id-ce 28 }` (§5.2.5).
+    public static let issuingDistributionPoint: ISO_8824.ObjectIdentifier = [2, 5, 29, 28]
+
+    /// `id-ce-cRLReasons OBJECT IDENTIFIER ::= { id-ce 21 }` (§5.3.1).
+    public static let reasonCode: ISO_8824.ObjectIdentifier = [2, 5, 29, 21]
+
+    /// `id-ce-invalidityDate OBJECT IDENTIFIER ::= { id-ce 24 }` (§5.3.2).
+    public static let invalidityDate: ISO_8824.ObjectIdentifier = [2, 5, 29, 24]
+
+    /// `id-ce-certificateIssuer OBJECT IDENTIFIER ::= { id-ce 29 }` (§5.3.3).
+    public static let certificateIssuer: ISO_8824.ObjectIdentifier = [2, 5, 29, 29]
+}
