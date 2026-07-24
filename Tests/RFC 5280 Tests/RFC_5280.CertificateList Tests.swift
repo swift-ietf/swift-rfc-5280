@@ -168,6 +168,42 @@ extension RFC_5280.CertificateList.Test.`Edge Case` {
         #expect(!list.isRFC5280Conformant)
     }
 
+    // RFC 5280 §5.2.5 / X.690: `[n] IMPLICIT BOOLEAN DEFAULT FALSE`. The
+    // implicit context tag REPLACES BOOLEAN's own 0x01 identifier with
+    // 0x81, which is exactly why decoding needs `decodeDefault`'s builder
+    // form — the builderless overload decodes against BOOLEAN's identifier
+    // and rejects the context tag. DER also requires a DEFAULT sitting at
+    // its default value to be omitted entirely rather than encoded.
+    //
+    // This is the DEFAULT-under-implicit-tag half of the tagging class whose
+    // other half is pinned by the doubled-a0 fixture in
+    // `RFC_5280.CRLDistributionPoints Tests`.
+    @Test
+    func `An implicitly tagged BOOLEAN DEFAULT encodes to the known bytes`() throws {
+        // onlyContainsUserCerts [1] TRUE: 0x81 is the context tag, not 0x01.
+        let userCertsOnly = RFC_5280.IssuingDistributionPoint(onlyContainsUserCerts: true)
+        let userCertsFixture: [UInt8] = [0x30, 0x03, 0x81, 0x01, 0xff]
+        #expect(try derBytes(of: userCertsOnly) == userCertsFixture)
+        #expect(try RFC_5280.IssuingDistributionPoint(derEncoded: userCertsFixture) == userCertsOnly)
+
+        // The same shape at a different tag number: indirectCRL [4].
+        let indirect = RFC_5280.IssuingDistributionPoint(indirectCRL: true)
+        let indirectFixture: [UInt8] = [0x30, 0x03, 0x84, 0x01, 0xff]
+        #expect(try derBytes(of: indirect) == indirectFixture)
+        #expect(try RFC_5280.IssuingDistributionPoint(derEncoded: indirectFixture) == indirect)
+
+        // Every field at its default omits, leaving an empty SEQUENCE.
+        let allDefault = RFC_5280.IssuingDistributionPoint()
+        #expect(try derBytes(of: allDefault) == [0x30, 0x00])
+        #expect(try RFC_5280.IssuingDistributionPoint(derEncoded: [0x30, 0x00]) == allDefault)
+
+        // DER forbids encoding a DEFAULT at its default value: an explicit
+        // FALSE for onlyContainsUserCerts must be rejected, not accepted.
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try RFC_5280.IssuingDistributionPoint(derEncoded: [0x30, 0x03, 0x81, 0x01, 0x00])
+        }
+    }
+
     // §5.2.5: at most one of the three scope flags may be TRUE
     @Test
     func `Conflicting issuing distribution point scopes are reported`() throws {
