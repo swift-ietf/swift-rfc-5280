@@ -18,6 +18,53 @@ extension RFC_5280.Name {
 
 extension RFC_5280.Name.Test.Unit {
 
+    // RFC 5280 §4.1.2.4: `RelativeDistinguishedName ::= SET OF
+    // AttributeTypeAndValue`. A SET is unordered, so two RDNs holding the same
+    // attributes are the same RDN whatever order they were supplied in.
+    //
+    // The decisive evidence is not the ASN.1 reading but the wire: DER SET OF
+    // is canonically ordered, so both values below serialize to *byte-identical*
+    // DER. Equality that disagrees with byte-identity is wrong under any
+    // interpretation of the type.
+    @Test
+    func `An RDN compares as a SET, not by attribute order`() throws {
+        let country = RFC_5280.AttributeTypeAndValue(
+            type: [2, 5, 4, 6],
+            value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("NL"))
+        )
+        let commonName = RFC_5280.AttributeTypeAndValue(
+            type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
+            value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("Test"))
+        )
+
+        let oneOrder = RFC_5280.RelativeDistinguishedName([country, commonName])
+        let otherOrder = RFC_5280.RelativeDistinguishedName([commonName, country])
+
+        // Same bytes on the wire — DER canonicalises SET OF ordering.
+        #expect(try derBytes(of: oneOrder) == (try derBytes(of: otherOrder)))
+        // Therefore they must compare equal, and hash equally.
+        #expect(oneOrder == otherOrder)
+        #expect(oneOrder.hashValue == otherOrder.hashValue)
+
+        // And a genuinely different attribute set must still differ.
+        #expect(RFC_5280.RelativeDistinguishedName([country]) != oneOrder)
+    }
+
+    // The same law for `Attribute`, whose `values` is also a SET OF.
+    @Test
+    func `An attribute compares its values as a SET`() throws {
+        let netherlands = try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("NL"))
+        let belgium = try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("BE"))
+
+        let oneOrder = RFC_5280.Attribute(type: [2, 5, 4, 6], values: [netherlands, belgium])
+        let otherOrder = RFC_5280.Attribute(type: [2, 5, 4, 6], values: [belgium, netherlands])
+
+        #expect(try derBytes(of: oneOrder) == (try derBytes(of: otherOrder)))
+        #expect(oneOrder == otherOrder)
+        #expect(oneOrder.hashValue == otherOrder.hashValue)
+        #expect(RFC_5280.Attribute(type: [2, 5, 4, 6], values: [netherlands]) != oneOrder)
+    }
+
     // RFC 5280 §4.1.2.4: CN=Test as a single-RDN name, PrintableString value
     @Test
     func `Serializes CN=Test to the known DER bytes`() throws {

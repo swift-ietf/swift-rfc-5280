@@ -15,7 +15,12 @@ extension RFC_5280 {
     /// value, as used inside a distinguished name — this carries a SET of
     /// values for a single type. Each value's syntax is defined by its
     /// type, so values are preserved exactly as encoded.
-    public struct Attribute: Hashable, Sendable {
+    /// **Equality compares ``values`` as a set, not positionally** — a SET OF
+    /// is unordered, and because DER canonicalises its ordering on
+    /// serialization, two differently-ordered values encode to byte-identical
+    /// DER. See ``RFC_5280/RelativeDistinguishedName`` for the same law stated
+    /// at length.
+    public struct Attribute: Sendable {
         /// The attribute type OBJECT IDENTIFIER.
         public var type: ISO_8824.ObjectIdentifier
 
@@ -31,6 +36,38 @@ extension RFC_5280 {
             self.type = type
             self.values = values
         }
+    }
+}
+
+extension RFC_5280.Attribute: Hashable {
+    /// The type compares by identity; ``values`` compares as a multiset, since
+    /// `SET OF` is unordered on the wire.
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        guard lhs.type == rhs.type, lhs.values.count == rhs.values.count else { return false }
+        var remaining: [ISO_8825.`Any`: Int] = [:]
+        for value in lhs.values {
+            remaining[value, default: 0] += 1
+        }
+        for value in rhs.values {
+            guard let count = remaining[value] else { return false }
+            if count == 1 {
+                remaining.removeValue(forKey: value)
+            } else {
+                remaining[value] = count - 1
+            }
+        }
+        return remaining.isEmpty
+    }
+
+    /// Order-independent over ``values``, so that equal values hash equally.
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.type)
+        var combined = 0
+        for value in self.values {
+            combined ^= value.hashValue
+        }
+        hasher.combine(combined)
+        hasher.combine(self.values.count)
     }
 }
 

@@ -13,7 +13,22 @@ extension RFC_5280 {
     /// on the wire; serialization applies that ordering regardless of the
     /// order of ``attributes``. Multi-valued RDNs are legal but rare — most
     /// RDNs hold exactly one attribute.
-    public struct RelativeDistinguishedName: Hashable, Sendable {
+    ///
+    /// **Equality is set equality, not positional.** A SET is unordered, so
+    /// two RDNs holding the same attributes are the same RDN whichever order
+    /// they were supplied or decoded in. This is not merely the ASN.1 reading:
+    /// because DER canonicalises SET OF ordering on serialization, two
+    /// differently-ordered values encode to byte-identical DER, and equality
+    /// that disagreed with byte-identity would be wrong under any reading of
+    /// the type. ``attributes`` still preserves the order it was given, so
+    /// wire fidelity is unaffected — only comparison is order-independent.
+    ///
+    /// This matters beyond representation: distinguished-name matching is
+    /// built on RDN equality, so order-dependent equality would let a
+    /// `directoryName` name constraint fail to match a name it governs — and
+    /// in `excludedSubtrees` a failed match admits a certificate that should
+    /// have been excluded.
+    public struct RelativeDistinguishedName: Sendable {
         /// The attributes in this RDN, in parsed wire order.
         ///
         /// Must contain at least one attribute to serialize a conformant RDN;
@@ -23,6 +38,40 @@ extension RFC_5280 {
         public init(_ attributes: [RFC_5280.AttributeTypeAndValue]) {
             self.attributes = attributes
         }
+    }
+}
+
+extension RFC_5280.RelativeDistinguishedName: Hashable {
+    /// Set equality over the attributes — see the type's documentation for why
+    /// positional equality would be wrong here.
+    ///
+    /// Compared as a multiset so that a malformed RDN carrying a duplicate
+    /// attribute is not silently equated with one that does not.
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        guard lhs.attributes.count == rhs.attributes.count else { return false }
+        var remaining: [RFC_5280.AttributeTypeAndValue: Int] = [:]
+        for attribute in lhs.attributes {
+            remaining[attribute, default: 0] += 1
+        }
+        for attribute in rhs.attributes {
+            guard let count = remaining[attribute] else { return false }
+            if count == 1 {
+                remaining.removeValue(forKey: attribute)
+            } else {
+                remaining[attribute] = count - 1
+            }
+        }
+        return remaining.isEmpty
+    }
+
+    /// Order-independent, so that equal values hash equally.
+    public func hash(into hasher: inout Hasher) {
+        var combined = 0
+        for attribute in self.attributes {
+            combined ^= attribute.hashValue
+        }
+        hasher.combine(combined)
+        hasher.combine(self.attributes.count)
     }
 }
 
