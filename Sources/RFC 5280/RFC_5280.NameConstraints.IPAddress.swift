@@ -2,13 +2,13 @@
 // RFC 5280 §4.2.1.10 — Name Constraints: iPAddress matching law
 // https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.10
 
-public import IPv4_Standard
-public import IPv6_Standard
-public import ISO_8824
 // The IPv4/IPv6 address parsers take the byte-domain `Byte` substrate
 // ([API-BYTE-003]); ASN.1 octet content is stdlib `UInt8`, so this file
 // bridges at its own call site ([API-BYTE-008]) and needs `Byte` directly.
 private import Byte_Primitives
+public import ISO_8824
+public import RFC_4291
+public import RFC_791
 
 extension RFC_5280.NameConstraints {
     /// The §4.2.1.10 constraint form for the `iPAddress` name form: an
@@ -21,15 +21,15 @@ extension RFC_5280.NameConstraints {
     ///
     /// The wire form is the base address octets followed by an equal number
     /// of mask octets, both in network byte order. Address value law belongs
-    /// to ``IPv4_Standard`` (RFC 791) and ``IPv6_Standard`` (RFC 4291); this
+    /// to ``RFC_791`` and ``RFC_4291``; this
     /// type owns the profile's range law. RFC 4632 style requires the mask
     /// to be a contiguous run of one-bits followed by zero-bits; because
     /// non-conforming constraints exist in the wild, any equal-halves split
     /// is preserved and the CIDR judgment reported separately via
     /// ``isCIDRConformant``.
     public enum IPAddress: Hashable, Sendable {
-        case v4(base: IPv4.Address, mask: IPv4.Address)
-        case v6(base: IPv6.Address, mask: IPv6.Address)
+        case v4(base: RFC_791.IPv4.Address, mask: RFC_791.IPv4.Address)
+        case v6(base: RFC_4291.IPv6.Address, mask: RFC_4291.IPv6.Address)
     }
 }
 
@@ -43,19 +43,19 @@ extension RFC_5280.NameConstraints.IPAddress {
         let octets = constraint.bytes
         switch octets.count {
         case 8:
-            do throws(IPv4.Address.Error) {
+            do throws(RFC_791.IPv4.Address.Error) {
                 self = .v4(
-                    base: try IPv4.Address(binary: Self.byteDomain(octets.prefix(4))),
-                    mask: try IPv4.Address(binary: Self.byteDomain(octets.suffix(4)))
+                    base: try RFC_791.IPv4.Address(binary: Self.byteDomain(octets.prefix(4))),
+                    mask: try RFC_791.IPv4.Address(binary: Self.byteDomain(octets.suffix(4)))
                 )
             } catch {
                 throw ISO_8824.Error.invalidASN1Object(reason: "Malformed IPv4 iPAddress name constraint")
             }
         case 32:
-            do throws(IPv6.Address.Error) {
+            do throws(RFC_4291.IPv6.Address.Error) {
                 self = .v6(
-                    base: try IPv6.Address(binary: Self.byteDomain(octets.prefix(16))),
-                    mask: try IPv6.Address(binary: Self.byteDomain(octets.suffix(16)))
+                    base: try RFC_4291.IPv6.Address(binary: Self.byteDomain(octets.prefix(16))),
+                    mask: try RFC_4291.IPv6.Address(binary: Self.byteDomain(octets.suffix(16)))
                 )
             } catch {
                 throw ISO_8824.Error.invalidASN1Object(reason: "Malformed IPv6 iPAddress name constraint")
@@ -75,7 +75,7 @@ extension RFC_5280.NameConstraints.IPAddress {
 
     /// Whether the IPv4 `address` falls inside this range. An IPv6-family
     /// constraint never matches an IPv4 address.
-    public func contains(_ address: IPv4.Address) -> Bool {
+    public func contains(_ address: RFC_791.IPv4.Address) -> Bool {
         guard case .v4(let base, let mask) = self else { return false }
         let maskBits = Self.hostOrder(mask)
         return Self.hostOrder(address) & maskBits == Self.hostOrder(base) & maskBits
@@ -83,7 +83,7 @@ extension RFC_5280.NameConstraints.IPAddress {
 
     /// Whether the IPv6 `address` falls inside this range. An IPv4-family
     /// constraint never matches an IPv6 address.
-    public func contains(_ address: IPv6.Address) -> Bool {
+    public func contains(_ address: RFC_4291.IPv6.Address) -> Bool {
         guard case .v6(let base, let mask) = self else { return false }
         let pairs = zip(
             zip(Self.segments(of: address), Self.segments(of: base)),
@@ -103,14 +103,14 @@ extension RFC_5280.NameConstraints.IPAddress {
         // so the parse failures are deliberately discarded.
         switch self {
         case .v4:
-            do throws(IPv4.Address.Error) {
-                return self.contains(try IPv4.Address(binary: Self.byteDomain(address)))
+            do throws(RFC_791.IPv4.Address.Error) {
+                return self.contains(try RFC_791.IPv4.Address(binary: Self.byteDomain(address)))
             } catch {
                 return false
             }
         case .v6:
-            do throws(IPv6.Address.Error) {
-                return self.contains(try IPv6.Address(binary: Self.byteDomain(address)))
+            do throws(RFC_4291.IPv6.Address.Error) {
+                return self.contains(try RFC_4291.IPv6.Address(binary: Self.byteDomain(address)))
             } catch {
                 return false
             }
@@ -170,7 +170,7 @@ extension RFC_5280.NameConstraints.IPAddress {
     /// bit analysis requires. Reads the typed octets and bridges each `Byte` to
     /// its `UInt8` carrier at this arithmetic boundary ([API-BYTE-004]); this
     /// avoids `.bigEndian`, which byte-swaps and would invert the bit pattern.
-    private static func hostOrder(_ address: IPv4.Address) -> UInt32 {
+    private static func hostOrder(_ address: RFC_791.IPv4.Address) -> UInt32 {
         let octets = address.octets
         return UInt32(octets.0.underlying) << 24
             | UInt32(octets.1.underlying) << 16
@@ -178,7 +178,7 @@ extension RFC_5280.NameConstraints.IPAddress {
             | UInt32(octets.3.underlying)
     }
 
-    private static func segments(of address: IPv6.Address) -> [UInt16] {
+    private static func segments(of address: RFC_4291.IPv6.Address) -> [UInt16] {
         let segments = address.segments
         return [
             segments.0, segments.1, segments.2, segments.3,

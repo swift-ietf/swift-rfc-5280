@@ -1,8 +1,8 @@
 // RFC_5280.NameConstraints.IPAddress Tests.swift
 
-import IPv4_Standard
-import IPv6_Standard
 import ISO_8824
+import RFC_4291
+import RFC_791
 import Testing
 
 @testable import RFC_5280
@@ -25,7 +25,7 @@ extension RFC_5280.NameConstraints.IPAddress.Test.Unit {
         let range = try RFC_5280.NameConstraints.IPAddress(
             constraint: ISO_8824.OctetString(contentBytes: [10, 0, 0, 0, 255, 0, 0, 0])
         )
-        #expect(range == .v4(base: IPv4.Address(10, 0, 0, 0), mask: IPv4.Address(255, 0, 0, 0)))
+        #expect(range == .v4(base: RFC_791.IPv4.Address(10, 0, 0, 0), mask: RFC_791.IPv4.Address(255, 0, 0, 0)))
         #expect(range.isIPv4)
         #expect(range.prefixLength == 8)
     }
@@ -35,9 +35,9 @@ extension RFC_5280.NameConstraints.IPAddress.Test.Unit {
         let range = try RFC_5280.NameConstraints.IPAddress(
             constraint: ISO_8824.OctetString(contentBytes: [192, 0, 2, 0, 255, 255, 255, 0])
         )
-        #expect(range.contains(IPv4.Address(192, 0, 2, 1)))
+        #expect(range.contains(RFC_791.IPv4.Address(192, 0, 2, 1)))
         #expect(range.contains([192, 0, 2, 255]))
-        #expect(!range.contains(IPv4.Address(192, 0, 3, 1)))
+        #expect(!range.contains(RFC_791.IPv4.Address(192, 0, 3, 1)))
     }
 
     @Test
@@ -90,7 +90,7 @@ extension RFC_5280.NameConstraints.IPAddress.Test.`Edge Case` {
             constraint: ISO_8824.OctetString(contentBytes: [10, 0, 0, 0, 255, 0, 0, 0])
         )
         #expect(!range.contains(ArraySlice([UInt8](repeating: 0, count: 16))))
-        #expect(!range.contains(IPv6.Address.loopback))
+        #expect(!range.contains(RFC_4291.IPv6.Address.loopback))
         #expect(!range.contains([]))
     }
 
@@ -98,27 +98,27 @@ extension RFC_5280.NameConstraints.IPAddress.Test.`Edge Case` {
     @Test
     func `Non-contiguous masks are preserved but reported non-conformant`() {
         let range = RFC_5280.NameConstraints.IPAddress.v4(
-            base: IPv4.Address(10, 0, 0, 0),
-            mask: IPv4.Address(255, 0, 255, 0)
+            base: RFC_791.IPv4.Address(10, 0, 0, 0),
+            mask: RFC_791.IPv4.Address(255, 0, 255, 0)
         )
         #expect(!range.isCIDRConformant)
         #expect(range.prefixLength == nil)
         // Matching still applies the mask literally.
-        #expect(range.contains(IPv4.Address(10, 99, 0, 42)))
-        #expect(!range.contains(IPv4.Address(10, 99, 1, 42)))
+        #expect(range.contains(RFC_791.IPv4.Address(10, 99, 0, 42)))
+        #expect(!range.contains(RFC_791.IPv4.Address(10, 99, 1, 42)))
     }
 
     @Test
     func `Partial-byte contiguous masks are conformant`() {
         let range = RFC_5280.NameConstraints.IPAddress.v4(
-            base: IPv4.Address(10, 0, 0, 0),
-            mask: IPv4.Address(255, 224, 0, 0)
+            base: RFC_791.IPv4.Address(10, 0, 0, 0),
+            mask: RFC_791.IPv4.Address(255, 224, 0, 0)
         )
         #expect(range.isCIDRConformant)
         #expect(range.prefixLength == 11)
         let nonContiguous = RFC_5280.NameConstraints.IPAddress.v4(
-            base: IPv4.Address(10, 0, 0, 0),
-            mask: IPv4.Address(255, 160, 0, 0)
+            base: RFC_791.IPv4.Address(10, 0, 0, 0),
+            mask: RFC_791.IPv4.Address(255, 160, 0, 0)
         )
         #expect(!nonContiguous.isCIDRConformant)
     }
@@ -127,14 +127,14 @@ extension RFC_5280.NameConstraints.IPAddress.Test.`Edge Case` {
     func `The all-zeros and all-ones masks are conformant`() {
         #expect(
             RFC_5280.NameConstraints.IPAddress.v4(
-                base: IPv4.Address(0, 0, 0, 0),
-                mask: IPv4.Address(0, 0, 0, 0)
+                base: RFC_791.IPv4.Address(0, 0, 0, 0),
+                mask: RFC_791.IPv4.Address(0, 0, 0, 0)
             ).prefixLength == 0
         )
         #expect(
             RFC_5280.NameConstraints.IPAddress.v4(
-                base: IPv4.Address(10, 0, 0, 1),
-                mask: IPv4.Address(255, 255, 255, 255)
+                base: RFC_791.IPv4.Address(10, 0, 0, 1),
+                mask: RFC_791.IPv4.Address(255, 255, 255, 255)
             ).prefixLength == 32
         )
     }
