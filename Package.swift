@@ -41,7 +41,7 @@ let package = Package(
         // parsers require ([API-BYTE-003]/[API-BYTE-008]) — a boundary surface
         // with an independent Byte-domain judgment, so the previously-deferred
         // Byte primitives dep is now taken (canonical URL per [PKG-DEP-009]).
-        .package(url: "https://github.com/swift-primitives/swift-byte-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-byte.git", branch: "main"),
     ],
     targets: [
         .target(
@@ -52,7 +52,7 @@ let package = Package(
                 .product(name: "Domain Standard", package: "swift-domain-standard"),
                 .product(name: "RFC 791", package: "swift-rfc-791"),
                 .product(name: "RFC 4291", package: "swift-rfc-4291"),
-                .product(name: "Byte Primitives", package: "swift-byte-primitives")
+                .product(name: "Byte", package: "swift-byte")
             ]
         ),
         .testTarget(
