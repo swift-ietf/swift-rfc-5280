@@ -34,8 +34,8 @@ let package = Package(
         //    The IP address owners are the RFC packages themselves; the
         //    `-standard` umbrellas over them are re-export shims, so depending
         //    on them would be an edge to a re-export rather than to the owner.
-        .package(url: "https://github.com/swift-ietf/swift-rfc-791.git", branch: "main"),
-        .package(url: "https://github.com/swift-ietf/swift-rfc-4291.git", branch: "main"),
+        .package(url: "https://github.com/swift-ietf/swift-rfc-791.git", branch: "main", traits: ["Coder"]),
+        .package(url: "https://github.com/swift-ietf/swift-rfc-4291.git", branch: "main", traits: ["Coder"]),
         // The iPAddress matching law (§4.2.1.10) bridges ASN.1 octet content
         // (UInt8) into the byte-domain `Byte` substrate the IPv4/IPv6 address
         // parsers require ([API-BYTE-003]/[API-BYTE-008]) — a boundary surface
