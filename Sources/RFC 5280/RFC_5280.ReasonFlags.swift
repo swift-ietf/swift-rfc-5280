@@ -125,16 +125,16 @@ extension RFC_5280.ReasonFlags: ISO_8825.DER.ImplicitlyTaggable {
         // DER named-bit law: encode only through the highest set bit.
         let bits: ISO_8824.BitString
         if self.rawValue == 0 {
-            bits = ISO_8824.BitString(bytes: [], paddingBits: 0)
+            bits = try ISO_8824.BitString(bytes: [], paddingBits: 0)
         } else {
             let highestSetBit = 15 - self.rawValue.trailingZeroBitCount
             if highestSetBit <= 7 {
-                bits = ISO_8824.BitString(
+                bits = try ISO_8824.BitString(
                     bytes: [UInt8(self.rawValue >> 8)],
                     paddingBits: 7 - highestSetBit
                 )
             } else {
-                bits = ISO_8824.BitString(
+                bits = try ISO_8824.BitString(
                     bytes: [UInt8(self.rawValue >> 8), UInt8(truncatingIfNeeded: self.rawValue)],
                     paddingBits: 15 - highestSetBit
                 )

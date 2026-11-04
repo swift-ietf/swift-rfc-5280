@@ -33,7 +33,7 @@ private func makeSubjectPublicKeyInfo() throws(ISO_8824.Error) -> RFC_5280.Subje
             algorithm: [1, 2, 840, 10045, 2, 1],
             parameters: try ISO_8825.`Any`(erasing: [1, 2, 840, 10045, 3, 1, 7] as ISO_8824.ObjectIdentifier)
         ),
-        subjectPublicKey: ISO_8824.BitString(bytes: [0x04, 0x01, 0x02, 0x03], paddingBits: 0)
+        subjectPublicKey: try ISO_8824.BitString(bytes: [0x04, 0x01, 0x02, 0x03], paddingBits: 0)
     )
 }
 
@@ -112,7 +112,7 @@ extension RFC_5280.TBSCertificate.Test.Unit {
         )
         #expect(tbs.minimumRequiredVersion == .v1)
 
-        tbs.subjectUniqueID = ISO_8824.BitString(bytes: [0xff], paddingBits: 0)
+        tbs.subjectUniqueID = try ISO_8824.BitString(bytes: [0xff], paddingBits: 0)
         #expect(tbs.minimumRequiredVersion == .v2)
 
         tbs.extensions = [try RFC_5280.BasicConstraints(isCA: true).makeExtension()]
@@ -142,8 +142,8 @@ extension RFC_5280.TBSCertificate.Test.Integration {
             validity: try makeValidity(),
             subject: try makeName(commonName: "Test Intermediate CA"),
             subjectPublicKeyInfo: try makeSubjectPublicKeyInfo(),
-            issuerUniqueID: ISO_8824.BitString(bytes: [0x0f], paddingBits: 0),
-            subjectUniqueID: ISO_8824.BitString(bytes: [0xf0], paddingBits: 0),
+            issuerUniqueID: try ISO_8824.BitString(bytes: [0x0f], paddingBits: 0),
+            subjectUniqueID: try ISO_8824.BitString(bytes: [0xf0], paddingBits: 0),
             extensions: [
                 try RFC_5280.BasicConstraints(isCA: true, pathLenConstraint: 0).makeExtension(),
                 try keyUsage.makeExtension(),

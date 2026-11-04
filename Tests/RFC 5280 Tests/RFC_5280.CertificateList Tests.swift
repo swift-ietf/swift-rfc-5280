@@ -287,7 +287,7 @@ extension RFC_5280.CertificateList.Test.Integration {
         let list = RFC_5280.CertificateList(
             tbsCertList: tbsCertList,
             signatureAlgorithm: ecdsaWithSHA256,
-            signatureValue: ISO_8824.BitString(bytes: [0x01, 0x02, 0x03, 0x04], paddingBits: 0)
+            signatureValue: try ISO_8824.BitString(bytes: [0x01, 0x02, 0x03, 0x04], paddingBits: 0)
         )
 
         #expect(try roundTrips(list))
@@ -320,7 +320,7 @@ extension RFC_5280.CertificateList.Test.Integration {
                 thisUpdate: try thisUpdate()
             ),
             signatureAlgorithm: RFC_5280.AlgorithmIdentifier(algorithm: [1, 2, 840, 10045, 4, 3, 3]),
-            signatureValue: ISO_8824.BitString(bytes: [0x00], paddingBits: 0)
+            signatureValue: try ISO_8824.BitString(bytes: [0x00], paddingBits: 0)
         )
         #expect(!list.hasConsistentSignatureAlgorithm)
         #expect(try roundTrips(list))
