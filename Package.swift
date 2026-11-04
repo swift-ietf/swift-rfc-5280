@@ -58,7 +58,8 @@ let package = Package(
         .testTarget(
             name: "RFC 5280 Tests",
             dependencies: [
-                "RFC 5280"
+                "RFC 5280",
+                .product(name: "RFC 791 Standard Library Integration", package: "swift-rfc-791"),
             ]
         ),
     ],

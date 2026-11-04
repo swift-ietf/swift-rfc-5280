@@ -3,6 +3,7 @@
 import ISO_8824
 import RFC_4291
 import RFC_791
+import RFC_791_Standard_Library_Integration
 import Testing
 
 @testable import RFC_5280
