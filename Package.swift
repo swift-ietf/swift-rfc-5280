@@ -12,7 +12,7 @@ let package = Package(
         .iOS(.v26),
         .tvOS(.v26),
         .watchOS(.v26),
-        .visionOS(.v26)
+        .visionOS(.v26),
     ],
     products: [
         .library(
@@ -52,7 +52,7 @@ let package = Package(
                 .product(name: "Domain Standard", package: "swift-domain-standard"),
                 .product(name: "RFC 791", package: "swift-rfc-791"),
                 .product(name: "RFC 4291", package: "swift-rfc-4291"),
-                .product(name: "Byte", package: "swift-byte")
+                .product(name: "Byte", package: "swift-byte"),
             ]
         ),
         .testTarget(

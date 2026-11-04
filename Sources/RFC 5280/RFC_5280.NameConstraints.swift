@@ -56,14 +56,16 @@ extension RFC_5280.NameConstraints: ISO_8825.DER.ImplicitlyTaggable {
 
     public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
         self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let permittedSubtrees = try ISO_8825.DER.optionalImplicitlyTagged(&nodes, tagNumber: 0, tagClass: .contextSpecific) { (node: ISO_8825.Node) throws(ISO_8824.Error) -> [RFC_5280.GeneralSubtree] in
+            let permittedSubtrees = try ISO_8825.DER.optionalImplicitlyTagged(&nodes, tagNumber: 0, tagClass: .contextSpecific) {
+                (node: ISO_8825.Node) throws(ISO_8824.Error) -> [RFC_5280.GeneralSubtree] in
                 try ISO_8825.DER.sequence(
                     of: RFC_5280.GeneralSubtree.self,
                     identifier: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific),
                     rootNode: node
                 )
             }
-            let excludedSubtrees = try ISO_8825.DER.optionalImplicitlyTagged(&nodes, tagNumber: 1, tagClass: .contextSpecific) { (node: ISO_8825.Node) throws(ISO_8824.Error) -> [RFC_5280.GeneralSubtree] in
+            let excludedSubtrees = try ISO_8825.DER.optionalImplicitlyTagged(&nodes, tagNumber: 1, tagClass: .contextSpecific) {
+                (node: ISO_8825.Node) throws(ISO_8824.Error) -> [RFC_5280.GeneralSubtree] in
                 try ISO_8825.DER.sequence(
                     of: RFC_5280.GeneralSubtree.self,
                     identifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific),

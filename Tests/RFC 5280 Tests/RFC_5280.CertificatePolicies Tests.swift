@@ -79,9 +79,11 @@ extension RFC_5280.CertificatePolicies.Test.Unit {
             RFC_5280.PolicyInformation(policyIdentifier: RFC_5280.PolicyInformation.ID.anyPolicy)
         ])
         #expect(policies.assertsAnyPolicy)
-        #expect(!RFC_5280.CertificatePolicies([
-            RFC_5280.PolicyInformation(policyIdentifier: examplePolicy)
-        ]).assertsAnyPolicy)
+        #expect(
+            !RFC_5280.CertificatePolicies([
+                RFC_5280.PolicyInformation(policyIdentifier: examplePolicy)
+            ]).assertsAnyPolicy
+        )
     }
 
     // §4.2.1.4 criticality: SHOULD be non-critical

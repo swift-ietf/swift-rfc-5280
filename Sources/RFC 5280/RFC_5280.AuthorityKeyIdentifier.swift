@@ -50,7 +50,8 @@ extension RFC_5280.AuthorityKeyIdentifier: ISO_8825.DER.ImplicitlyTaggable {
                 &nodes,
                 tag: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific)
             )
-            let authorityCertIssuer = try ISO_8825.DER.optionalImplicitlyTagged(&nodes, tagNumber: 1, tagClass: .contextSpecific) { (node: ISO_8825.Node) throws(ISO_8824.Error) -> [RFC_5280.GeneralName] in
+            let authorityCertIssuer = try ISO_8825.DER.optionalImplicitlyTagged(&nodes, tagNumber: 1, tagClass: .contextSpecific) {
+                (node: ISO_8825.Node) throws(ISO_8824.Error) -> [RFC_5280.GeneralName] in
                 try ISO_8825.DER.sequence(
                     of: RFC_5280.GeneralName.self,
                     identifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific),

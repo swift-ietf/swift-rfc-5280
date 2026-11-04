@@ -253,7 +253,13 @@ extension RFC_5280.CertificateList.Test.Integration {
                 try RFC_5280.CRLReason.cessationOfOperation.makeExtension(),
                 try RFC_5280.InvalidityDate(
                     date: try ISO_8824.GeneralizedTime(
-                        year: 2026, month: 7, day: 20, hours: 12, minutes: 0, seconds: 0, fractionalSeconds: 0
+                        year: 2026,
+                        month: 7,
+                        day: 20,
+                        hours: 12,
+                        minutes: 0,
+                        seconds: 0,
+                        fractionalSeconds: 0
                     )
                 ).makeExtension(),
                 try RFC_5280.CertificateIssuer([.directoryName(try issuerName())]).makeExtension(),
