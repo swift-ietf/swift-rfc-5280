@@ -1,35 +1,22 @@
 # swift-rfc-5280
 
-![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
+Use this package when you read or write the DER structures of X.509 certificates and certificate revocation lists as profiled by RFC 5280, and need to know which parts of a value the profile allows. Start from `RFC_5280.TBSCertificate` for the to-be-signed certificate and `RFC_5280.CertificateList` for a signed CRL. Read a certificate extension through its typed value, such as `RFC_5280.BasicConstraints` or `RFC_5280.SubjectAlternativeName`, built from the generic `RFC_5280.Extension`. The package does not verify signatures, build or validate certification paths, or model the outer signed certificate. ASN.1 values come from swift-iso-8824 and DER encoding from swift-iso-8825.
 
-X.509 certificate and certificate-revocation-list structures profiled by RFC 5280.
+## Laws
 
-## Standard Reference
-
-- **RFC**: 5280
-- **Title**: Internet X.509 Public Key Infrastructure Certificate and CRL Profile
-
-## Installation
-
-Add the package to your `Package.swift` dependencies:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/swift-ietf/swift-rfc-5280.git", branch: "main")
-]
-```
-
-Add the product to a target that needs it:
-
-```swift
-.target(
-    name: "YourTarget",
-    dependencies: [
-        .product(name: "RFC 5280", package: "swift-rfc-5280")
-    ]
-)
-```
-
-## License
-
-Apache 2.0. See [LICENSE.md](LICENSE.md).
+- Parsing is lenient about the profile and strict about the ASN.1 syntax. Values the profile forbids but that occur in real certificates, such as a negative or 21-octet serial number, an unassigned CRL reason, a non-CIDR name constraint mask or a mismatched CRL signature algorithm, parse and round-trip byte for byte. The matching `isRFC5280Conformant`, `isRFC5280Preferred` or `hasConsistentSignatureAlgorithm` property reports the violation.
+- Breaking the ASN.1 syntax fails both on parse and on serialize. That covers an empty list where at least one element is required, a negative skip count or path length, a distribution point with only `reasons`, and a name constraints value with neither subtree list.
+- DEFAULT fields are left out when they hold the default: a v1 certificate version, a non-critical extension's `critical` flag and a false `cA`. An encoding that spells out the default is refused on parse.
+- An `RFC_5280.AlgorithmIdentifier` with absent parameters and one with an explicit NULL are different values with different encodings. Nothing normalizes one to the other.
+- Each typed extension refuses a generic `RFC_5280.Extension` with another identifier. Its `makeExtension(critical:)` defaults to critical for key usage, basic constraints, name constraints, policy mappings, policy constraints, inhibit any policy, issuing distribution point, delta CRL indicator and certificate issuer, and to non-critical for every other extension.
+- `RFC_5280.RelativeDistinguishedName` and `RFC_5280.Attribute` compare their elements as a multiset, so the same attributes or values in another order are equal and hash alike. `attributes` and `values` keep the order you gave, and serialization writes them in DER SET OF order.
+- `RFC_5280.Time.init(year:month:day:hours:minutes:seconds:)` picks UTCTime for 1950 to 2049 and GeneralizedTime otherwise. A two-digit UTCTime year of 50 or more is 19YY, and below 50 is 20YY. A GeneralizedTime inside 1950 to 2049 parses but is not conformant. Times compare in calendar order across both forms.
+- `RFC_5280.Validity.hasNoWellDefinedExpiration` is true only for a GeneralizedTime `notAfter` of exactly `99991231235959Z`.
+- A serial number built from an unsigned integer is minimal big-endian, with a leading zero octet added when the top bit is set. It is conformant when positive, not zero, and at most 20 octets.
+- `RFC_5280.TBSCertificate.minimumRequiredVersion` is v3 when there are extensions, v2 when there are unique identifiers without extensions, and v1 otherwise. It is not checked against `version`. A CRL is conformant only when its `version` is absent with no CRL or entry extensions, or v2 with some.
+- Key usage and reason flags number their bits from the first bit on the wire. They encode only up to the highest set bit, so no flags at all is an empty BIT STRING, and a set bit past bit 8 is refused.
+- `RFC_5280.NameConstraints.DNSName.satisfies(_:constraint:)` holds when the name equals the constraint or adds whole labels to its left, ignoring ASCII case. An empty constraint matches every name, and a name or constraint that is not a valid host name matches nothing.
+- `RFC_5280.NameConstraints.URI.satisfies(host:constraint:)` takes the URI's host. A constraint with a leading period matches only hosts with at least one more label. Any other constraint matches exactly one host, ignoring ASCII case. An empty host or constraint never matches.
+- `RFC_5280.NameConstraints.IPAddress` is 8 octets for IPv4 and 32 for IPv6, base then mask, and refuses any other length. Containment applies the mask to both addresses, and an address of the other family never matches. A mask that is not a contiguous prefix is kept, and `RFC_5280.NameConstraints.IPAddress.prefixLength` is then nil.
+- Certificate policies are not conformant when a policy OID repeats or a qualifier is neither CPS nor user notice. A user notice with a notice reference, display text that is empty or longer than 200 octets (400 for a BMPString), and a policy mapping to or from `anyPolicy` are also not conformant.
+- On the CRL side, a reason code is assigned for 0 to 6 and 8 to 10, and `unspecified` is assigned but not conformant. An issuing distribution point may set at most one of its only-contains flags. A distribution point is not conformant when it names itself relative to the CRL issuer or names a CRL issuer that is not a directory name. A certificate issuer entry is conformant only as exactly one directory name.
