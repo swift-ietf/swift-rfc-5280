@@ -5,7 +5,7 @@
 // The IPv4/IPv6 address parsers take the byte-domain `Byte` substrate
 // ([API-BYTE-003]); ASN.1 octet content is stdlib `UInt8`, so this file
 // bridges at its own call site ([API-BYTE-008]) and needs `Byte` directly.
-private import Byte_Primitives
+private import Byte
 public import ISO_8824
 public import RFC_4291
 public import RFC_791
