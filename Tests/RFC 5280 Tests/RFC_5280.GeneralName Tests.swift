@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.GeneralName {
+enum `RFC_5280.GeneralName Tests` {}
+
+extension `RFC_5280.GeneralName Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.GeneralName {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.GeneralName.Test.Unit {
+extension `RFC_5280.GeneralName Tests`.Test.Unit {
 
     // RFC 5280 §4.2.1.6: dNSName is an implicitly [2]-tagged IA5String
     @Test
@@ -101,7 +103,7 @@ extension RFC_5280.GeneralName.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.GeneralName.Test.`Edge Case` {
+extension `RFC_5280.GeneralName Tests`.Test.`Edge Case` {
 
     @Test
     func `Rejects a universal-class node`() {

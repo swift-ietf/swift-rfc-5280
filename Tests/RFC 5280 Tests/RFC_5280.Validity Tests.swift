@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.Validity {
+enum `RFC_5280.Validity Tests` {}
+
+extension `RFC_5280.Validity Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.Validity {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.Validity.Test.Unit {
+extension `RFC_5280.Validity Tests`.Test.Unit {
 
     @Test
     func `Round-trips a UTCTime interval`() throws {
@@ -31,7 +33,7 @@ extension RFC_5280.Validity.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.Validity.Test.`Edge Case` {
+extension `RFC_5280.Validity Tests`.Test.`Edge Case` {
 
     // RFC 5280 §4.1.2.5: no well-defined expiration is 99991231235959Z
     @Test

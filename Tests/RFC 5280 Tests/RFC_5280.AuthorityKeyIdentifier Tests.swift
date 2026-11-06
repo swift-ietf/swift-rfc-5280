@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.AuthorityKeyIdentifier {
+enum `RFC_5280.AuthorityKeyIdentifier Tests` {}
+
+extension `RFC_5280.AuthorityKeyIdentifier Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.AuthorityKeyIdentifier {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.AuthorityKeyIdentifier.Test.Unit {
+extension `RFC_5280.AuthorityKeyIdentifier Tests`.Test.Unit {
 
     // RFC 5280 §4.2.1.1: keyIdentifier is implicitly [0]-tagged
     @Test
@@ -49,7 +51,7 @@ extension RFC_5280.AuthorityKeyIdentifier.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.AuthorityKeyIdentifier.Test.`Edge Case` {
+extension `RFC_5280.AuthorityKeyIdentifier Tests`.Test.`Edge Case` {
 
     // RFC 5280 §4.2.1.1 bridge law: MUST be non-critical
     @Test

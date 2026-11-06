@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.Extension {
+enum `RFC_5280.Extension Tests` {}
+
+extension `RFC_5280.Extension Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.Extension {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.Extension.Test.Unit {
+extension `RFC_5280.Extension Tests`.Test.Unit {
 
     // RFC 5280 §4.2: critical BOOLEAN DEFAULT FALSE
     @Test
@@ -68,7 +70,7 @@ extension RFC_5280.Extension.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.Extension.Test.`Edge Case` {
+extension `RFC_5280.Extension Tests`.Test.`Edge Case` {
 
     // DER law: an encoded DEFAULT value is invalid
     @Test

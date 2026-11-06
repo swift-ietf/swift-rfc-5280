@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.IssuerAlternativeName {
+enum `RFC_5280.IssuerAlternativeName Tests` {}
+
+extension `RFC_5280.IssuerAlternativeName Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.IssuerAlternativeName {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.IssuerAlternativeName.Test.Unit {
+extension `RFC_5280.IssuerAlternativeName Tests`.Test.Unit {
 
     // RFC 5280 §4.2.1.7: IssuerAltName ::= GeneralNames
     @Test
@@ -86,7 +88,7 @@ extension RFC_5280.IssuerAlternativeName.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.IssuerAlternativeName.Test.`Edge Case` {
+extension `RFC_5280.IssuerAlternativeName Tests`.Test.`Edge Case` {
 
     // §4.2.1.7: GeneralNames is SEQUENCE SIZE (1..MAX)
     @Test

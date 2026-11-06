@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.PolicyConstraints {
+enum `RFC_5280.PolicyConstraints Tests` {}
+
+extension `RFC_5280.PolicyConstraints Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.PolicyConstraints {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.PolicyConstraints.Test.Unit {
+extension `RFC_5280.PolicyConstraints Tests`.Test.Unit {
 
     // RFC 5280 §4.2.1.11: both fields are implicitly tagged SkipCerts
     @Test
@@ -54,7 +56,7 @@ extension RFC_5280.PolicyConstraints.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.PolicyConstraints.Test.`Edge Case` {
+extension `RFC_5280.PolicyConstraints Tests`.Test.`Edge Case` {
 
     // §4.2.1.11: conforming CAs MUST NOT issue an empty policy constraints
     @Test

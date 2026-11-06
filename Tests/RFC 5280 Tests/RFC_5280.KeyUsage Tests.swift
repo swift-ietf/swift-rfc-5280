@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.KeyUsage {
+enum `RFC_5280.KeyUsage Tests` {}
+
+extension `RFC_5280.KeyUsage Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.KeyUsage {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.KeyUsage.Test.Unit {
+extension `RFC_5280.KeyUsage Tests`.Test.Unit {
 
     // X.690 §11.2.2 named-bit law: encode only through the highest set bit
     @Test
@@ -75,7 +77,7 @@ extension RFC_5280.KeyUsage.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.KeyUsage.Test.`Edge Case` {
+extension `RFC_5280.KeyUsage Tests`.Test.`Edge Case` {
 
     @Test
     func `An all-zero value encodes as an empty BIT STRING`() throws {

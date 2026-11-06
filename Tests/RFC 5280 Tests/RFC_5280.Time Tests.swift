@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.Time {
+enum `RFC_5280.Time Tests` {}
+
+extension `RFC_5280.Time Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.Time {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.Time.Test.Unit {
+extension `RFC_5280.Time Tests`.Test.Unit {
 
     // RFC 5280 §4.1.2.5.1: UTCTime "260723120000Z"
     @Test
@@ -86,7 +88,7 @@ extension RFC_5280.Time.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.Time.Test.`Edge Case` {
+extension `RFC_5280.Time Tests`.Test.`Edge Case` {
 
     // RFC 5280 §4.1.2.5.1: YY >= 50 is 19YY, YY < 50 is 20YY
     @Test

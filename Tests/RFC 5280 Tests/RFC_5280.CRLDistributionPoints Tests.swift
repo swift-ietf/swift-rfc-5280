@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.CRLDistributionPoints {
+enum `RFC_5280.CRLDistributionPoints Tests` {}
+
+extension `RFC_5280.CRLDistributionPoints Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.CRLDistributionPoints {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.CRLDistributionPoints.Test.Unit {
+extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
 
     // RFC 5280 §4.2.1.13 / Appendix A.1: `distributionPoint [0]` tags a
     // CHOICE so it is EXPLICIT, while `fullName [0]` inside it tags a
@@ -117,7 +119,7 @@ extension RFC_5280.CRLDistributionPoints.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.CRLDistributionPoints.Test.`Edge Case` {
+extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
 
     // §4.2.1.13: SEQUENCE SIZE (1..MAX)
     @Test

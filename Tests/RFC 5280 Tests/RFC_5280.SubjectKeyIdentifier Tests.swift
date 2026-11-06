@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.SubjectKeyIdentifier {
+enum `RFC_5280.SubjectKeyIdentifier Tests` {}
+
+extension `RFC_5280.SubjectKeyIdentifier Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -15,7 +17,7 @@ extension RFC_5280.SubjectKeyIdentifier {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.SubjectKeyIdentifier.Test.Unit {
+extension `RFC_5280.SubjectKeyIdentifier Tests`.Test.Unit {
 
     // RFC 5280 §4.2.1.2: the value is a bare OCTET STRING
     @Test

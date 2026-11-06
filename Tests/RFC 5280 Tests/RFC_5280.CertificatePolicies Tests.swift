@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.CertificatePolicies {
+enum `RFC_5280.CertificatePolicies Tests` {}
+
+extension `RFC_5280.CertificatePolicies Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -20,7 +22,7 @@ private let otherPolicy: ISO_8824.ObjectIdentifier = [2, 16, 840, 1, 101, 3, 2, 
 
 // MARK: - Unit Tests
 
-extension RFC_5280.CertificatePolicies.Test.Unit {
+extension `RFC_5280.CertificatePolicies Tests`.Test.Unit {
 
     // RFC 5280 §4.2.1.4: the common case is an OID with no qualifiers
     @Test
@@ -102,7 +104,7 @@ extension RFC_5280.CertificatePolicies.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.CertificatePolicies.Test.`Edge Case` {
+extension `RFC_5280.CertificatePolicies Tests`.Test.`Edge Case` {
 
     // §4.2.1.4: SEQUENCE SIZE (1..MAX)
     @Test

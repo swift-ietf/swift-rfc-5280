@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.DirectoryString {
+enum `RFC_5280.DirectoryString Tests` {}
+
+extension `RFC_5280.DirectoryString Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -15,7 +17,7 @@ extension RFC_5280.DirectoryString {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.DirectoryString.Test.Unit {
+extension `RFC_5280.DirectoryString Tests`.Test.Unit {
 
     @Test
     func `Parses each CHOICE arm by identifier`() throws {

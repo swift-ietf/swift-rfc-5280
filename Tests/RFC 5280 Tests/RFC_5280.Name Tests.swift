@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.Name {
+enum `RFC_5280.Name Tests` {}
+
+extension `RFC_5280.Name Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.Name {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.Name.Test.Unit {
+extension `RFC_5280.Name Tests`.Test.Unit {
 
     // RFC 5280 §4.1.2.4: `RelativeDistinguishedName ::= SET OF
     // AttributeTypeAndValue`. A SET is unordered, so two RDNs holding the same
@@ -133,7 +135,7 @@ extension RFC_5280.Name.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.Name.Test.`Edge Case` {
+extension `RFC_5280.Name Tests`.Test.`Edge Case` {
 
     // RFC 5280 §4.1.2.4 / X.690 §11.6: SET OF members sort by encoded bytes
     @Test

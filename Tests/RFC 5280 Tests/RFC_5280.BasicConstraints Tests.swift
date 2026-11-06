@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.BasicConstraints {
+enum `RFC_5280.BasicConstraints Tests` {}
+
+extension `RFC_5280.BasicConstraints Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.BasicConstraints {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.BasicConstraints.Test.Unit {
+extension `RFC_5280.BasicConstraints Tests`.Test.Unit {
 
     // RFC 5280 §4.2.1.9 with DER DEFAULT law: cA FALSE encodes as an empty SEQUENCE
     @Test
@@ -44,7 +46,7 @@ extension RFC_5280.BasicConstraints.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.BasicConstraints.Test.`Edge Case` {
+extension `RFC_5280.BasicConstraints Tests`.Test.`Edge Case` {
 
     // DER law: an encoded DEFAULT FALSE is invalid
     @Test

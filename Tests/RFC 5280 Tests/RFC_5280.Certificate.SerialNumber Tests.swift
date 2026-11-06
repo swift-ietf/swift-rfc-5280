@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.Certificate.SerialNumber {
+enum `RFC_5280.Certificate.SerialNumber Tests` {}
+
+extension `RFC_5280.Certificate.SerialNumber Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.Certificate.SerialNumber {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.Certificate.SerialNumber.Test.Unit {
+extension `RFC_5280.Certificate.SerialNumber Tests`.Test.Unit {
 
     @Test
     func `Encodes an unsigned value in minimal big-endian form`() throws {
@@ -42,7 +44,7 @@ extension RFC_5280.Certificate.SerialNumber.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.Certificate.SerialNumber.Test.`Edge Case` {
+extension `RFC_5280.Certificate.SerialNumber Tests`.Test.`Edge Case` {
 
     // RFC 5280 §4.1.2.2: serial numbers MUST be positive
     @Test

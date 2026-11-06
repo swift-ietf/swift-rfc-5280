@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.CertificateList {
+enum `RFC_5280.CertificateList Tests` {}
+
+extension `RFC_5280.CertificateList Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -40,7 +42,7 @@ private func nextUpdate() throws(ISO_8824.Error) -> RFC_5280.Time {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.CertificateList.Test.Unit {
+extension `RFC_5280.CertificateList Tests`.Test.Unit {
 
     // RFC 5280 §5.1.2.1: a v1 CRL omits the version field entirely
     @Test
@@ -124,7 +126,7 @@ extension RFC_5280.CertificateList.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.CertificateList.Test.`Edge Case` {
+extension `RFC_5280.CertificateList Tests`.Test.`Edge Case` {
 
     // §5.3.1: value 7 is unassigned; unknown codes are preserved, not rejected
     @Test
@@ -241,7 +243,7 @@ extension RFC_5280.CertificateList.Test.`Edge Case` {
 
 // MARK: - Integration Tests
 
-extension RFC_5280.CertificateList.Test.Integration {
+extension `RFC_5280.CertificateList Tests`.Test.Integration {
 
     // A complete signed v2 CRL exercising §5.1, §5.2 and §5.3 together
     @Test

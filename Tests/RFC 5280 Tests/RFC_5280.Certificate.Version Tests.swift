@@ -4,7 +4,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.Certificate.Version {
+enum `RFC_5280.Certificate.Version Tests` {}
+
+extension `RFC_5280.Certificate.Version Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -13,7 +15,7 @@ extension RFC_5280.Certificate.Version {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.Certificate.Version.Test.Unit {
+extension `RFC_5280.Certificate.Version Tests`.Test.Unit {
 
     // RFC 5280 §4.1.2.1: Version ::= INTEGER { v1(0), v2(1), v3(2) }
     @Test

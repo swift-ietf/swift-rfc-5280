@@ -8,7 +8,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.NameConstraints.IPAddress {
+enum `RFC_5280.NameConstraints.IPAddress Tests` {}
+
+extension `RFC_5280.NameConstraints.IPAddress Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -18,7 +20,7 @@ extension RFC_5280.NameConstraints.IPAddress {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.NameConstraints.IPAddress.Test.Unit {
+extension `RFC_5280.NameConstraints.IPAddress Tests`.Test.Unit {
 
     // RFC 5280 §4.2.1.10: 8 octets for an IPv4 range, base then mask
     @Test
@@ -68,7 +70,7 @@ extension RFC_5280.NameConstraints.IPAddress.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.NameConstraints.IPAddress.Test.`Edge Case` {
+extension `RFC_5280.NameConstraints.IPAddress Tests`.Test.`Edge Case` {
 
     // RFC 5280 §4.2.1.10 length law
     @Test

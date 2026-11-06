@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.SubjectPublicKeyInfo {
+enum `RFC_5280.SubjectPublicKeyInfo Tests` {}
+
+extension `RFC_5280.SubjectPublicKeyInfo Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -15,7 +17,7 @@ extension RFC_5280.SubjectPublicKeyInfo {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.SubjectPublicKeyInfo.Test.Unit {
+extension `RFC_5280.SubjectPublicKeyInfo Tests`.Test.Unit {
 
     // RFC 5480 §2: id-ecPublicKey with a named-curve parameter
     @Test

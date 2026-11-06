@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.AlgorithmIdentifier {
+enum `RFC_5280.AlgorithmIdentifier Tests` {}
+
+extension `RFC_5280.AlgorithmIdentifier Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.AlgorithmIdentifier {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.AlgorithmIdentifier.Test.Unit {
+extension `RFC_5280.AlgorithmIdentifier Tests`.Test.Unit {
 
     // RFC 4055 §5: sha256WithRSAEncryption carries an explicit NULL parameter
     @Test
@@ -48,7 +50,7 @@ extension RFC_5280.AlgorithmIdentifier.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.AlgorithmIdentifier.Test.`Edge Case` {
+extension `RFC_5280.AlgorithmIdentifier Tests`.Test.`Edge Case` {
 
     // Wire fidelity: NULL parameters and absent parameters are distinct encodings
     @Test

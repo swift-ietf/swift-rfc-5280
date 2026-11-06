@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.AuthorityInformationAccess {
+enum `RFC_5280.AuthorityInformationAccess Tests` {}
+
+extension `RFC_5280.AuthorityInformationAccess Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -16,7 +18,7 @@ extension RFC_5280.AuthorityInformationAccess {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.AuthorityInformationAccess.Test.Unit {
+extension `RFC_5280.AuthorityInformationAccess Tests`.Test.Unit {
 
     // RFC 5280 §4.2.2.1: OCSP responder location as a URI
     @Test
@@ -63,7 +65,7 @@ extension RFC_5280.AuthorityInformationAccess.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.AuthorityInformationAccess.Test.`Edge Case` {
+extension `RFC_5280.AuthorityInformationAccess Tests`.Test.`Edge Case` {
 
     // RFC 5280 §4.2.2.1: SEQUENCE SIZE (1..MAX)
     @Test

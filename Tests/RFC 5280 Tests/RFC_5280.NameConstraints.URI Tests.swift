@@ -4,7 +4,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.NameConstraints.URI {
+enum `RFC_5280.NameConstraints.URI Tests` {}
+
+extension `RFC_5280.NameConstraints.URI Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -14,7 +16,7 @@ extension RFC_5280.NameConstraints.URI {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.NameConstraints.URI.Test.Unit {
+extension `RFC_5280.NameConstraints.URI Tests`.Test.Unit {
 
     // RFC 5280 §4.2.1.10: '.example.com' is satisfied by host.example.com
     // and my.host.example.com, but not by example.com
@@ -42,7 +44,7 @@ extension RFC_5280.NameConstraints.URI.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.NameConstraints.URI.Test.`Edge Case` {
+extension `RFC_5280.NameConstraints.URI Tests`.Test.`Edge Case` {
 
     @Test
     func `Empty hosts and empty constraints never match`() {

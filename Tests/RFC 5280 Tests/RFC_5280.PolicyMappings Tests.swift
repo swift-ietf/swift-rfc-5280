@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.PolicyMappings {
+enum `RFC_5280.PolicyMappings Tests` {}
+
+extension `RFC_5280.PolicyMappings Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -19,7 +21,7 @@ private let subjectPolicy: ISO_8824.ObjectIdentifier = [2, 16, 840, 1, 101, 3, 2
 
 // MARK: - Unit Tests
 
-extension RFC_5280.PolicyMappings.Test.Unit {
+extension `RFC_5280.PolicyMappings Tests`.Test.Unit {
 
     @Test
     func `A mapping pair round-trips`() throws {
@@ -64,7 +66,7 @@ extension RFC_5280.PolicyMappings.Test.Unit {
 
 // MARK: - Edge Case Tests
 
-extension RFC_5280.PolicyMappings.Test.`Edge Case` {
+extension `RFC_5280.PolicyMappings Tests`.Test.`Edge Case` {
 
     // §4.2.1.5: SEQUENCE SIZE (1..MAX)
     @Test

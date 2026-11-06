@@ -6,7 +6,9 @@ import Testing
 
 @testable import RFC_5280
 
-extension RFC_5280.TBSCertificate {
+enum `RFC_5280.TBSCertificate Tests` {}
+
+extension `RFC_5280.TBSCertificate Tests` {
     @Suite
     struct Test {
         @Suite struct Unit {}
@@ -60,7 +62,7 @@ private func contains(_ haystack: [UInt8], _ needle: [UInt8]) -> Bool {
 
 // MARK: - Unit Tests
 
-extension RFC_5280.TBSCertificate.Test.Unit {
+extension `RFC_5280.TBSCertificate Tests`.Test.Unit {
 
     // RFC 5280 §4.1.2.1: DEFAULT v1 must be omitted from the DER encoding
     @Test
@@ -125,7 +127,7 @@ extension RFC_5280.TBSCertificate.Test.Unit {
 
 // MARK: - Integration Tests
 
-extension RFC_5280.TBSCertificate.Test.Integration {
+extension `RFC_5280.TBSCertificate Tests`.Test.Integration {
 
     // A CA-profile certificate exercising every typed extension in one structure
     @Test
