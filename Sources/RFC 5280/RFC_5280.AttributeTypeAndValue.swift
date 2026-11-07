@@ -22,14 +22,16 @@ extension RFC_5280 {
             self.type = type
             self.value = value
         }
+    }
+}
 
-        /// Interprets the value under the profile's `DirectoryString` syntax.
-        ///
-        /// Throws when the encoded value is not one of the five
-        /// `DirectoryString` arms.
-        public func directoryStringValue() throws(ISO_8824.Error) -> RFC_5280.DirectoryString {
-            try RFC_5280.DirectoryString(asn1Any: self.value)
-        }
+extension RFC_5280.AttributeTypeAndValue {
+    /// Interprets the value under the profile's `DirectoryString` syntax.
+    ///
+    /// Throws when the encoded value is not one of the five
+    /// `DirectoryString` arms.
+    public func directoryStringValue() throws(ISO_8824.Error) -> RFC_5280.DirectoryString {
+        try RFC_5280.DirectoryString(asn1Any: self.value)
     }
 }
 

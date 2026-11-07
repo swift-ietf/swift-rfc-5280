@@ -20,11 +20,13 @@ extension RFC_5280 {
         public init(_ rdnSequence: [RFC_5280.RelativeDistinguishedName]) {
             self.rdnSequence = rdnSequence
         }
+    }
+}
 
-        /// Whether this is the empty name (an RDNSequence of length zero).
-        public var isEmpty: Bool {
-            self.rdnSequence.isEmpty
-        }
+extension RFC_5280.Name {
+    /// Whether this is the empty name (an RDNSequence of length zero).
+    public var isEmpty: Bool {
+        self.rdnSequence.isEmpty
     }
 }
 

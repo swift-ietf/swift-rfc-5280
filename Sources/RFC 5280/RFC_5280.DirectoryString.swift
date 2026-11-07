@@ -19,14 +19,16 @@ extension RFC_5280 {
         case universalString(ISO_8824.UniversalString)
         case utf8String(ISO_8824.UTF8String)
         case bmpString(ISO_8824.BMPString)
+    }
+}
 
-        /// Whether this value uses one of the two arms the profile permits
-        /// new CAs to emit (`PrintableString` or `UTF8String`).
-        public var isRFC5280Preferred: Bool {
-            switch self {
-            case .printableString, .utf8String: true
-            case .teletexString, .universalString, .bmpString: false
-            }
+extension RFC_5280.DirectoryString {
+    /// Whether this value uses one of the two arms the profile permits
+    /// new CAs to emit (`PrintableString` or `UTF8String`).
+    public var isRFC5280Preferred: Bool {
+        switch self {
+        case .printableString, .utf8String: true
+        case .teletexString, .universalString, .bmpString: false
         }
     }
 }

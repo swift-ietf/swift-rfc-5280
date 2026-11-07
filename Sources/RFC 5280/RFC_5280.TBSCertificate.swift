@@ -55,19 +55,21 @@ extension RFC_5280 {
             self.subjectUniqueID = subjectUniqueID
             self.extensions = extensions
         }
+    }
+}
 
-        /// The lowest version §4.1.2.1 permits for this certificate's
-        /// populated fields: `v3` when extensions are present, `v2` when
-        /// unique identifiers are present without extensions, `v1` otherwise.
-        public var minimumRequiredVersion: RFC_5280.Certificate.Version {
-            if !self.extensions.isEmpty {
-                return .v3
-            }
-            if self.issuerUniqueID != nil || self.subjectUniqueID != nil {
-                return .v2
-            }
-            return .v1
+extension RFC_5280.TBSCertificate {
+    /// The lowest version §4.1.2.1 permits for this certificate's
+    /// populated fields: `v3` when extensions are present, `v2` when
+    /// unique identifiers are present without extensions, `v1` otherwise.
+    public var minimumRequiredVersion: RFC_5280.Certificate.Version {
+        if !self.extensions.isEmpty {
+            return .v3
         }
+        if self.issuerUniqueID != nil || self.subjectUniqueID != nil {
+            return .v2
+        }
+        return .v1
     }
 }
 

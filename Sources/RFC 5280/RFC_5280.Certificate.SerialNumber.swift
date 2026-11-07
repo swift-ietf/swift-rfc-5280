@@ -42,15 +42,17 @@ extension RFC_5280.Certificate {
             }
             self.bytes = content[...]
         }
+    }
+}
 
-        /// Whether this value satisfies the §4.1.2.2 CA issuance law:
-        /// a positive integer of at most 20 content octets.
-        public var isRFC5280Conformant: Bool {
-            guard let first = self.bytes.first else { return false }
-            guard first & 0x80 == 0 else { return false }
-            guard self.bytes.contains(where: { $0 != 0 }) else { return false }
-            return self.bytes.count <= 20
-        }
+extension RFC_5280.Certificate.SerialNumber {
+    /// Whether this value satisfies the §4.1.2.2 CA issuance law:
+    /// a positive integer of at most 20 content octets.
+    public var isRFC5280Conformant: Bool {
+        guard let first = self.bytes.first else { return false }
+        guard first & 0x80 == 0 else { return false }
+        guard self.bytes.contains(where: { $0 != 0 }) else { return false }
+        return self.bytes.count <= 20
     }
 }
 

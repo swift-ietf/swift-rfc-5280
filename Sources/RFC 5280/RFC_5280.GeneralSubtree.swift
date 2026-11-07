@@ -24,12 +24,14 @@ extension RFC_5280 {
             self.minimum = minimum
             self.maximum = maximum
         }
+    }
+}
 
-        /// Whether this subtree satisfies the §4.2.1.10 profile law
-        /// (`minimum` zero, `maximum` absent).
-        public var isRFC5280Conformant: Bool {
-            self.minimum == 0 && self.maximum == nil
-        }
+extension RFC_5280.GeneralSubtree {
+    /// Whether this subtree satisfies the §4.2.1.10 profile law
+    /// (`minimum` zero, `maximum` absent).
+    public var isRFC5280Conformant: Bool {
+        self.minimum == 0 && self.maximum == nil
     }
 }
 

@@ -18,19 +18,21 @@ extension RFC_5280 {
             self.notBefore = notBefore
             self.notAfter = notAfter
         }
+    }
+}
 
-        /// Whether `notAfter` is the §4.1.2.5 `99991231235959Z` sentinel for
-        /// a certificate with no well-defined expiration date.
-        public var hasNoWellDefinedExpiration: Bool {
-            guard case .generalTime(let time) = self.notAfter else { return false }
-            return time.year == 9999
-                && time.month == 12
-                && time.day == 31
-                && time.hours == 23
-                && time.minutes == 59
-                && time.seconds == 59
-                && time.rawFractionalSeconds.isEmpty
-        }
+extension RFC_5280.Validity {
+    /// Whether `notAfter` is the §4.1.2.5 `99991231235959Z` sentinel for
+    /// a certificate with no well-defined expiration date.
+    public var hasNoWellDefinedExpiration: Bool {
+        guard case .generalTime(let time) = self.notAfter else { return false }
+        return time.year == 9999
+            && time.month == 12
+            && time.day == 31
+            && time.hours == 23
+            && time.minutes == 59
+            && time.seconds == 59
+            && time.rawFractionalSeconds.isEmpty
     }
 }
 

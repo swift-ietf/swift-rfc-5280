@@ -14,19 +14,21 @@ extension RFC_5280.Certificate {
         public init(rawValue: Int) {
             self.rawValue = rawValue
         }
+    }
+}
 
-        /// X.509 version 1 (wire value 0).
-        public static let v1 = Self(rawValue: 0)
+extension RFC_5280.Certificate.Version {
+    /// X.509 version 1 (wire value 0).
+    public static let v1 = Self(rawValue: 0)
 
-        /// X.509 version 2 (wire value 1).
-        public static let v2 = Self(rawValue: 1)
+    /// X.509 version 2 (wire value 1).
+    public static let v2 = Self(rawValue: 1)
 
-        /// X.509 version 3 (wire value 2).
-        public static let v3 = Self(rawValue: 2)
+    /// X.509 version 3 (wire value 2).
+    public static let v3 = Self(rawValue: 2)
 
-        public static func < (lhs: Self, rhs: Self) -> Bool {
-            lhs.rawValue < rhs.rawValue
-        }
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.rawValue < rhs.rawValue
     }
 }
 
