@@ -1,7 +1,3 @@
-// RFC_5280.PolicyMappings.Mapping.swift
-// RFC 5280 §4.2.1.5 — Policy Mappings: one mapping term
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.5
-
 public import ISO_8824
 public import ISO_8825
 

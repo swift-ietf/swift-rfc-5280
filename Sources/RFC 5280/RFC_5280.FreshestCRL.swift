@@ -1,7 +1,3 @@
-// RFC_5280.FreshestCRL.swift
-// RFC 5280 §4.2.1.15 — Freshest CRL (a.k.a. Delta CRL Distribution Point)
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.15
-
 public import ISO_8824
 public import ISO_8825
 

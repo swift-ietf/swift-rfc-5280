@@ -1,7 +1,3 @@
-// RFC_5280.NameConstraints.DNSName.swift
-// RFC 5280 §4.2.1.10 — Name Constraints: dNSName matching law
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.10
-
 public import Domain_Standard
 
 extension RFC_5280.NameConstraints {
@@ -27,10 +23,6 @@ extension RFC_5280.NameConstraints.DNSName {
     /// `name` can be constructed by adding zero or more labels to the left
     /// of `constraint`.
     public static func satisfies(_ name: Domain, constraint: Domain) -> Bool {
-        // Compare via the always-present RFC 1123 member: its `==` is ASCII
-        // case-insensitive (RFC 4343), whereas `Domain`'s synthesized `==`
-        // also compares the optional RFC 1035 member, which an uppercase host
-        // fails to populate — making whole-`Domain` equality case-sensitive.
         name.rfc1123 == constraint.rfc1123 || name.isSubdomain(of: constraint)
     }
 

@@ -1,7 +1,3 @@
-// RFC_5280.PolicyInformation.ID.swift
-// RFC 5280 §4.2.1.4 — Certificate Policies: special policy identifiers
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.4
-
 public import ISO_8824
 
 extension RFC_5280.PolicyInformation {

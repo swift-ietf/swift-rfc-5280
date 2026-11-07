@@ -1,7 +1,3 @@
-// RFC_5280.Certificate.swift
-// RFC 5280 §4.1 — Basic Certificate Fields
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.1
-
 extension RFC_5280 {
     /// Nest for certificate-scoped profile law (RFC 5280 §4.1).
     ///

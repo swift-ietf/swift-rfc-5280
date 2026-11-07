@@ -1,7 +1,3 @@
-// RFC_5280.BasicConstraints.swift
-// RFC 5280 §4.2.1.9 — Basic Constraints
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.9
-
 public import ISO_8824
 public import ISO_8825
 
@@ -51,7 +47,6 @@ extension RFC_5280.BasicConstraints: ISO_8825.DER.ImplicitlyTaggable {
 
     public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
         try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
-            // DEFAULT FALSE: DER MUST omit a false cA.
             if self.isCA {
                 try coder.serialize(true)
             }

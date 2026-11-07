@@ -1,7 +1,3 @@
-// RFC_5280.CRLReason.swift
-// RFC 5280 §5.3.1 — CRL Entry Extensions: Reason Code
-// https://www.rfc-editor.org/rfc/rfc5280#section-5.3.1
-
 public import ISO_8824
 public import ISO_8825
 

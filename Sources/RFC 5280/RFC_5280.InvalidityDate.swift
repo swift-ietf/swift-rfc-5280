@@ -1,7 +1,3 @@
-// RFC_5280.InvalidityDate.swift
-// RFC 5280 §5.3.2 — CRL Entry Extensions: Invalidity Date
-// https://www.rfc-editor.org/rfc/rfc5280#section-5.3.2
-
 public import ISO_8824
 public import ISO_8825
 

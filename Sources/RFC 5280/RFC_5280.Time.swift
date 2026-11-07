@@ -1,7 +1,3 @@
-// RFC_5280.Time.swift
-// RFC 5280 §4.1.2.5 — Validity: Time
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.1.2.5
-
 public import ISO_8824
 public import ISO_8825
 
@@ -109,8 +105,6 @@ extension RFC_5280.Time {
     public var isRFC5280Conformant: Bool {
         switch self {
         case .utcTime:
-            // The two-digit pivot restricts UTCTime to 1950–2049, exactly the
-            // range the profile assigns it.
             return true
         case .generalTime(let time):
             guard time.rawFractionalSeconds.isEmpty else { return false }

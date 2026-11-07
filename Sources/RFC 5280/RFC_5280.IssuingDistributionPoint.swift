@@ -1,7 +1,3 @@
-// RFC_5280.IssuingDistributionPoint.swift
-// RFC 5280 §5.2.5 — Issuing Distribution Point
-// https://www.rfc-editor.org/rfc/rfc5280#section-5.2.5
-
 public import ISO_8824
 public import ISO_8825
 
@@ -103,7 +99,6 @@ extension RFC_5280.IssuingDistributionPoint: ISO_8825.DER.ImplicitlyTaggable {
 
     public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
         self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            // [0] tags a CHOICE, so it is EXPLICIT by ASN.1 rule.
             let distributionPoint = try ISO_8825.DER.optionalExplicitlyTagged(
                 &nodes,
                 tagNumber: 0,
@@ -111,10 +106,6 @@ extension RFC_5280.IssuingDistributionPoint: ISO_8825.DER.ImplicitlyTaggable {
             ) { node throws(ISO_8824.Error) in
                 try RFC_5280.DistributionPoint.Name(derEncoded: node)
             }
-            // The BOOLEAN fields are implicitly tagged, so each needs a
-            // builder that decodes with the context tag — the builderless
-            // `decodeDefault` would decode with BOOLEAN's own identifier and
-            // reject the node.
             let onlyContainsUserCerts = try Self.decodeTaggedDefault(&nodes, tagNumber: 1)
             let onlyContainsCACerts = try Self.decodeTaggedDefault(&nodes, tagNumber: 2)
             let onlySomeReasons: RFC_5280.ReasonFlags? = try ISO_8825.DER.optionalImplicitlyTagged(
@@ -139,7 +130,6 @@ extension RFC_5280.IssuingDistributionPoint: ISO_8825.DER.ImplicitlyTaggable {
             if let distributionPoint = self.distributionPoint {
                 try coder.serialize(distributionPoint, explicitlyTaggedWithTagNumber: 0, tagClass: .contextSpecific)
             }
-            // DEFAULT FALSE: DER MUST omit a false value.
             if self.onlyContainsUserCerts {
                 try true.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific))
             }

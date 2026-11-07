@@ -1,7 +1,3 @@
-// RFC_5280.SubjectKeyIdentifier.swift
-// RFC 5280 §4.2.1.2 — Subject Key Identifier
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.2
-
 public import ISO_8824
 public import ISO_8825
 

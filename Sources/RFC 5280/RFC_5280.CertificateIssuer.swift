@@ -1,7 +1,3 @@
-// RFC_5280.CertificateIssuer.swift
-// RFC 5280 §5.3.3 — CRL Entry Extensions: Certificate Issuer
-// https://www.rfc-editor.org/rfc/rfc5280#section-5.3.3
-
 public import ISO_8824
 public import ISO_8825
 

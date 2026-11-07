@@ -1,7 +1,3 @@
-// RFC_5280.Certificate.SerialNumber.swift
-// RFC 5280 §4.1.2.2 — Serial Number
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.1.2.2
-
 public import ISO_8824
 public import ISO_8825
 
@@ -41,8 +37,6 @@ extension RFC_5280.Certificate {
                 content = [0]
             }
             content.reverse()
-            // Two's complement: a leading octet with the high bit set would read
-            // as negative; positive values need a 0x00 pad octet there.
             if let first = content.first, first & 0x80 == 0x80 {
                 content.insert(0, at: 0)
             }
@@ -53,9 +47,7 @@ extension RFC_5280.Certificate {
         /// a positive integer of at most 20 content octets.
         public var isRFC5280Conformant: Bool {
             guard let first = self.bytes.first else { return false }
-            // Negative (two's-complement sign bit) values are forbidden.
             guard first & 0x80 == 0 else { return false }
-            // Zero is not a positive integer.
             guard self.bytes.contains(where: { $0 != 0 }) else { return false }
             return self.bytes.count <= 20
         }
@@ -68,11 +60,6 @@ extension RFC_5280.Certificate.SerialNumber: ISO_8825.DER.ImplicitlyTaggable {
     }
 
     public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        // §4.1.2.2 preserves the raw INTEGER content octets verbatim: negative
-        // and non-minimal serials exist in the wild and MUST be handled
-        // gracefully. Reading the primitive content directly bypasses the
-        // generic integer decode's positive-only, minimal-form enforcement;
-        // ``isRFC5280Conformant`` reports the profile judgment separately.
         guard node.identifier == identifier else {
             throw ISO_8824.Error.unexpectedFieldType(node.identifier)
         }
@@ -83,8 +70,6 @@ extension RFC_5280.Certificate.SerialNumber: ISO_8825.DER.ImplicitlyTaggable {
     }
 
     public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        // Emit the preserved content octets verbatim (no sign-extension or
-        // minimal-form re-encoding), so a parsed serial round-trips exactly.
         coder.appendPrimitiveNode(identifier: identifier) { (bytes: inout [UInt8]) in
             bytes.append(contentsOf: self.bytes)
         }

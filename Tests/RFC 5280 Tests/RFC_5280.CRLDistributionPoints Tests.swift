@@ -29,7 +29,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
         let points = RFC_5280.CRLDistributionPoints([
             RFC_5280.DistributionPoint(
                 distributionPoint: .fullName([
-                    .uniformResourceIdentifier(try ISO_8824.IA5String("http://a.com/c"))
+                    .uniformResourceIdentifier(ISO_8824.IA5String("http://a.com/c"))
                 ])
             )
         ])
@@ -50,7 +50,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
         let rdn = RFC_5280.RelativeDistinguishedName([
             RFC_5280.AttributeTypeAndValue(
                 type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("CRL1"))
+                value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("CRL1"))
             )
         ])
         let points = RFC_5280.CRLDistributionPoints([
@@ -68,10 +68,10 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
         let points = RFC_5280.CRLDistributionPoints([
             RFC_5280.DistributionPoint(
                 distributionPoint: .fullName([
-                    .uniformResourceIdentifier(try ISO_8824.IA5String("http://example.com/crl"))
+                    .uniformResourceIdentifier(ISO_8824.IA5String("http://example.com/crl"))
                 ]),
                 reasons: reasons,
-                cRLIssuer: [.dNSName(try ISO_8824.IA5String("crl.example.com"))]
+                cRLIssuer: [.dNSName(ISO_8824.IA5String("crl.example.com"))]
             )
         ])
         #expect(try roundTrips(points))
@@ -89,7 +89,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
         let points = RFC_5280.CRLDistributionPoints([
             RFC_5280.DistributionPoint(
                 distributionPoint: .fullName([
-                    .uniformResourceIdentifier(try ISO_8824.IA5String("http://example.com/crl"))
+                    .uniformResourceIdentifier(ISO_8824.IA5String("http://example.com/crl"))
                 ])
             )
         ])
@@ -105,7 +105,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
         let freshest = RFC_5280.FreshestCRL([
             RFC_5280.DistributionPoint(
                 distributionPoint: .fullName([
-                    .uniformResourceIdentifier(try ISO_8824.IA5String("http://example.com/delta"))
+                    .uniformResourceIdentifier(ISO_8824.IA5String("http://example.com/delta"))
                 ])
             )
         ])
@@ -177,13 +177,13 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
                 RFC_5280.RelativeDistinguishedName([
                     RFC_5280.AttributeTypeAndValue(
                         type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                        value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("Issuer"))
+                        value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Issuer"))
                     )
                 ])
             ])
         )
         let uri = RFC_5280.GeneralName.uniformResourceIdentifier(
-            try ISO_8824.IA5String("http://example.com/crl")
+            ISO_8824.IA5String("http://example.com/crl")
         )
 
         let conformant = RFC_5280.DistributionPoint(
@@ -200,7 +200,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
                 RFC_5280.RelativeDistinguishedName([
                     RFC_5280.AttributeTypeAndValue(
                         type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                        value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("CRL1"))
+                        value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("CRL1"))
                     )
                 ])
             )

@@ -1,7 +1,3 @@
-// RFC_5280.SubjectPublicKeyInfo.swift
-// RFC 5280 §4.1.2.7 — Subject Public Key Info
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.1.2.7
-
 public import ISO_8824
 public import ISO_8825
 

@@ -26,7 +26,7 @@ private func issuerName() throws(ISO_8824.Error) -> RFC_5280.Name {
         RFC_5280.RelativeDistinguishedName([
             RFC_5280.AttributeTypeAndValue(
                 type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("Test CA"))
+                value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Test CA"))
             )
         ])
     ])
@@ -234,7 +234,7 @@ extension `RFC_5280.CertificateList Tests`.Test.`Edge Case` {
         #expect(try conformant.makeExtension().critical)
 
         let nonConformant = RFC_5280.CertificateIssuer([
-            .dNSName(try ISO_8824.IA5String("ca.example.com"))
+            .dNSName(ISO_8824.IA5String("ca.example.com"))
         ])
         #expect(!nonConformant.isRFC5280Conformant)
         #expect(try roundTrips(nonConformant))
@@ -279,7 +279,7 @@ extension `RFC_5280.CertificateList Tests`.Test.Integration {
                 try RFC_5280.CRLNumber(UInt64(42)).makeExtension(),
                 try RFC_5280.IssuingDistributionPoint(
                     distributionPoint: .fullName([
-                        .uniformResourceIdentifier(try ISO_8824.IA5String("http://example.com/crl"))
+                        .uniformResourceIdentifier(ISO_8824.IA5String("http://example.com/crl"))
                     ]),
                     onlyContainsUserCerts: true
                 ).makeExtension(),

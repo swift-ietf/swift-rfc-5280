@@ -1,7 +1,3 @@
-// RFC_5280.TBSCertificate.swift
-// RFC 5280 §4.1.2 — TBSCertificate
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.1.2
-
 public import ISO_8824
 public import ISO_8825
 
@@ -126,7 +122,6 @@ extension RFC_5280.TBSCertificate: ISO_8825.DER.ImplicitlyTaggable {
 
     public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
         try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
-            // DEFAULT v1: DER MUST omit the [0] field for version 1.
             if self.version != .v1 {
                 try coder.serialize(self.version.rawValue, explicitlyTaggedWithTagNumber: 0, tagClass: .contextSpecific)
             }

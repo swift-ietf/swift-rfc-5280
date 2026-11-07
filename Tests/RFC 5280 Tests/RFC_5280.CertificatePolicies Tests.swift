@@ -41,7 +41,7 @@ extension `RFC_5280.CertificatePolicies Tests`.Test.Unit {
                 policyQualifiers: [
                     RFC_5280.PolicyQualifierInfo(
                         policyQualifierID: RFC_5280.PolicyQualifierInfo.ID.cps,
-                        qualifier: try ISO_8825.`Any`(erasing: try ISO_8824.IA5String("https://example.com/cps"))
+                        qualifier: try ISO_8825.`Any`(erasing: ISO_8824.IA5String("https://example.com/cps"))
                     )
                 ]
             )

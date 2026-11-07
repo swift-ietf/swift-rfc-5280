@@ -1,7 +1,3 @@
-// RFC_5280.NameConstraints.swift
-// RFC 5280 §4.2.1.10 — Name Constraints
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.10
-
 public import ISO_8824
 public import ISO_8825
 

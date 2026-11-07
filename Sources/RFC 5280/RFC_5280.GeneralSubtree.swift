@@ -1,7 +1,3 @@
-// RFC_5280.GeneralSubtree.swift
-// RFC 5280 §4.2.1.10 — Name Constraints: GeneralSubtree
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.10
-
 public import ISO_8824
 public import ISO_8825
 
@@ -45,10 +41,6 @@ extension RFC_5280.GeneralSubtree: ISO_8825.DER.ImplicitlyTaggable {
     public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
         self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
             let base = try RFC_5280.GeneralName(derEncoded: &nodes)
-            // `minimum` is an implicitly [0]-tagged INTEGER: decode it with that
-            // context tag as its identifier. The builderless `decodeDefault`
-            // overload would call `Int(derEncoded:)` with the universal INTEGER
-            // identifier and reject the [0] context tag.
             let minimum = try ISO_8825.DER.decodeDefault(
                 &nodes,
                 identifier: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific),
@@ -67,7 +59,6 @@ extension RFC_5280.GeneralSubtree: ISO_8825.DER.ImplicitlyTaggable {
     public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
         try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
             try coder.serialize(self.base)
-            // DEFAULT 0: DER MUST omit the [0] field for zero.
             if self.minimum != 0 {
                 try self.minimum.serialize(
                     into: &coder,

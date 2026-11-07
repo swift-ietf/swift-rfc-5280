@@ -1,7 +1,3 @@
-// RFC_5280.KeyUsage.swift
-// RFC 5280 §4.2.1.3 — Key Usage
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.3
-
 public import ISO_8824
 public import ISO_8825
 
@@ -114,7 +110,6 @@ extension RFC_5280.KeyUsage: ISO_8825.DER.ImplicitlyTaggable {
         for (offset, byte) in bits.bytes.enumerated() {
             rawValue |= UInt16(byte) << (8 * (1 - offset))
         }
-        // Named bits stop at decipherOnly(8); bits 9–15 are undefined.
         guard rawValue & 0x007F == 0 else {
             throw ISO_8824.Error.invalidASN1Object(reason: "KeyUsage carries set bits beyond decipherOnly(8)")
         }
@@ -122,7 +117,6 @@ extension RFC_5280.KeyUsage: ISO_8825.DER.ImplicitlyTaggable {
     }
 
     public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        // DER named-bit law: encode only through the highest set bit.
         let bits: ISO_8824.BitString
         if self.rawValue == 0 {
             bits = try ISO_8824.BitString(bytes: [], paddingBits: 0)

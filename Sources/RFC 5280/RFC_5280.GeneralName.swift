@@ -1,7 +1,3 @@
-// RFC_5280.GeneralName.swift
-// RFC 5280 §4.2.1.6 — Subject Alternative Name: GeneralName
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.6
-
 public import ISO_8824
 public import ISO_8825
 
@@ -55,7 +51,6 @@ extension RFC_5280.GeneralName: ISO_8825.DER.Parseable, ISO_8825.DER.Serializabl
         case 3:
             self = .x400Address(ISO_8825.`Any`(derEncoded: node))
         case 4:
-            // Explicit tag by ASN.1 rule: the constructed [4] wraps the Name.
             guard case .constructed(let children) = node.content else {
                 throw ISO_8824.Error.invalidASN1Object(reason: "directoryName explicit tag must be constructed")
             }

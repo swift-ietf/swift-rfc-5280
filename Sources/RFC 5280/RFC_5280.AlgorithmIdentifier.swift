@@ -1,7 +1,3 @@
-// RFC_5280.AlgorithmIdentifier.swift
-// RFC 5280 §4.1.1.2 — Signature Algorithm
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.1.1.2
-
 public import ISO_8824
 public import ISO_8825
 

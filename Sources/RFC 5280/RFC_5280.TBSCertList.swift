@@ -1,7 +1,3 @@
-// RFC_5280.TBSCertList.swift
-// RFC 5280 §5.1.1 / §5.1.2 — TBSCertList
-// https://www.rfc-editor.org/rfc/rfc5280#section-5.1
-
 public import ISO_8824
 public import ISO_8825
 
@@ -99,8 +95,6 @@ extension RFC_5280.TBSCertList: ISO_8825.DER.ImplicitlyTaggable {
 
     public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
         self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            // `version` is an untagged OPTIONAL INTEGER; the field that
-            // follows it is a SEQUENCE, so the identifier disambiguates.
             let rawVersion: Int? = try ISO_8825.DER.optionalImplicitlyTagged(&nodes, tag: .integer)
             let signature = try RFC_5280.AlgorithmIdentifier(derEncoded: &nodes)
             let issuer = try RFC_5280.Name(derEncoded: &nodes)
@@ -110,9 +104,6 @@ extension RFC_5280.TBSCertList: ISO_8825.DER.ImplicitlyTaggable {
             var revokedCertificates: [RFC_5280.TBSCertList.RevokedCertificate] = []
             var crlExtensions: [RFC_5280.Extension] = []
 
-            // The remaining three fields are all OPTIONAL and told apart by
-            // identifier: a time is `nextUpdate`, a SEQUENCE is
-            // `revokedCertificates`, and `[0]` wraps `crlExtensions`.
             while let child = nodes.next() {
                 switch child.identifier {
                 case ISO_8824.UTCTime.defaultIdentifier, ISO_8824.GeneralizedTime.defaultIdentifier:
@@ -124,7 +115,6 @@ extension RFC_5280.TBSCertList: ISO_8825.DER.ImplicitlyTaggable {
                         rootNode: child
                     )
                 case ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific):
-                    // [0] EXPLICIT: the constructed tag wraps the Extensions.
                     guard case .constructed(let children) = child.content else {
                         throw ISO_8824.Error.invalidASN1Object(reason: "crlExtensions explicit tag must be constructed")
                     }

@@ -1,7 +1,3 @@
-// RFC_5280.ExtendedKeyUsage.ID.swift
-// RFC 5280 §4.2.1.12 — Extended Key Usage: assigned key purposes
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.12
-
 public import ISO_8824
 
 extension RFC_5280.ExtendedKeyUsage {

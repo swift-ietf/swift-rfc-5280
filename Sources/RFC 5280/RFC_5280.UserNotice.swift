@@ -1,7 +1,3 @@
-// RFC_5280.UserNotice.swift
-// RFC 5280 §4.2.1.4 — Certificate Policies: UserNotice
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.4
-
 public import ISO_8824
 public import ISO_8825
 
@@ -51,8 +47,6 @@ extension RFC_5280.UserNotice: ISO_8825.DER.ImplicitlyTaggable {
             var noticeRef: RFC_5280.NoticeReference?
             var explicitText: RFC_5280.DisplayText?
             while let child = nodes.next() {
-                // Both fields are OPTIONAL and untagged: a SEQUENCE is the
-                // noticeRef, any character string is the explicitText.
                 if child.identifier == RFC_5280.NoticeReference.defaultIdentifier, noticeRef == nil, explicitText == nil {
                     noticeRef = try RFC_5280.NoticeReference(derEncoded: child)
                 } else {

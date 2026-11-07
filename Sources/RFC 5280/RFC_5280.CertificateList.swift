@@ -1,7 +1,3 @@
-// RFC_5280.CertificateList.swift
-// RFC 5280 §5.1 — CRL Fields: CertificateList
-// https://www.rfc-editor.org/rfc/rfc5280#section-5.1
-
 public import ISO_8824
 public import ISO_8825
 

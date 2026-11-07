@@ -1,7 +1,3 @@
-// RFC_5280.Certificate.Version.swift
-// RFC 5280 §4.1.2.1 — Version
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.1.2.1
-
 extension RFC_5280.Certificate {
     /// `Version ::= INTEGER { v1(0), v2(1), v3(2) }` (RFC 5280 §4.1.2.1).
     ///

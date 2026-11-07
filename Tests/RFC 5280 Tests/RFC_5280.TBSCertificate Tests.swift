@@ -156,11 +156,11 @@ extension `RFC_5280.TBSCertificate Tests`.Test.Integration {
                     keyIdentifier: ISO_8824.OctetString(contentBytes: [0x05, 0x06, 0x07, 0x08])
                 ).makeExtension(),
                 try RFC_5280.SubjectAlternativeName([
-                    .dNSName(try ISO_8824.IA5String("ca.example.com"))
+                    .dNSName(ISO_8824.IA5String("ca.example.com"))
                 ]).makeExtension(),
                 try RFC_5280.NameConstraints(
                     permittedSubtrees: [
-                        RFC_5280.GeneralSubtree(base: .dNSName(try ISO_8824.IA5String("example.com")))
+                        RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("example.com")))
                     ]
                 ).makeExtension(),
                 try RFC_5280.ExtendedKeyUsage([
@@ -169,7 +169,7 @@ extension `RFC_5280.TBSCertificate Tests`.Test.Integration {
                 try RFC_5280.AuthorityInformationAccess([
                     RFC_5280.AccessDescription(
                         accessMethod: RFC_5280.AccessDescription.ID.ocsp,
-                        accessLocation: .uniformResourceIdentifier(try ISO_8824.IA5String("http://ocsp.example.com"))
+                        accessLocation: .uniformResourceIdentifier(ISO_8824.IA5String("http://ocsp.example.com"))
                     )
                 ]).makeExtension(),
             ]

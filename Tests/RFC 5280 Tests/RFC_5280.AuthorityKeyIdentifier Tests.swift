@@ -35,7 +35,7 @@ extension `RFC_5280.AuthorityKeyIdentifier Tests`.Test.Unit {
     func `Round-trips all three fields`() throws {
         let aki = RFC_5280.AuthorityKeyIdentifier(
             keyIdentifier: ISO_8824.OctetString(contentBytes: [0xde, 0xad, 0xbe, 0xef]),
-            authorityCertIssuer: [.dNSName(try ISO_8824.IA5String("ca.example.com"))],
+            authorityCertIssuer: [.dNSName(ISO_8824.IA5String("ca.example.com"))],
             authorityCertSerialNumber: RFC_5280.Certificate.SerialNumber(UInt64(5))
         )
         #expect(try roundTrips(aki))

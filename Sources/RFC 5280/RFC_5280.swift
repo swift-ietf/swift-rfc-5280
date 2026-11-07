@@ -1,7 +1,3 @@
-// RFC_5280.swift
-// Internet X.509 Public Key Infrastructure Certificate and CRL Profile
-// https://www.rfc-editor.org/rfc/rfc5280
-
 /// Namespace for RFC 5280: Internet X.509 Public Key Infrastructure
 /// Certificate and Certificate Revocation List (CRL) Profile.
 ///

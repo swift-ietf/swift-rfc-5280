@@ -1,9 +1,3 @@
-// RFC_5280.NameConstraints.URI.swift
-// RFC 5280 §4.2.1.10 — Name Constraints: uniformResourceIdentifier matching law
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.10
-
-// Domain is used only in the private helper below, never in a public
-// signature, so this import is internal (not `public import`).
 import Domain_Standard
 
 extension RFC_5280.NameConstraints {
@@ -38,13 +32,9 @@ extension RFC_5280.NameConstraints.URI {
         guard let host = Self.domain(host) else { return false }
         if constraint.first == "." {
             guard let constraint = Self.domain(constraint.dropFirst()) else { return false }
-            // Expanded by one or more labels: the strict subdomain relation.
             return host.isSubdomain(of: constraint)
         }
         guard let constraint = Self.domain(constraint) else { return false }
-        // Compare via the RFC 1123 member for ASCII case-insensitive equality
-        // (RFC 4343); whole-`Domain` `==` is case-sensitive via its optional
-        // RFC 1035 member (see ``RFC_5280/NameConstraints/DNSName``).
         return host.rfc1123 == constraint.rfc1123
     }
 

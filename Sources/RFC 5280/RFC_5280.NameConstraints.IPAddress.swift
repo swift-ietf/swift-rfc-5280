@@ -1,10 +1,3 @@
-// RFC_5280.NameConstraints.IPAddress.swift
-// RFC 5280 §4.2.1.10 — Name Constraints: iPAddress matching law
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.10
-
-// The IPv4/IPv6 address parsers take the byte-domain `Byte` substrate
-// ([API-BYTE-003]); ASN.1 octet content is stdlib `UInt8`, so this file
-// bridges at its own call site ([API-BYTE-008]) and needs `Byte` directly.
 private import Byte
 public import ISO_8824
 public import RFC_4291
@@ -99,8 +92,6 @@ extension RFC_5280.NameConstraints.IPAddress {
     /// this range. An address of a different family than the constraint
     /// never matches.
     public func contains(_ address: ArraySlice<UInt8>) -> Bool {
-        // A malformed or wrong-family address is a non-match, not an error,
-        // so the parse failures are deliberately discarded.
         switch self {
         case .v4:
             do throws(RFC_791.IPv4.Address.Error) {

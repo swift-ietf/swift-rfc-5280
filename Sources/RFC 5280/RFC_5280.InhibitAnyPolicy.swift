@@ -1,7 +1,3 @@
-// RFC_5280.InhibitAnyPolicy.swift
-// RFC 5280 §4.2.1.14 — Inhibit anyPolicy
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.14
-
 public import ISO_8824
 public import ISO_8825
 

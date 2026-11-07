@@ -1,7 +1,3 @@
-// RFC_5280.Attribute.swift
-// RFC 5280 §4.2.1.8 — Subject Directory Attributes: Attribute
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.8
-
 public import ISO_8824
 public import ISO_8825
 

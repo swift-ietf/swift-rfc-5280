@@ -1,7 +1,3 @@
-// RFC_5280.CRLDistributionPoints.swift
-// RFC 5280 §4.2.1.13 — CRL Distribution Points
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.13
-
 public import ISO_8824
 public import ISO_8825
 

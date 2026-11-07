@@ -23,7 +23,7 @@ extension `RFC_5280.GeneralName Tests`.Test.Unit {
     // RFC 5280 §4.2.1.6: dNSName is an implicitly [2]-tagged IA5String
     @Test
     func `dNSName serializes with implicit context tag 2`() throws {
-        let name = RFC_5280.GeneralName.dNSName(try ISO_8824.IA5String("example.com"))
+        let name = RFC_5280.GeneralName.dNSName(ISO_8824.IA5String("example.com"))
         let fixture: [UInt8] = [
             0x82, 0x0b,
             0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63, 0x6f, 0x6d,
@@ -49,7 +49,7 @@ extension `RFC_5280.GeneralName Tests`.Test.Unit {
             RFC_5280.RelativeDistinguishedName([
                 RFC_5280.AttributeTypeAndValue(
                     type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                    value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("Test"))
+                    value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Test"))
                 )
             ])
         ])

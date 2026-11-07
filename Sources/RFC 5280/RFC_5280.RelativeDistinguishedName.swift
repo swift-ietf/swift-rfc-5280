@@ -1,7 +1,3 @@
-// RFC_5280.RelativeDistinguishedName.swift
-// RFC 5280 §4.1.2.4 — Issuer: RelativeDistinguishedName
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.1.2.4
-
 public import ISO_8824
 public import ISO_8825
 

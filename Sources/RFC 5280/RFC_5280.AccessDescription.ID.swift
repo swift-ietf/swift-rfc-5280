@@ -1,7 +1,3 @@
-// RFC_5280.AccessDescription.ID.swift
-// RFC 5280 §4.2.2.1 — Authority Information Access: access methods
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.2.1
-
 public import ISO_8824
 
 extension RFC_5280.AccessDescription {

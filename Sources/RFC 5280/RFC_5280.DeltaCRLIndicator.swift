@@ -1,7 +1,3 @@
-// RFC_5280.DeltaCRLIndicator.swift
-// RFC 5280 §5.2.4 — Delta CRL Indicator
-// https://www.rfc-editor.org/rfc/rfc5280#section-5.2.4
-
 public import ISO_8824
 public import ISO_8825
 

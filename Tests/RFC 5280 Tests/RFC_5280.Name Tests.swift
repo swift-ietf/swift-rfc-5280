@@ -32,11 +32,11 @@ extension `RFC_5280.Name Tests`.Test.Unit {
     func `An RDN compares as a SET, not by attribute order`() throws {
         let country = RFC_5280.AttributeTypeAndValue(
             type: [2, 5, 4, 6],
-            value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("NL"))
+            value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("NL"))
         )
         let commonName = RFC_5280.AttributeTypeAndValue(
             type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-            value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("Test"))
+            value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Test"))
         )
 
         let oneOrder = RFC_5280.RelativeDistinguishedName([country, commonName])
@@ -55,8 +55,8 @@ extension `RFC_5280.Name Tests`.Test.Unit {
     // The same law for `Attribute`, whose `values` is also a SET OF.
     @Test
     func `An attribute compares its values as a SET`() throws {
-        let netherlands = try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("NL"))
-        let belgium = try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("BE"))
+        let netherlands = try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("NL"))
+        let belgium = try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("BE"))
 
         let oneOrder = RFC_5280.Attribute(type: [2, 5, 4, 6], values: [netherlands, belgium])
         let otherOrder = RFC_5280.Attribute(type: [2, 5, 4, 6], values: [belgium, netherlands])
@@ -74,7 +74,7 @@ extension `RFC_5280.Name Tests`.Test.Unit {
             RFC_5280.RelativeDistinguishedName([
                 RFC_5280.AttributeTypeAndValue(
                     type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                    value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("Test"))
+                    value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Test"))
                 )
             ])
         ])
@@ -94,7 +94,7 @@ extension `RFC_5280.Name Tests`.Test.Unit {
     func `Attribute value reads back as a DirectoryString`() throws {
         let attribute = RFC_5280.AttributeTypeAndValue(
             type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-            value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("Test"))
+            value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Test"))
         )
         let directoryString = try attribute.directoryStringValue()
         guard case .printableString = directoryString else {
@@ -110,13 +110,13 @@ extension `RFC_5280.Name Tests`.Test.Unit {
             RFC_5280.RelativeDistinguishedName([
                 RFC_5280.AttributeTypeAndValue(
                     type: ISO_8824.ObjectIdentifier.NameAttributes.countryName,
-                    value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("US"))
+                    value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("US"))
                 )
             ]),
             RFC_5280.RelativeDistinguishedName([
                 RFC_5280.AttributeTypeAndValue(
                     type: ISO_8824.ObjectIdentifier.NameAttributes.organizationName,
-                    value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("Org"))
+                    value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Org"))
                 )
             ]),
             RFC_5280.RelativeDistinguishedName([
@@ -142,11 +142,11 @@ extension `RFC_5280.Name Tests`.Test.`Edge Case` {
     func `Multi-valued RDN serializes in canonical SET OF order`() throws {
         let commonName = RFC_5280.AttributeTypeAndValue(
             type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-            value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("Test"))
+            value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Test"))
         )
         let organization = RFC_5280.AttributeTypeAndValue(
             type: ISO_8824.ObjectIdentifier.NameAttributes.organizationName,
-            value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString("Org"))
+            value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Org"))
         )
         let oneOrder = try derBytes(of: RFC_5280.RelativeDistinguishedName([commonName, organization]))
         let otherOrder = try derBytes(of: RFC_5280.RelativeDistinguishedName([organization, commonName]))

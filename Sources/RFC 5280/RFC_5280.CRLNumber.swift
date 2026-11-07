@@ -1,7 +1,3 @@
-// RFC_5280.CRLNumber.swift
-// RFC 5280 §5.2.3 — CRL Number
-// https://www.rfc-editor.org/rfc/rfc5280#section-5.2.3
-
 public import ISO_8824
 public import ISO_8825
 
@@ -41,8 +37,6 @@ extension RFC_5280.CRLNumber {
             content = [0]
         }
         content.reverse()
-        // Two's complement: a leading octet with the high bit set would read
-        // as negative; positive values need a 0x00 pad octet there.
         if let first = content.first, first & 0x80 == 0x80 {
             content.insert(0, at: 0)
         }

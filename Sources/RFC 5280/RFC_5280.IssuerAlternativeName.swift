@@ -1,7 +1,3 @@
-// RFC_5280.IssuerAlternativeName.swift
-// RFC 5280 §4.2.1.7 — Issuer Alternative Name
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.7
-
 public import ISO_8824
 public import ISO_8825
 

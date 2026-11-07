@@ -1,7 +1,3 @@
-// RFC_5280.Extension.ID.swift
-// RFC 5280 §4.2.1 — Standard Extensions: assigned identifiers
-// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1
-
 public import ISO_8824
 
 extension RFC_5280.Extension {
@@ -62,8 +58,6 @@ extension RFC_5280.Extension.ID {
     /// `id-pe-authorityInfoAccess OBJECT IDENTIFIER ::= { id-pe 1 }` (§4.2.2.1).
     public static let authorityInformationAccess: ISO_8824.ObjectIdentifier = [1, 3, 6, 1, 5, 5, 7, 1, 1]
 }
-
-// MARK: - CRL extensions (§5.2) and CRL entry extensions (§5.3)
 
 extension RFC_5280.Extension.ID {
     /// `id-ce-cRLNumber OBJECT IDENTIFIER ::= { id-ce 20 }` (§5.2.3).

@@ -24,7 +24,7 @@ extension `RFC_5280.SubjectAlternativeName Tests`.Test.Unit {
     @Test
     func `Serializes a dNSName SAN to the known DER bytes`() throws {
         let san = RFC_5280.SubjectAlternativeName([
-            .dNSName(try ISO_8824.IA5String("example.com"))
+            .dNSName(ISO_8824.IA5String("example.com"))
         ])
         let fixture: [UInt8] = [
             0x30, 0x0d,
@@ -38,10 +38,10 @@ extension `RFC_5280.SubjectAlternativeName Tests`.Test.Unit {
     @Test
     func `Round-trips mixed name forms`() throws {
         let san = RFC_5280.SubjectAlternativeName([
-            .dNSName(try ISO_8824.IA5String("example.com")),
-            .dNSName(try ISO_8824.IA5String("www.example.com")),
+            .dNSName(ISO_8824.IA5String("example.com")),
+            .dNSName(ISO_8824.IA5String("www.example.com")),
             .iPAddress(ISO_8824.OctetString(contentBytes: [0xc0, 0x00, 0x02, 0x01])),
-            .rfc822Name(try ISO_8824.IA5String("admin@example.com")),
+            .rfc822Name(ISO_8824.IA5String("admin@example.com")),
         ])
         #expect(try roundTrips(san))
     }
@@ -65,7 +65,7 @@ extension `RFC_5280.SubjectAlternativeName Tests`.Test.`Edge Case` {
     // RFC 5280 §4.2.1.6 bridge law: SHOULD be non-critical (unless subject is empty)
     @Test
     func `The extension bridge defaults to non-critical`() throws {
-        let san = RFC_5280.SubjectAlternativeName([.dNSName(try ISO_8824.IA5String("example.com"))])
+        let san = RFC_5280.SubjectAlternativeName([.dNSName(ISO_8824.IA5String("example.com"))])
         let certificateExtension = try san.makeExtension()
         #expect(!certificateExtension.critical)
         #expect(certificateExtension.extnID == RFC_5280.Extension.ID.subjectAlternativeName)
