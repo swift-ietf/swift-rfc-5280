@@ -153,7 +153,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
 
     @Test
     func `ReasonFlags refuses bits beyond aACompromise on serialize`() {
-        for bit in 9...15 {
+        (9...15).forEach { bit in
             #expect(throws: ISO_8824.Error.self, "bit \(bit)") {
                 _ = try derBytes(of: RFC_5280.ReasonFlags(rawValue: 0x8000 >> UInt16(bit)))
             }
