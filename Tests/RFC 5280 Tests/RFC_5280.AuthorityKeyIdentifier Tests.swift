@@ -64,4 +64,15 @@ extension `RFC_5280.AuthorityKeyIdentifier Tests`.Test.`Edge Case` {
         #expect(certificateExtension.extnID == RFC_5280.Extension.ID.authorityKeyIdentifier)
         #expect(try RFC_5280.AuthorityKeyIdentifier(certificateExtension) == aki)
     }
+
+    // RFC 5280 §4.2.1.6: GeneralNames is SEQUENCE SIZE (1..MAX)
+    @Test
+    func `An empty authorityCertIssuer is refused on parse and serialize`() {
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try RFC_5280.AuthorityKeyIdentifier(derEncoded: [0x30, 0x02, 0xa1, 0x00])
+        }
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try derBytes(of: RFC_5280.AuthorityKeyIdentifier(authorityCertIssuer: []))
+        }
+    }
 }

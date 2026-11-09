@@ -54,6 +54,9 @@ extension RFC_5280.AuthorityKeyIdentifier: ISO_8825.DER.ImplicitlyTaggable {
                     rootNode: node
                 )
             }
+            guard authorityCertIssuer.map({ !$0.isEmpty }) ?? true else {
+                throw ISO_8824.Error.invalidASN1Object(reason: "authorityCertIssuer is GeneralNames, SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
+            }
             let authorityCertSerialNumber: RFC_5280.Certificate.SerialNumber? = try ISO_8825.DER.optionalImplicitlyTagged(
                 &nodes,
                 tag: ISO_8824.Identifier(tagWithNumber: 2, tagClass: .contextSpecific)
@@ -67,6 +70,9 @@ extension RFC_5280.AuthorityKeyIdentifier: ISO_8825.DER.ImplicitlyTaggable {
     }
 
     public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+        guard self.authorityCertIssuer.map({ !$0.isEmpty }) ?? true else {
+            throw ISO_8824.Error.invalidASN1Object(reason: "authorityCertIssuer is GeneralNames, SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
+        }
         try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
             try coder.serializeOptionalImplicitlyTagged(
                 self.keyIdentifier,

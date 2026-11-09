@@ -53,7 +53,7 @@ extension RFC_5280.DistributionPoint {
             return false
         }
         guard let cRLIssuer = self.cRLIssuer else { return true }
-        return cRLIssuer.allSatisfy { name in
+        return !cRLIssuer.isEmpty && cRLIssuer.allSatisfy { name in
             if case .directoryName = name { return true }
             return false
         }
@@ -94,6 +94,9 @@ extension RFC_5280.DistributionPoint: ISO_8825.DER.ImplicitlyTaggable {
                     reason: "A DistributionPoint must contain distributionPoint or cRLIssuer; reasons alone is forbidden"
                 )
             }
+            guard cRLIssuer.map({ !$0.isEmpty }) ?? true else {
+                throw ISO_8824.Error.invalidASN1Object(reason: "cRLIssuer is GeneralNames, SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
+            }
             return Self(distributionPoint: distributionPoint, reasons: reasons, cRLIssuer: cRLIssuer)
         }
     }
@@ -103,6 +106,9 @@ extension RFC_5280.DistributionPoint: ISO_8825.DER.ImplicitlyTaggable {
             throw ISO_8824.Error.invalidASN1Object(
                 reason: "A DistributionPoint must contain distributionPoint or cRLIssuer; reasons alone is forbidden"
             )
+        }
+        guard self.cRLIssuer.map({ !$0.isEmpty }) ?? true else {
+            throw ISO_8824.Error.invalidASN1Object(reason: "cRLIssuer is GeneralNames, SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
         }
         try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
             if let distributionPoint = self.distributionPoint {

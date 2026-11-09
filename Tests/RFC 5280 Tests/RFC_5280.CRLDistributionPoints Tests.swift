@@ -217,4 +217,17 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
         #expect(!badIssuer.isRFC5280Conformant)
         #expect(try roundTrips(RFC_5280.CRLDistributionPoints([badIssuer])))
     }
+
+    // RFC 5280 §4.2.1.6: GeneralNames is SEQUENCE SIZE (1..MAX)
+    @Test
+    func `An empty cRLIssuer is refused on parse and serialize and is not conformant`() {
+        let empty = RFC_5280.DistributionPoint(cRLIssuer: [])
+        #expect(!empty.isRFC5280Conformant)
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try derBytes(of: empty)
+        }
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try RFC_5280.DistributionPoint(derEncoded: [0x30, 0x02, 0xa2, 0x00])
+        }
+    }
 }
