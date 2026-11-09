@@ -53,10 +53,11 @@ extension RFC_5280.DistributionPoint {
             return false
         }
         guard let cRLIssuer = self.cRLIssuer else { return true }
-        return !cRLIssuer.isEmpty && cRLIssuer.allSatisfy { name in
-            if case .directoryName = name { return true }
-            return false
-        }
+        return !cRLIssuer.isEmpty
+            && cRLIssuer.allSatisfy { name in
+                if case .directoryName = name { return true }
+                return false
+            }
     }
 }
 
