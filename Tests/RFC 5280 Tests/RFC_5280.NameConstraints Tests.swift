@@ -103,6 +103,24 @@ extension `RFC_5280.NameConstraints Tests`.Test.`Edge Case` {
         #expect(try roundTrips(constraints))
     }
 
+    // RFC 5280 §4.2.1.10: BaseDistance is INTEGER (0..MAX)
+    @Test
+    func `A negative base distance is refused on parse and serialize`() {
+        let base = RFC_5280.GeneralName.dNSName(ISO_8824.IA5String("a"))
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try derBytes(of: RFC_5280.GeneralSubtree(base: base, minimum: -1))
+        }
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try derBytes(of: RFC_5280.GeneralSubtree(base: base, maximum: -1))
+        }
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try RFC_5280.GeneralSubtree(derEncoded: [0x30, 0x06, 0x82, 0x01, 0x61, 0x80, 0x01, 0xff])
+        }
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try RFC_5280.GeneralSubtree(derEncoded: [0x30, 0x06, 0x82, 0x01, 0x61, 0x81, 0x01, 0xff])
+        }
+    }
+
     // Non-conformant base distances are preserved for wire fidelity, so the
     // aggregate predicate is how a fail-closed policy layer reaches them.
     @Test

@@ -54,11 +54,17 @@ extension RFC_5280.GeneralSubtree: ISO_8825.DER.ImplicitlyTaggable {
                 &nodes,
                 tag: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
             )
+            guard minimum >= 0, (maximum ?? 0) >= 0 else {
+                throw ISO_8824.Error.invalidASN1Object(reason: "BaseDistance is INTEGER (0..MAX); got a negative value")
+            }
             return Self(base: base, minimum: minimum, maximum: maximum)
         }
     }
 
     public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+        guard self.minimum >= 0, (self.maximum ?? 0) >= 0 else {
+            throw ISO_8824.Error.invalidASN1Object(reason: "BaseDistance is INTEGER (0..MAX); got a negative value")
+        }
         try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
             try coder.serialize(self.base)
             if self.minimum != 0 {
