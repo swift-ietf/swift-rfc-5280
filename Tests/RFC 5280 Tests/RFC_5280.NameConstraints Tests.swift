@@ -77,6 +77,21 @@ extension `RFC_5280.NameConstraints Tests`.Test.`Edge Case` {
         }
     }
 
+    // RFC 5280 §4.2.1.10: GeneralSubtrees is SEQUENCE SIZE (1..MAX)
+    @Test
+    func `An empty subtree list is refused on serialize as on parse`() {
+        let subtree = RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("example.com")))
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try derBytes(of: RFC_5280.NameConstraints(permittedSubtrees: []))
+        }
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try derBytes(of: RFC_5280.NameConstraints(permittedSubtrees: [subtree], excludedSubtrees: []))
+        }
+        #expect(throws: ISO_8824.Error.self) {
+            _ = try RFC_5280.NameConstraints(derEncoded: [0x30, 0x02, 0xa0, 0x00])
+        }
+    }
+
     // A non-default minimum survives a round-trip (wire fidelity beyond the profile)
     @Test
     func `Non-default base distances round-trip`() throws {

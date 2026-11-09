@@ -82,6 +82,9 @@ extension RFC_5280.NameConstraints: ISO_8825.DER.ImplicitlyTaggable {
         guard self.permittedSubtrees != nil || self.excludedSubtrees != nil else {
             throw ISO_8824.Error.invalidASN1Object(reason: "NameConstraints must contain at least one of permittedSubtrees and excludedSubtrees")
         }
+        guard self.permittedSubtrees.map({ !$0.isEmpty }) ?? true, self.excludedSubtrees.map({ !$0.isEmpty }) ?? true else {
+            throw ISO_8824.Error.invalidASN1Object(reason: "GeneralSubtrees is SEQUENCE SIZE (1..MAX) OF GeneralSubtree; got an empty sequence")
+        }
         try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
             if let permittedSubtrees = self.permittedSubtrees {
                 try coder.appendConstructedNode(identifier: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific)) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
