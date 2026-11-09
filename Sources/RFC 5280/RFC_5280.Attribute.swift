@@ -79,15 +79,10 @@ extension RFC_5280.Attribute: ISO_8825.DER.ImplicitlyTaggable {
                 throw ISO_8824.Error.invalidASN1Object(reason: "Attribute is missing its values")
             }
             let values = try ISO_8825.DER.set(
-                valuesNode,
-                identifier: .set
-            ) { (values: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> [ISO_8825.`Any`] in
-                var decoded: [ISO_8825.`Any`] = []
-                while let value = values.next() {
-                    decoded.append(ISO_8825.`Any`(derEncoded: value))
-                }
-                return decoded
-            }
+                of: ISO_8825.`Any`.self,
+                identifier: .set,
+                rootNode: valuesNode
+            )
             return Self(type: type, values: values)
         }
     }
