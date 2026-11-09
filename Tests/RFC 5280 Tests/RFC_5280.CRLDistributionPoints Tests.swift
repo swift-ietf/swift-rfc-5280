@@ -151,6 +151,15 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
         }
     }
 
+    @Test
+    func `ReasonFlags refuses bits beyond aACompromise on serialize`() {
+        for bit in 9...15 {
+            #expect(throws: ISO_8824.Error.self, "bit \(bit)") {
+                _ = try derBytes(of: RFC_5280.ReasonFlags(rawValue: 0x8000 >> UInt16(bit)))
+            }
+        }
+    }
+
     // DER named-bit law: an all-zero ReasonFlags is an empty BIT STRING
     @Test
     func `An empty ReasonFlags encodes as an empty bit string`() throws {

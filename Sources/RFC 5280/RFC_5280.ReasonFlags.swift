@@ -117,6 +117,9 @@ extension RFC_5280.ReasonFlags: ISO_8825.DER.ImplicitlyTaggable {
     }
 
     public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+        guard self.rawValue & 0x007F == 0 else {
+            throw ISO_8824.Error.invalidASN1Object(reason: "ReasonFlags carries set bits beyond aACompromise(8)")
+        }
         let bits: ISO_8824.BitString
         if self.rawValue == 0 {
             bits = try ISO_8824.BitString(bytes: [], paddingBits: 0)

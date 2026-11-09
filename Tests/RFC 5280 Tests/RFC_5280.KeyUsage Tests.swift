@@ -93,6 +93,16 @@ extension `RFC_5280.KeyUsage Tests`.Test.`Edge Case` {
         }
     }
 
+    // KeyUsage named bits stop at decipherOnly(8)
+    @Test
+    func `Bits beyond decipherOnly are refused on serialize as on parse`() {
+        for bit in 9...15 {
+            #expect(throws: ISO_8824.Error.self, "bit \(bit)") {
+                _ = try derBytes(of: RFC_5280.KeyUsage(rawValue: 0x8000 >> UInt16(bit)))
+            }
+        }
+    }
+
     // RFC 5280 §4.2.1.3 bridge law: SHOULD be critical
     @Test
     func `The extension bridge defaults to critical`() throws {
