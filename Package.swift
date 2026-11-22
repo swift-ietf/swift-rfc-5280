@@ -21,6 +21,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(url: "https://github.com/swift-ietf/swift-rfc.git", branch: "main"),
         // ISO 8824 (X.680) value law and ISO 8825 (X.690) DER encoding law.
         // Published on main this session, so canonical URLs (branch: main) per
         // [PKG-DEP-009]; the mirror config resolves them to the local trees.
@@ -47,6 +48,7 @@ let package = Package(
         .target(
             name: "RFC 5280",
             dependencies: [
+                .product(name: "IETF RFC", package: "swift-rfc"),
                 .product(name: "ISO 8824", package: "swift-iso-8824"),
                 .product(name: "ISO 8825", package: "swift-iso-8825"),
                 .product(name: "Domain Standard", package: "swift-domain-standard"),

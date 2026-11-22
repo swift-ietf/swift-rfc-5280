@@ -1,0 +1,48 @@
+public import ISO_8824
+public import ISO_8825
+
+extension IETF.RFC.`5280` {
+    /// `NoticeReference ::= SEQUENCE { organization DisplayText,
+    /// noticeNumbers SEQUENCE OF INTEGER }` (RFC 5280 §4.2.1.4).
+    ///
+    /// Names an organization and a sequence of notice numbers within a
+    /// notice file that organization publishes; resolving the reference to
+    /// notice text is out of scope for the profile.
+    public struct NoticeReference: Hashable, Sendable {
+        /// The organization that publishes the referenced notice file.
+        public var organization: IETF.RFC.`5280`.DisplayText
+
+        /// The notice numbers within that file.
+        public var noticeNumbers: [Int]
+
+        public init(organization: IETF.RFC.`5280`.DisplayText, noticeNumbers: [Int]) {
+            self.organization = organization
+            self.noticeNumbers = noticeNumbers
+        }
+    }
+}
+
+extension IETF.RFC.`5280`.NoticeReference: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
+        .sequence
+    }
+
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let organization = try IETF.RFC.`5280`.DisplayText(derEncoded: &nodes)
+            let noticeNumbers = try ISO.`8825`.DER.sequence(of: Int.self, identifier: .sequence, nodes: &nodes)
+            return Self(organization: organization, noticeNumbers: noticeNumbers)
+        }
+    }
+
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
+            try coder.serialize(self.organization)
+            try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
+                for number in self.noticeNumbers {
+                    try coder.serialize(number)
+                }
+            }
+        }
+    }
+}
