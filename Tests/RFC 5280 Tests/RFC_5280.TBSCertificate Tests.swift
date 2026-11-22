@@ -18,28 +18,28 @@ extension `RFC_5280.TBSCertificate Tests` {
 
 // MARK: - Fixtures
 
-private func makeName(commonName: String) throws(ISO_8824.Error) -> RFC_5280.Name {
+private func makeName(commonName: String) throws(ISO.`8824`.Error) -> RFC_5280.Name {
     RFC_5280.Name([
         RFC_5280.RelativeDistinguishedName([
             RFC_5280.AttributeTypeAndValue(
-                type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                value: try ISO_8825.`Any`(erasing: try ISO_8824.PrintableString(commonName))
+                type: ISO.`8824`.ObjectIdentifier.NameAttributes.commonName,
+                value: try ISO.`8825`.`Any`(erasing: try ISO.`8824`.PrintableString(commonName))
             )
         ])
     ])
 }
 
-private func makeSubjectPublicKeyInfo() throws(ISO_8824.Error) -> RFC_5280.SubjectPublicKeyInfo {
+private func makeSubjectPublicKeyInfo() throws(ISO.`8824`.Error) -> RFC_5280.SubjectPublicKeyInfo {
     RFC_5280.SubjectPublicKeyInfo(
         algorithm: RFC_5280.AlgorithmIdentifier(
             algorithm: [1, 2, 840, 10045, 2, 1],
-            parameters: try ISO_8825.`Any`(erasing: [1, 2, 840, 10045, 3, 1, 7] as ISO_8824.ObjectIdentifier)
+            parameters: try ISO.`8825`.`Any`(erasing: [1, 2, 840, 10045, 3, 1, 7] as ISO.`8824`.ObjectIdentifier)
         ),
-        subjectPublicKey: try ISO_8824.BitString(bytes: [0x04, 0x01, 0x02, 0x03], paddingBits: 0)
+        subjectPublicKey: try ISO.`8824`.BitString(bytes: [0x04, 0x01, 0x02, 0x03], paddingBits: 0)
     )
 }
 
-private func makeValidity() throws(ISO_8824.Error) -> RFC_5280.Validity {
+private func makeValidity() throws(ISO.`8824`.Error) -> RFC_5280.Validity {
     RFC_5280.Validity(
         notBefore: try RFC_5280.Time(year: 2026, month: 7, day: 23, hours: 0, minutes: 0, seconds: 0),
         notAfter: try RFC_5280.Time(year: 2027, month: 7, day: 23, hours: 0, minutes: 0, seconds: 0)
@@ -114,7 +114,7 @@ extension `RFC_5280.TBSCertificate Tests`.Test.Unit {
         )
         #expect(tbs.minimumRequiredVersion == .v1)
 
-        tbs.subjectUniqueID = try ISO_8824.BitString(bytes: [0xff], paddingBits: 0)
+        tbs.subjectUniqueID = try ISO.`8824`.BitString(bytes: [0xff], paddingBits: 0)
         #expect(tbs.minimumRequiredVersion == .v2)
 
         tbs.extensions = [try RFC_5280.BasicConstraints(isCA: true).makeExtension()]
@@ -144,23 +144,23 @@ extension `RFC_5280.TBSCertificate Tests`.Test.Integration {
             validity: try makeValidity(),
             subject: try makeName(commonName: "Test Intermediate CA"),
             subjectPublicKeyInfo: try makeSubjectPublicKeyInfo(),
-            issuerUniqueID: try ISO_8824.BitString(bytes: [0x0f], paddingBits: 0),
-            subjectUniqueID: try ISO_8824.BitString(bytes: [0xf0], paddingBits: 0),
+            issuerUniqueID: try ISO.`8824`.BitString(bytes: [0x0f], paddingBits: 0),
+            subjectUniqueID: try ISO.`8824`.BitString(bytes: [0xf0], paddingBits: 0),
             extensions: [
                 try RFC_5280.BasicConstraints(isCA: true, pathLenConstraint: 0).makeExtension(),
                 try keyUsage.makeExtension(),
                 try RFC_5280.SubjectKeyIdentifier(
-                    keyIdentifier: ISO_8824.OctetString(contentBytes: [0x01, 0x02, 0x03, 0x04])
+                    keyIdentifier: ISO.`8824`.OctetString(contentBytes: [0x01, 0x02, 0x03, 0x04])
                 ).makeExtension(),
                 try RFC_5280.AuthorityKeyIdentifier(
-                    keyIdentifier: ISO_8824.OctetString(contentBytes: [0x05, 0x06, 0x07, 0x08])
+                    keyIdentifier: ISO.`8824`.OctetString(contentBytes: [0x05, 0x06, 0x07, 0x08])
                 ).makeExtension(),
                 try RFC_5280.SubjectAlternativeName([
-                    .dNSName(ISO_8824.IA5String("ca.example.com"))
+                    .dNSName(ISO.`8824`.IA5String("ca.example.com"))
                 ]).makeExtension(),
                 try RFC_5280.NameConstraints(
                     permittedSubtrees: [
-                        RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("example.com")))
+                        RFC_5280.GeneralSubtree(base: .dNSName(ISO.`8824`.IA5String("example.com")))
                     ]
                 ).makeExtension(),
                 try RFC_5280.ExtendedKeyUsage([
@@ -169,7 +169,7 @@ extension `RFC_5280.TBSCertificate Tests`.Test.Integration {
                 try RFC_5280.AuthorityInformationAccess([
                     RFC_5280.AccessDescription(
                         accessMethod: RFC_5280.AccessDescription.ID.ocsp,
-                        accessLocation: .uniformResourceIdentifier(ISO_8824.IA5String("http://ocsp.example.com"))
+                        accessLocation: .uniformResourceIdentifier(ISO.`8824`.IA5String("http://ocsp.example.com"))
                     )
                 ]).makeExtension(),
             ]
@@ -198,6 +198,6 @@ extension `RFC_5280.TBSCertificate Tests`.Test.Integration {
         let san = try RFC_5280.SubjectAlternativeName(
             try #require(extensionsByID[RFC_5280.Extension.ID.subjectAlternativeName])
         )
-        #expect(san.names == [.dNSName(try ISO_8824.IA5String("ca.example.com"))])
+        #expect(san.names == [.dNSName(try ISO.`8824`.IA5String("ca.example.com"))])
     }
 }

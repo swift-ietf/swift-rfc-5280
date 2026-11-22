@@ -23,28 +23,28 @@ extension RFC_5280 {
     }
 }
 
-extension RFC_5280.SubjectAlternativeName: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.SubjectAlternativeName: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        let names = try ISO_8825.DER.sequence(
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        let names = try ISO.`8825`.DER.sequence(
             of: RFC_5280.GeneralName.self,
             identifier: identifier,
             rootNode: node
         )
         guard !names.isEmpty else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "GeneralNames is SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "GeneralNames is SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
         }
         self.names = names
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard !self.names.isEmpty else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "GeneralNames is SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "GeneralNames is SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
         }
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             for name in self.names {
                 try coder.serialize(name)
             }
@@ -54,14 +54,14 @@ extension RFC_5280.SubjectAlternativeName: ISO_8825.DER.ImplicitlyTaggable {
 
 extension RFC_5280.SubjectAlternativeName {
     /// `id-ce-subjectAltName` (§4.2.1.6).
-    public static var extensionID: ISO_8824.ObjectIdentifier {
+    public static var extensionID: ISO.`8824`.ObjectIdentifier {
         RFC_5280.Extension.ID.subjectAlternativeName
     }
 
     /// Decodes the typed value from a generic ``RFC_5280/Extension``.
-    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO_8824.Error) {
+    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO.`8824`.Error) {
         guard certificateExtension.extnID == Self.extensionID else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "Expected id-ce-subjectAltName, got \(certificateExtension.extnID)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "Expected id-ce-subjectAltName, got \(certificateExtension.extnID)")
         }
         self = try Self(derEncoded: certificateExtension.extnValue.bytes)
     }
@@ -71,13 +71,13 @@ extension RFC_5280.SubjectAlternativeName {
     /// §4.2.1.6 criticality law: SHOULD be non-critical, unless the
     /// certificate's subject is empty, in which case it MUST be critical —
     /// pass `critical: true` for empty-subject certificates.
-    public func makeExtension(critical: Bool = false) throws(ISO_8824.Error) -> RFC_5280.Extension {
-        var serializer = ISO_8825.DER.Serializer()
+    public func makeExtension(critical: Bool = false) throws(ISO.`8824`.Error) -> RFC_5280.Extension {
+        var serializer = ISO.`8825`.DER.Serializer()
         try serializer.serialize(self)
         return RFC_5280.Extension(
             extnID: Self.extensionID,
             critical: critical,
-            extnValue: ISO_8824.OctetString(contentBytes: serializer.serializedBytes[...])
+            extnValue: ISO.`8824`.OctetString(contentBytes: serializer.serializedBytes[...])
         )
     }
 }

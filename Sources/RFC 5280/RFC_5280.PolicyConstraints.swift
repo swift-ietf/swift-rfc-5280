@@ -33,50 +33,50 @@ extension RFC_5280 {
     }
 }
 
-extension RFC_5280.PolicyConstraints: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.PolicyConstraints: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let requireExplicitPolicy: Int? = try ISO_8825.DER.optionalImplicitlyTagged(
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let requireExplicitPolicy: Int? = try ISO.`8825`.DER.optionalImplicitlyTagged(
                 &nodes,
-                tag: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific)
+                tag: ISO.`8824`.Identifier(tagWithNumber: 0, tagClass: .contextSpecific)
             )
-            let inhibitPolicyMapping: Int? = try ISO_8825.DER.optionalImplicitlyTagged(
+            let inhibitPolicyMapping: Int? = try ISO.`8825`.DER.optionalImplicitlyTagged(
                 &nodes,
-                tag: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
+                tag: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
             )
             guard requireExplicitPolicy != nil || inhibitPolicyMapping != nil else {
-                throw ISO_8824.Error.invalidASN1Object(
+                throw ISO.`8824`.Error.invalidASN1Object(
                     reason: "PolicyConstraints must contain at least one of requireExplicitPolicy and inhibitPolicyMapping"
                 )
             }
             for skipCerts in [requireExplicitPolicy, inhibitPolicyMapping].compactMap({ $0 }) where skipCerts < 0 {
-                throw ISO_8824.Error.invalidASN1Object(reason: "SkipCerts is INTEGER (0..MAX); got \(skipCerts)")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "SkipCerts is INTEGER (0..MAX); got \(skipCerts)")
             }
             return Self(requireExplicitPolicy: requireExplicitPolicy, inhibitPolicyMapping: inhibitPolicyMapping)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard self.requireExplicitPolicy != nil || self.inhibitPolicyMapping != nil else {
-            throw ISO_8824.Error.invalidASN1Object(
+            throw ISO.`8824`.Error.invalidASN1Object(
                 reason: "PolicyConstraints must contain at least one of requireExplicitPolicy and inhibitPolicyMapping"
             )
         }
         for skipCerts in [self.requireExplicitPolicy, self.inhibitPolicyMapping].compactMap({ $0 }) where skipCerts < 0 {
-            throw ISO_8824.Error.invalidASN1Object(reason: "SkipCerts is INTEGER (0..MAX); got \(skipCerts)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "SkipCerts is INTEGER (0..MAX); got \(skipCerts)")
         }
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serializeOptionalImplicitlyTagged(
                 self.requireExplicitPolicy,
-                withIdentifier: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific)
+                withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 0, tagClass: .contextSpecific)
             )
             try coder.serializeOptionalImplicitlyTagged(
                 self.inhibitPolicyMapping,
-                withIdentifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
+                withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
             )
         }
     }
@@ -84,14 +84,14 @@ extension RFC_5280.PolicyConstraints: ISO_8825.DER.ImplicitlyTaggable {
 
 extension RFC_5280.PolicyConstraints {
     /// `id-ce-policyConstraints` (§4.2.1.11).
-    public static var extensionID: ISO_8824.ObjectIdentifier {
+    public static var extensionID: ISO.`8824`.ObjectIdentifier {
         RFC_5280.Extension.ID.policyConstraints
     }
 
     /// Decodes the typed value from a generic ``RFC_5280/Extension``.
-    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO_8824.Error) {
+    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO.`8824`.Error) {
         guard certificateExtension.extnID == Self.extensionID else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "Expected id-ce-policyConstraints, got \(certificateExtension.extnID)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "Expected id-ce-policyConstraints, got \(certificateExtension.extnID)")
         }
         self = try Self(derEncoded: certificateExtension.extnValue.bytes)
     }
@@ -100,13 +100,13 @@ extension RFC_5280.PolicyConstraints {
     ///
     /// §4.2.1.11 criticality law: conforming CAs MUST mark this extension
     /// critical, hence the default.
-    public func makeExtension(critical: Bool = true) throws(ISO_8824.Error) -> RFC_5280.Extension {
-        var serializer = ISO_8825.DER.Serializer()
+    public func makeExtension(critical: Bool = true) throws(ISO.`8824`.Error) -> RFC_5280.Extension {
+        var serializer = ISO.`8825`.DER.Serializer()
         try serializer.serialize(self)
         return RFC_5280.Extension(
             extnID: Self.extensionID,
             critical: critical,
-            extnValue: ISO_8824.OctetString(contentBytes: serializer.serializedBytes[...])
+            extnValue: ISO.`8824`.OctetString(contentBytes: serializer.serializedBytes[...])
         )
     }
 }

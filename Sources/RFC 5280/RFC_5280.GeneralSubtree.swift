@@ -35,47 +35,47 @@ extension RFC_5280.GeneralSubtree {
     }
 }
 
-extension RFC_5280.GeneralSubtree: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.GeneralSubtree: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
             let base = try RFC_5280.GeneralName(derEncoded: &nodes)
-            let minimum = try ISO_8825.DER.decodeDefault(
+            let minimum = try ISO.`8825`.DER.decodeDefault(
                 &nodes,
-                identifier: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific),
+                identifier: ISO.`8824`.Identifier(tagWithNumber: 0, tagClass: .contextSpecific),
                 defaultValue: 0
-            ) { (node: ISO_8825.Node) throws(ISO_8824.Error) -> Int in
-                try Int(derEncoded: node, withIdentifier: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific))
+            ) { (node: ISO.`8825`.Node) throws(ISO.`8824`.Error) -> Int in
+                try Int(derEncoded: node, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 0, tagClass: .contextSpecific))
             }
-            let maximum: Int? = try ISO_8825.DER.optionalImplicitlyTagged(
+            let maximum: Int? = try ISO.`8825`.DER.optionalImplicitlyTagged(
                 &nodes,
-                tag: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
+                tag: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
             )
             guard minimum >= 0, (maximum ?? 0) >= 0 else {
-                throw ISO_8824.Error.invalidASN1Object(reason: "BaseDistance is INTEGER (0..MAX); got a negative value")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "BaseDistance is INTEGER (0..MAX); got a negative value")
             }
             return Self(base: base, minimum: minimum, maximum: maximum)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard self.minimum >= 0, (self.maximum ?? 0) >= 0 else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "BaseDistance is INTEGER (0..MAX); got a negative value")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "BaseDistance is INTEGER (0..MAX); got a negative value")
         }
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serialize(self.base)
             if self.minimum != 0 {
                 try self.minimum.serialize(
                     into: &coder,
-                    withIdentifier: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific)
+                    withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 0, tagClass: .contextSpecific)
                 )
             }
             try coder.serializeOptionalImplicitlyTagged(
                 self.maximum,
-                withIdentifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
+                withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
             )
         }
     }

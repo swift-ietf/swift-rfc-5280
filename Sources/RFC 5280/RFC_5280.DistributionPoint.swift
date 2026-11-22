@@ -61,68 +61,68 @@ extension RFC_5280.DistributionPoint {
     }
 }
 
-extension RFC_5280.DistributionPoint: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.DistributionPoint: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let distributionPoint = try ISO_8825.DER.optionalExplicitlyTagged(
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let distributionPoint = try ISO.`8825`.DER.optionalExplicitlyTagged(
                 &nodes,
                 tagNumber: 0,
                 tagClass: .contextSpecific
-            ) { node throws(ISO_8824.Error) in
+            ) { node throws(ISO.`8824`.Error) in
                 try RFC_5280.DistributionPoint.Name(derEncoded: node)
             }
-            let reasons: RFC_5280.ReasonFlags? = try ISO_8825.DER.optionalImplicitlyTagged(
+            let reasons: RFC_5280.ReasonFlags? = try ISO.`8825`.DER.optionalImplicitlyTagged(
                 &nodes,
-                tag: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
+                tag: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
             )
-            let cRLIssuer = try ISO_8825.DER.optionalImplicitlyTagged(
+            let cRLIssuer = try ISO.`8825`.DER.optionalImplicitlyTagged(
                 &nodes,
                 tagNumber: 2,
                 tagClass: .contextSpecific
-            ) { (node: ISO_8825.Node) throws(ISO_8824.Error) -> [RFC_5280.GeneralName] in
-                try ISO_8825.DER.sequence(
+            ) { (node: ISO.`8825`.Node) throws(ISO.`8824`.Error) -> [RFC_5280.GeneralName] in
+                try ISO.`8825`.DER.sequence(
                     of: RFC_5280.GeneralName.self,
-                    identifier: ISO_8824.Identifier(tagWithNumber: 2, tagClass: .contextSpecific),
+                    identifier: ISO.`8824`.Identifier(tagWithNumber: 2, tagClass: .contextSpecific),
                     rootNode: node
                 )
             }
             guard distributionPoint != nil || cRLIssuer != nil else {
-                throw ISO_8824.Error.invalidASN1Object(
+                throw ISO.`8824`.Error.invalidASN1Object(
                     reason: "A DistributionPoint must contain distributionPoint or cRLIssuer; reasons alone is forbidden"
                 )
             }
             guard cRLIssuer.map({ !$0.isEmpty }) ?? true else {
-                throw ISO_8824.Error.invalidASN1Object(reason: "cRLIssuer is GeneralNames, SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "cRLIssuer is GeneralNames, SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
             }
             return Self(distributionPoint: distributionPoint, reasons: reasons, cRLIssuer: cRLIssuer)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard self.distributionPoint != nil || self.cRLIssuer != nil else {
-            throw ISO_8824.Error.invalidASN1Object(
+            throw ISO.`8824`.Error.invalidASN1Object(
                 reason: "A DistributionPoint must contain distributionPoint or cRLIssuer; reasons alone is forbidden"
             )
         }
         guard self.cRLIssuer.map({ !$0.isEmpty }) ?? true else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "cRLIssuer is GeneralNames, SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "cRLIssuer is GeneralNames, SEQUENCE SIZE (1..MAX) OF GeneralName; got an empty sequence")
         }
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             if let distributionPoint = self.distributionPoint {
                 try coder.serialize(distributionPoint, explicitlyTaggedWithTagNumber: 0, tagClass: .contextSpecific)
             }
             try coder.serializeOptionalImplicitlyTagged(
                 self.reasons,
-                withIdentifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
+                withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
             )
             if let cRLIssuer = self.cRLIssuer {
                 try coder.appendConstructedNode(
-                    identifier: ISO_8824.Identifier(tagWithNumber: 2, tagClass: .contextSpecific)
-                ) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+                    identifier: ISO.`8824`.Identifier(tagWithNumber: 2, tagClass: .contextSpecific)
+                ) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
                     for name in cRLIssuer {
                         try coder.serialize(name)
                     }

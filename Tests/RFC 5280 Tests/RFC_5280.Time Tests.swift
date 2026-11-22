@@ -120,7 +120,7 @@ extension `RFC_5280.Time Tests`.Test.`Edge Case` {
     @Test
     func `GeneralizedTime inside the UTCTime range is nonconformant`() throws {
         let time = RFC_5280.Time.generalTime(
-            try ISO_8824.GeneralizedTime(year: 2000, month: 1, day: 1, hours: 0, minutes: 0, seconds: 0, fractionalSeconds: 0)
+            try ISO.`8824`.GeneralizedTime(year: 2000, month: 1, day: 1, hours: 0, minutes: 0, seconds: 0, fractionalSeconds: 0)
         )
         #expect(!time.isRFC5280Conformant)
     }
@@ -128,7 +128,7 @@ extension `RFC_5280.Time Tests`.Test.`Edge Case` {
     @Test
     func `Rejects a non-time field`() {
         // An INTEGER node is neither UTCTime nor GeneralizedTime.
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.Time(derEncoded: [0x02, 0x01, 0x00])
         }
     }

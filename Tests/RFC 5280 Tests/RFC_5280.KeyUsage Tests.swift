@@ -88,7 +88,7 @@ extension `RFC_5280.KeyUsage Tests`.Test.`Edge Case` {
 
     @Test
     func `Rejects more than two content octets`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.KeyUsage(derEncoded: [0x03, 0x04, 0x00, 0x80, 0x00, 0x80])
         }
     }
@@ -97,7 +97,7 @@ extension `RFC_5280.KeyUsage Tests`.Test.`Edge Case` {
     @Test
     func `Bits beyond decipherOnly are refused on serialize as on parse`() {
         (9...15).forEach { bit in
-            #expect(throws: ISO_8824.Error.self, "bit \(bit)") {
+            #expect(throws: ISO.`8824`.Error.self, "bit \(bit)") {
                 _ = try derBytes(of: RFC_5280.KeyUsage(rawValue: 0x8000 >> UInt16(bit)))
             }
         }

@@ -24,74 +24,74 @@ extension RFC_5280 {
     /// scheme and be absolute.
     public enum GeneralName: Hashable, Sendable {
         case otherName(RFC_5280.OtherName)
-        case rfc822Name(ISO_8824.IA5String)
-        case dNSName(ISO_8824.IA5String)
-        case x400Address(ISO_8825.`Any`)
+        case rfc822Name(ISO.`8824`.IA5String)
+        case dNSName(ISO.`8824`.IA5String)
+        case x400Address(ISO.`8825`.`Any`)
         case directoryName(RFC_5280.Name)
         case ediPartyName(RFC_5280.EDIPartyName)
-        case uniformResourceIdentifier(ISO_8824.IA5String)
-        case iPAddress(ISO_8824.OctetString)
-        case registeredID(ISO_8824.ObjectIdentifier)
+        case uniformResourceIdentifier(ISO.`8824`.IA5String)
+        case iPAddress(ISO.`8824`.OctetString)
+        case registeredID(ISO.`8824`.ObjectIdentifier)
     }
 }
 
-extension RFC_5280.GeneralName: ISO_8825.DER.Parseable, ISO_8825.DER.Serializable {
-    public init(derEncoded node: ISO_8825.Node) throws(ISO_8824.Error) {
+extension RFC_5280.GeneralName: ISO.`8825`.DER.Parseable, ISO.`8825`.DER.Serializable {
+    public init(derEncoded node: ISO.`8825`.Node) throws(ISO.`8824`.Error) {
         guard node.identifier.tagClass == .contextSpecific else {
-            throw ISO_8824.Error.unexpectedFieldType(node.identifier)
+            throw ISO.`8824`.Error.unexpectedFieldType(node.identifier)
         }
 
         switch node.identifier.tagNumber {
         case 0:
             self = .otherName(try RFC_5280.OtherName(derEncoded: node, withIdentifier: node.identifier))
         case 1:
-            self = .rfc822Name(try ISO_8824.IA5String(derEncoded: node, withIdentifier: node.identifier))
+            self = .rfc822Name(try ISO.`8824`.IA5String(derEncoded: node, withIdentifier: node.identifier))
         case 2:
-            self = .dNSName(try ISO_8824.IA5String(derEncoded: node, withIdentifier: node.identifier))
+            self = .dNSName(try ISO.`8824`.IA5String(derEncoded: node, withIdentifier: node.identifier))
         case 3:
-            self = .x400Address(ISO_8825.`Any`(derEncoded: node))
+            self = .x400Address(ISO.`8825`.`Any`(derEncoded: node))
         case 4:
             guard case .constructed(let children) = node.content else {
-                throw ISO_8824.Error.invalidASN1Object(reason: "directoryName explicit tag must be constructed")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "directoryName explicit tag must be constructed")
             }
             var iterator = children.makeIterator()
             guard let child = iterator.next(), iterator.next() == nil else {
-                throw ISO_8824.Error.invalidASN1Object(reason: "directoryName explicit tag must wrap exactly one Name")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "directoryName explicit tag must wrap exactly one Name")
             }
             self = .directoryName(try RFC_5280.Name(derEncoded: child))
         case 5:
             self = .ediPartyName(try RFC_5280.EDIPartyName(derEncoded: node, withIdentifier: node.identifier))
         case 6:
-            self = .uniformResourceIdentifier(try ISO_8824.IA5String(derEncoded: node, withIdentifier: node.identifier))
+            self = .uniformResourceIdentifier(try ISO.`8824`.IA5String(derEncoded: node, withIdentifier: node.identifier))
         case 7:
-            self = .iPAddress(try ISO_8824.OctetString(derEncoded: node, withIdentifier: node.identifier))
+            self = .iPAddress(try ISO.`8824`.OctetString(derEncoded: node, withIdentifier: node.identifier))
         case 8:
-            self = .registeredID(try ISO_8824.ObjectIdentifier(derEncoded: node, withIdentifier: node.identifier))
+            self = .registeredID(try ISO.`8824`.ObjectIdentifier(derEncoded: node, withIdentifier: node.identifier))
         default:
-            throw ISO_8824.Error.unexpectedFieldType(node.identifier)
+            throw ISO.`8824`.Error.unexpectedFieldType(node.identifier)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) {
         switch self {
         case .otherName(let name):
-            try name.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific))
+            try name.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 0, tagClass: .contextSpecific))
         case .rfc822Name(let name):
-            try name.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific))
+            try name.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific))
         case .dNSName(let name):
-            try name.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 2, tagClass: .contextSpecific))
+            try name.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 2, tagClass: .contextSpecific))
         case .x400Address(let address):
             try coder.serialize(address)
         case .directoryName(let name):
             try coder.serialize(name, explicitlyTaggedWithTagNumber: 4, tagClass: .contextSpecific)
         case .ediPartyName(let name):
-            try name.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 5, tagClass: .contextSpecific))
+            try name.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 5, tagClass: .contextSpecific))
         case .uniformResourceIdentifier(let uri):
-            try uri.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 6, tagClass: .contextSpecific))
+            try uri.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 6, tagClass: .contextSpecific))
         case .iPAddress(let address):
-            try address.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 7, tagClass: .contextSpecific))
+            try address.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 7, tagClass: .contextSpecific))
         case .registeredID(let oid):
-            try oid.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 8, tagClass: .contextSpecific))
+            try oid.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 8, tagClass: .contextSpecific))
         }
     }
 }

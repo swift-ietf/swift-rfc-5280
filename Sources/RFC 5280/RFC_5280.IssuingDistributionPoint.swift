@@ -77,8 +77,8 @@ extension RFC_5280.IssuingDistributionPoint {
     }
 }
 
-extension RFC_5280.IssuingDistributionPoint: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.IssuingDistributionPoint: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
@@ -88,29 +88,29 @@ extension RFC_5280.IssuingDistributionPoint: ISO_8825.DER.ImplicitlyTaggable {
     /// context tag has to be threaded through the builder rather than left
     /// to the type's own `BOOLEAN` identifier.
     private static func decodeTaggedDefault(
-        _ nodes: inout ISO_8825.Node.Collection.Iterator,
+        _ nodes: inout ISO.`8825`.Node.Collection.Iterator,
         tagNumber: UInt
-    ) throws(ISO_8824.Error) -> Bool {
-        let tag = ISO_8824.Identifier(tagWithNumber: tagNumber, tagClass: .contextSpecific)
-        return try ISO_8825.DER.decodeDefault(&nodes, identifier: tag, defaultValue: false) { node throws(ISO_8824.Error) in
+    ) throws(ISO.`8824`.Error) -> Bool {
+        let tag = ISO.`8824`.Identifier(tagWithNumber: tagNumber, tagClass: .contextSpecific)
+        return try ISO.`8825`.DER.decodeDefault(&nodes, identifier: tag, defaultValue: false) { node throws(ISO.`8824`.Error) in
             try Bool(derEncoded: node, withIdentifier: tag)
         }
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let distributionPoint = try ISO_8825.DER.optionalExplicitlyTagged(
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let distributionPoint = try ISO.`8825`.DER.optionalExplicitlyTagged(
                 &nodes,
                 tagNumber: 0,
                 tagClass: .contextSpecific
-            ) { node throws(ISO_8824.Error) in
+            ) { node throws(ISO.`8824`.Error) in
                 try RFC_5280.DistributionPoint.Name(derEncoded: node)
             }
             let onlyContainsUserCerts = try Self.decodeTaggedDefault(&nodes, tagNumber: 1)
             let onlyContainsCACerts = try Self.decodeTaggedDefault(&nodes, tagNumber: 2)
-            let onlySomeReasons: RFC_5280.ReasonFlags? = try ISO_8825.DER.optionalImplicitlyTagged(
+            let onlySomeReasons: RFC_5280.ReasonFlags? = try ISO.`8825`.DER.optionalImplicitlyTagged(
                 &nodes,
-                tag: ISO_8824.Identifier(tagWithNumber: 3, tagClass: .contextSpecific)
+                tag: ISO.`8824`.Identifier(tagWithNumber: 3, tagClass: .contextSpecific)
             )
             let indirectCRL = try Self.decodeTaggedDefault(&nodes, tagNumber: 4)
             let onlyContainsAttributeCerts = try Self.decodeTaggedDefault(&nodes, tagNumber: 5)
@@ -125,26 +125,26 @@ extension RFC_5280.IssuingDistributionPoint: ISO_8825.DER.ImplicitlyTaggable {
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             if let distributionPoint = self.distributionPoint {
                 try coder.serialize(distributionPoint, explicitlyTaggedWithTagNumber: 0, tagClass: .contextSpecific)
             }
             if self.onlyContainsUserCerts {
-                try true.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific))
+                try true.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific))
             }
             if self.onlyContainsCACerts {
-                try true.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 2, tagClass: .contextSpecific))
+                try true.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 2, tagClass: .contextSpecific))
             }
             try coder.serializeOptionalImplicitlyTagged(
                 self.onlySomeReasons,
-                withIdentifier: ISO_8824.Identifier(tagWithNumber: 3, tagClass: .contextSpecific)
+                withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 3, tagClass: .contextSpecific)
             )
             if self.indirectCRL {
-                try true.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 4, tagClass: .contextSpecific))
+                try true.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 4, tagClass: .contextSpecific))
             }
             if self.onlyContainsAttributeCerts {
-                try true.serialize(into: &coder, withIdentifier: ISO_8824.Identifier(tagWithNumber: 5, tagClass: .contextSpecific))
+                try true.serialize(into: &coder, withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 5, tagClass: .contextSpecific))
             }
         }
     }
@@ -152,14 +152,14 @@ extension RFC_5280.IssuingDistributionPoint: ISO_8825.DER.ImplicitlyTaggable {
 
 extension RFC_5280.IssuingDistributionPoint {
     /// `id-ce-issuingDistributionPoint` (§5.2.5).
-    public static var extensionID: ISO_8824.ObjectIdentifier {
+    public static var extensionID: ISO.`8824`.ObjectIdentifier {
         RFC_5280.Extension.ID.issuingDistributionPoint
     }
 
     /// Decodes the typed value from a generic ``RFC_5280/Extension``.
-    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO_8824.Error) {
+    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO.`8824`.Error) {
         guard certificateExtension.extnID == Self.extensionID else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "Expected id-ce-issuingDistributionPoint, got \(certificateExtension.extnID)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "Expected id-ce-issuingDistributionPoint, got \(certificateExtension.extnID)")
         }
         self = try Self(derEncoded: certificateExtension.extnValue.bytes)
     }
@@ -168,13 +168,13 @@ extension RFC_5280.IssuingDistributionPoint {
     ///
     /// §5.2.5 criticality law: conforming CAs MUST mark this extension
     /// critical, hence the default.
-    public func makeExtension(critical: Bool = true) throws(ISO_8824.Error) -> RFC_5280.Extension {
-        var serializer = ISO_8825.DER.Serializer()
+    public func makeExtension(critical: Bool = true) throws(ISO.`8824`.Error) -> RFC_5280.Extension {
+        var serializer = ISO.`8825`.DER.Serializer()
         try serializer.serialize(self)
         return RFC_5280.Extension(
             extnID: Self.extensionID,
             critical: critical,
-            extnValue: ISO_8824.OctetString(contentBytes: serializer.serializedBytes[...])
+            extnValue: ISO.`8824`.OctetString(contentBytes: serializer.serializedBytes[...])
         )
     }
 }

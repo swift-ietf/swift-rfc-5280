@@ -18,34 +18,34 @@ extension RFC_5280 {
     /// for legacy RSA certificates is runtime policy, not wire law.
     public struct AlgorithmIdentifier: Hashable, Sendable {
         /// The OBJECT IDENTIFIER naming the algorithm.
-        public var algorithm: ISO_8824.ObjectIdentifier
+        public var algorithm: ISO.`8824`.ObjectIdentifier
 
         /// The `ANY DEFINED BY algorithm` parameters, exactly as encoded,
         /// or `nil` when the field is absent from the wire.
-        public var parameters: ISO_8825.`Any`?
+        public var parameters: ISO.`8825`.`Any`?
 
-        public init(algorithm: ISO_8824.ObjectIdentifier, parameters: ISO_8825.`Any`? = nil) {
+        public init(algorithm: ISO.`8824`.ObjectIdentifier, parameters: ISO.`8825`.`Any`? = nil) {
             self.algorithm = algorithm
             self.parameters = parameters
         }
     }
 }
 
-extension RFC_5280.AlgorithmIdentifier: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.AlgorithmIdentifier: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let algorithm = try ISO_8824.ObjectIdentifier(derEncoded: &nodes)
-            let parameters = nodes.next().map { ISO_8825.`Any`(derEncoded: $0) }
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let algorithm = try ISO.`8824`.ObjectIdentifier(derEncoded: &nodes)
+            let parameters = nodes.next().map { ISO.`8825`.`Any`(derEncoded: $0) }
             return Self(algorithm: algorithm, parameters: parameters)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serialize(self.algorithm)
             if let parameters = self.parameters {
                 try coder.serialize(parameters)

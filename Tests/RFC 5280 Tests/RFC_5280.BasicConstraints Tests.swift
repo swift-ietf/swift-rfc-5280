@@ -51,7 +51,7 @@ extension `RFC_5280.BasicConstraints Tests`.Test.`Edge Case` {
     // DER law: an encoded DEFAULT FALSE is invalid
     @Test
     func `Rejects an explicitly encoded cA FALSE`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.BasicConstraints(derEncoded: [0x30, 0x03, 0x01, 0x01, 0x00])
         }
     }
@@ -59,10 +59,10 @@ extension `RFC_5280.BasicConstraints Tests`.Test.`Edge Case` {
     // RFC 5280 §4.2.1.9: pathLenConstraint is INTEGER (0..MAX)
     @Test
     func `Rejects a negative pathLenConstraint`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.BasicConstraints(derEncoded: [0x30, 0x06, 0x01, 0x01, 0xff, 0x02, 0x01, 0xff])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.BasicConstraints(isCA: true, pathLenConstraint: -1))
         }
     }

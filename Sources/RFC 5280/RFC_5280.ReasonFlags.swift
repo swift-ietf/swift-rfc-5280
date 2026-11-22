@@ -96,42 +96,42 @@ extension RFC_5280.ReasonFlags {
     }
 }
 
-extension RFC_5280.ReasonFlags: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
-        ISO_8824.BitString.defaultIdentifier
+extension RFC_5280.ReasonFlags: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
+        ISO.`8824`.BitString.defaultIdentifier
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        let bits = try ISO_8824.BitString(derEncoded: node, withIdentifier: identifier)
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        let bits = try ISO.`8824`.BitString(derEncoded: node, withIdentifier: identifier)
         guard bits.bytes.count <= 2 else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "ReasonFlags defines named bits 0–8; got \(bits.bytes.count) content octets")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "ReasonFlags defines named bits 0–8; got \(bits.bytes.count) content octets")
         }
         var rawValue: UInt16 = 0
         for (offset, byte) in bits.bytes.enumerated() {
             rawValue |= UInt16(byte) << (8 * (1 - offset))
         }
         guard rawValue & 0x007F == 0 else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "ReasonFlags carries set bits beyond aACompromise(8)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "ReasonFlags carries set bits beyond aACompromise(8)")
         }
         self.rawValue = rawValue
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard self.rawValue & 0x007F == 0 else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "ReasonFlags carries set bits beyond aACompromise(8)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "ReasonFlags carries set bits beyond aACompromise(8)")
         }
-        let bits: ISO_8824.BitString
+        let bits: ISO.`8824`.BitString
         if self.rawValue == 0 {
-            bits = try ISO_8824.BitString(bytes: [], paddingBits: 0)
+            bits = try ISO.`8824`.BitString(bytes: [], paddingBits: 0)
         } else {
             let highestSetBit = 15 - self.rawValue.trailingZeroBitCount
             if highestSetBit <= 7 {
-                bits = try ISO_8824.BitString(
+                bits = try ISO.`8824`.BitString(
                     bytes: [UInt8(self.rawValue >> 8)],
                     paddingBits: 7 - highestSetBit
                 )
             } else {
-                bits = try ISO_8824.BitString(
+                bits = try ISO.`8824`.BitString(
                     bytes: [UInt8(self.rawValue >> 8), UInt8(truncatingIfNeeded: self.rawValue)],
                     paddingBits: 15 - highestSetBit
                 )

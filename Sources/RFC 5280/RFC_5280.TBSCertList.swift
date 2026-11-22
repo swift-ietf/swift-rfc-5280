@@ -88,14 +88,14 @@ extension RFC_5280.TBSCertList {
     }
 }
 
-extension RFC_5280.TBSCertList: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.TBSCertList: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let rawVersion: Int? = try ISO_8825.DER.optionalImplicitlyTagged(&nodes, tag: .integer)
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let rawVersion: Int? = try ISO.`8825`.DER.optionalImplicitlyTagged(&nodes, tag: .integer)
             let signature = try RFC_5280.AlgorithmIdentifier(derEncoded: &nodes)
             let issuer = try RFC_5280.Name(derEncoded: &nodes)
             let thisUpdate = try RFC_5280.Time(derEncoded: &nodes)
@@ -106,34 +106,34 @@ extension RFC_5280.TBSCertList: ISO_8825.DER.ImplicitlyTaggable {
 
             while let child = nodes.next() {
                 switch child.identifier {
-                case ISO_8824.UTCTime.defaultIdentifier, ISO_8824.GeneralizedTime.defaultIdentifier:
+                case ISO.`8824`.UTCTime.defaultIdentifier, ISO.`8824`.GeneralizedTime.defaultIdentifier:
                     nextUpdate = try RFC_5280.Time(derEncoded: child)
-                case ISO_8824.Identifier.sequence:
-                    revokedCertificates = try ISO_8825.DER.sequence(
+                case ISO.`8824`.Identifier.sequence:
+                    revokedCertificates = try ISO.`8825`.DER.sequence(
                         of: RFC_5280.TBSCertList.RevokedCertificate.self,
                         identifier: .sequence,
                         rootNode: child
                     )
-                case ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific):
+                case ISO.`8824`.Identifier(tagWithNumber: 0, tagClass: .contextSpecific):
                     guard case .constructed(let children) = child.content else {
-                        throw ISO_8824.Error.invalidASN1Object(reason: "crlExtensions explicit tag must be constructed")
+                        throw ISO.`8824`.Error.invalidASN1Object(reason: "crlExtensions explicit tag must be constructed")
                     }
                     var wrapped = children.makeIterator()
                     guard let extensionsNode = wrapped.next(), wrapped.next() == nil else {
-                        throw ISO_8824.Error.invalidASN1Object(reason: "crlExtensions explicit tag must wrap exactly one Extensions")
+                        throw ISO.`8824`.Error.invalidASN1Object(reason: "crlExtensions explicit tag must wrap exactly one Extensions")
                     }
-                    crlExtensions = try ISO_8825.DER.sequence(
+                    crlExtensions = try ISO.`8825`.DER.sequence(
                         of: RFC_5280.Extension.self,
                         identifier: .sequence,
                         rootNode: extensionsNode
                     )
                     guard !crlExtensions.isEmpty else {
-                        throw ISO_8824.Error.invalidASN1Object(
+                        throw ISO.`8824`.Error.invalidASN1Object(
                             reason: "Extensions is SEQUENCE SIZE (1..MAX); an empty list must be encoded as an absent field"
                         )
                     }
                 default:
-                    throw ISO_8824.Error.unexpectedFieldType(child.identifier)
+                    throw ISO.`8824`.Error.unexpectedFieldType(child.identifier)
                 }
             }
 
@@ -149,8 +149,8 @@ extension RFC_5280.TBSCertList: ISO_8825.DER.ImplicitlyTaggable {
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             if let version = self.version {
                 try coder.serialize(version.rawValue)
             }
@@ -161,15 +161,15 @@ extension RFC_5280.TBSCertList: ISO_8825.DER.ImplicitlyTaggable {
                 try coder.serialize(nextUpdate)
             }
             if !self.revokedCertificates.isEmpty {
-                try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+                try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
                     for revoked in self.revokedCertificates {
                         try coder.serialize(revoked)
                     }
                 }
             }
             if !self.crlExtensions.isEmpty {
-                try coder.serialize(explicitlyTaggedWithTagNumber: 0, tagClass: .contextSpecific) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
-                    try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+                try coder.serialize(explicitlyTaggedWithTagNumber: 0, tagClass: .contextSpecific) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
+                    try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
                         for crlExtension in self.crlExtensions {
                             try coder.serialize(crlExtension)
                         }

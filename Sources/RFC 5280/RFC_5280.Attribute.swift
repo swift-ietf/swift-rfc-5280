@@ -18,7 +18,7 @@ extension RFC_5280 {
     /// at length.
     public struct Attribute: Sendable {
         /// The attribute type OBJECT IDENTIFIER.
-        public var type: ISO_8824.ObjectIdentifier
+        public var type: ISO.`8824`.ObjectIdentifier
 
         /// The attribute values, exactly as encoded, in parsed wire order.
         ///
@@ -26,9 +26,9 @@ extension RFC_5280 {
         /// of their encoded byte value; serialization applies that ordering
         /// regardless of the order given here, so a parsed value carries the
         /// canonical order rather than the order originally supplied.
-        public var values: [ISO_8825.`Any`]
+        public var values: [ISO.`8825`.`Any`]
 
-        public init(type: ISO_8824.ObjectIdentifier, values: [ISO_8825.`Any`]) {
+        public init(type: ISO.`8824`.ObjectIdentifier, values: [ISO.`8825`.`Any`]) {
             self.type = type
             self.values = values
         }
@@ -40,7 +40,7 @@ extension RFC_5280.Attribute: Hashable {
     /// `SET OF` is unordered on the wire.
     public static func == (lhs: Self, rhs: Self) -> Bool {
         guard lhs.type == rhs.type, lhs.values.count == rhs.values.count else { return false }
-        var remaining: [ISO_8825.`Any`: Int] = [:]
+        var remaining: [ISO.`8825`.`Any`: Int] = [:]
         for value in lhs.values {
             remaining[value, default: 0] += 1
         }
@@ -67,19 +67,19 @@ extension RFC_5280.Attribute: Hashable {
     }
 }
 
-extension RFC_5280.Attribute: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.Attribute: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let type = try ISO_8824.ObjectIdentifier(derEncoded: &nodes)
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let type = try ISO.`8824`.ObjectIdentifier(derEncoded: &nodes)
             guard let valuesNode = nodes.next() else {
-                throw ISO_8824.Error.invalidASN1Object(reason: "Attribute is missing its values")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "Attribute is missing its values")
             }
-            let values = try ISO_8825.DER.set(
-                of: ISO_8825.`Any`.self,
+            let values = try ISO.`8825`.DER.set(
+                of: ISO.`8825`.`Any`.self,
                 identifier: .set,
                 rootNode: valuesNode
             )
@@ -87,8 +87,8 @@ extension RFC_5280.Attribute: ISO_8825.DER.ImplicitlyTaggable {
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serialize(self.type)
             try coder.serializeSetOf(self.values, identifier: .set)
         }

@@ -25,7 +25,7 @@ extension `RFC_5280.NameConstraints Tests`.Test.Unit {
     func `Serializes a permitted dNSName subtree to the known DER bytes`() throws {
         let constraints = RFC_5280.NameConstraints(
             permittedSubtrees: [
-                RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("example.com")))
+                RFC_5280.GeneralSubtree(base: .dNSName(ISO.`8824`.IA5String("example.com")))
             ]
         )
         let fixture: [UInt8] = [
@@ -43,11 +43,11 @@ extension `RFC_5280.NameConstraints Tests`.Test.Unit {
     func `Round-trips permitted and excluded subtrees together`() throws {
         let constraints = RFC_5280.NameConstraints(
             permittedSubtrees: [
-                RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("example.com"))),
-                RFC_5280.GeneralSubtree(base: .iPAddress(ISO_8824.OctetString(contentBytes: [10, 0, 0, 0, 255, 0, 0, 0]))),
+                RFC_5280.GeneralSubtree(base: .dNSName(ISO.`8824`.IA5String("example.com"))),
+                RFC_5280.GeneralSubtree(base: .iPAddress(ISO.`8824`.OctetString(contentBytes: [10, 0, 0, 0, 255, 0, 0, 0]))),
             ],
             excludedSubtrees: [
-                RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("forbidden.example.com")))
+                RFC_5280.GeneralSubtree(base: .dNSName(ISO.`8824`.IA5String("forbidden.example.com")))
             ]
         )
         #expect(try roundTrips(constraints))
@@ -55,7 +55,7 @@ extension `RFC_5280.NameConstraints Tests`.Test.Unit {
 
     @Test
     func `Subtrees with default minimum and absent maximum are conformant`() throws {
-        let subtree = RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("example.com")))
+        let subtree = RFC_5280.GeneralSubtree(base: .dNSName(ISO.`8824`.IA5String("example.com")))
         #expect(subtree.isRFC5280Conformant)
         #expect(!RFC_5280.GeneralSubtree(base: subtree.base, minimum: 1).isRFC5280Conformant)
         #expect(!RFC_5280.GeneralSubtree(base: subtree.base, maximum: 2).isRFC5280Conformant)
@@ -69,10 +69,10 @@ extension `RFC_5280.NameConstraints Tests`.Test.`Edge Case` {
     // RFC 5280 §4.2.1.10: the extension must not be an empty sequence
     @Test
     func `An empty NameConstraints is rejected at the wire boundary`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.NameConstraints(derEncoded: [0x30, 0x00])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.NameConstraints())
         }
     }
@@ -80,14 +80,14 @@ extension `RFC_5280.NameConstraints Tests`.Test.`Edge Case` {
     // RFC 5280 §4.2.1.10: GeneralSubtrees is SEQUENCE SIZE (1..MAX)
     @Test
     func `An empty subtree list is refused on serialize as on parse`() {
-        let subtree = RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("example.com")))
-        #expect(throws: ISO_8824.Error.self) {
+        let subtree = RFC_5280.GeneralSubtree(base: .dNSName(ISO.`8824`.IA5String("example.com")))
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.NameConstraints(permittedSubtrees: []))
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.NameConstraints(permittedSubtrees: [subtree], excludedSubtrees: []))
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.NameConstraints(derEncoded: [0x30, 0x02, 0xa0, 0x00])
         }
     }
@@ -97,7 +97,7 @@ extension `RFC_5280.NameConstraints Tests`.Test.`Edge Case` {
     func `Non-default base distances round-trip`() throws {
         let constraints = RFC_5280.NameConstraints(
             excludedSubtrees: [
-                RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("example.com")), minimum: 1, maximum: 4)
+                RFC_5280.GeneralSubtree(base: .dNSName(ISO.`8824`.IA5String("example.com")), minimum: 1, maximum: 4)
             ]
         )
         #expect(try roundTrips(constraints))
@@ -106,17 +106,17 @@ extension `RFC_5280.NameConstraints Tests`.Test.`Edge Case` {
     // RFC 5280 §4.2.1.10: BaseDistance is INTEGER (0..MAX)
     @Test
     func `A negative base distance is refused on parse and serialize`() {
-        let base = RFC_5280.GeneralName.dNSName(ISO_8824.IA5String("a"))
-        #expect(throws: ISO_8824.Error.self) {
+        let base = RFC_5280.GeneralName.dNSName(ISO.`8824`.IA5String("a"))
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.GeneralSubtree(base: base, minimum: -1))
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.GeneralSubtree(base: base, maximum: -1))
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.GeneralSubtree(derEncoded: [0x30, 0x06, 0x82, 0x01, 0x61, 0x80, 0x01, 0xff])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.GeneralSubtree(derEncoded: [0x30, 0x06, 0x82, 0x01, 0x61, 0x81, 0x01, 0xff])
         }
     }
@@ -127,7 +127,7 @@ extension `RFC_5280.NameConstraints Tests`.Test.`Edge Case` {
     func `The aggregate predicate reports non-conformant subtrees`() throws {
         let conformant = RFC_5280.NameConstraints(
             permittedSubtrees: [
-                RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("example.com")))
+                RFC_5280.GeneralSubtree(base: .dNSName(ISO.`8824`.IA5String("example.com")))
             ]
         )
         #expect(conformant.isRFC5280Conformant)
@@ -135,7 +135,7 @@ extension `RFC_5280.NameConstraints Tests`.Test.`Edge Case` {
         let nonDefaultMinimum = RFC_5280.NameConstraints(
             excludedSubtrees: [
                 RFC_5280.GeneralSubtree(
-                    base: .dNSName(ISO_8824.IA5String("example.com")),
+                    base: .dNSName(ISO.`8824`.IA5String("example.com")),
                     minimum: 1
                 )
             ]
@@ -145,7 +145,7 @@ extension `RFC_5280.NameConstraints Tests`.Test.`Edge Case` {
         let presentMaximum = RFC_5280.NameConstraints(
             permittedSubtrees: [
                 RFC_5280.GeneralSubtree(
-                    base: .dNSName(ISO_8824.IA5String("example.com")),
+                    base: .dNSName(ISO.`8824`.IA5String("example.com")),
                     maximum: 4
                 )
             ]
@@ -157,7 +157,7 @@ extension `RFC_5280.NameConstraints Tests`.Test.`Edge Case` {
     @Test
     func `The extension bridge defaults to critical`() throws {
         let constraints = RFC_5280.NameConstraints(
-            permittedSubtrees: [RFC_5280.GeneralSubtree(base: .dNSName(ISO_8824.IA5String("example.com")))]
+            permittedSubtrees: [RFC_5280.GeneralSubtree(base: .dNSName(ISO.`8824`.IA5String("example.com")))]
         )
         let certificateExtension = try constraints.makeExtension()
         #expect(certificateExtension.critical)

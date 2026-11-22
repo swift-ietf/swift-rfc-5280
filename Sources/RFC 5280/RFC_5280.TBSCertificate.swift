@@ -28,8 +28,8 @@ extension RFC_5280 {
         public var validity: RFC_5280.Validity
         public var subject: RFC_5280.Name
         public var subjectPublicKeyInfo: RFC_5280.SubjectPublicKeyInfo
-        public var issuerUniqueID: ISO_8824.BitString?
-        public var subjectUniqueID: ISO_8824.BitString?
+        public var issuerUniqueID: ISO.`8824`.BitString?
+        public var subjectUniqueID: ISO.`8824`.BitString?
         public var extensions: [RFC_5280.Extension]
 
         public init(
@@ -40,8 +40,8 @@ extension RFC_5280 {
             validity: RFC_5280.Validity,
             subject: RFC_5280.Name,
             subjectPublicKeyInfo: RFC_5280.SubjectPublicKeyInfo,
-            issuerUniqueID: ISO_8824.BitString? = nil,
-            subjectUniqueID: ISO_8824.BitString? = nil,
+            issuerUniqueID: ISO.`8824`.BitString? = nil,
+            subjectUniqueID: ISO.`8824`.BitString? = nil,
             extensions: [RFC_5280.Extension] = []
         ) {
             self.version = version
@@ -73,14 +73,14 @@ extension RFC_5280.TBSCertificate {
     }
 }
 
-extension RFC_5280.TBSCertificate: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.TBSCertificate: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let rawVersion = try ISO_8825.DER.decodeDefaultExplicitlyTagged(
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let rawVersion = try ISO.`8825`.DER.decodeDefaultExplicitlyTagged(
                 &nodes,
                 tagNumber: 0,
                 tagClass: .contextSpecific,
@@ -92,18 +92,18 @@ extension RFC_5280.TBSCertificate: ISO_8825.DER.ImplicitlyTaggable {
             let validity = try RFC_5280.Validity(derEncoded: &nodes)
             let subject = try RFC_5280.Name(derEncoded: &nodes)
             let subjectPublicKeyInfo = try RFC_5280.SubjectPublicKeyInfo(derEncoded: &nodes)
-            let issuerUniqueID: ISO_8824.BitString? = try ISO_8825.DER.optionalImplicitlyTagged(
+            let issuerUniqueID: ISO.`8824`.BitString? = try ISO.`8825`.DER.optionalImplicitlyTagged(
                 &nodes,
-                tag: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
+                tag: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
             )
-            let subjectUniqueID: ISO_8824.BitString? = try ISO_8825.DER.optionalImplicitlyTagged(
+            let subjectUniqueID: ISO.`8824`.BitString? = try ISO.`8825`.DER.optionalImplicitlyTagged(
                 &nodes,
-                tag: ISO_8824.Identifier(tagWithNumber: 2, tagClass: .contextSpecific)
+                tag: ISO.`8824`.Identifier(tagWithNumber: 2, tagClass: .contextSpecific)
             )
-            let extensions = try ISO_8825.DER.optionalExplicitlyTagged(&nodes, tagNumber: 3, tagClass: .contextSpecific) { node throws(ISO_8824.Error) in
-                let extensions = try ISO_8825.DER.sequence(of: RFC_5280.Extension.self, identifier: .sequence, rootNode: node)
+            let extensions = try ISO.`8825`.DER.optionalExplicitlyTagged(&nodes, tagNumber: 3, tagClass: .contextSpecific) { node throws(ISO.`8824`.Error) in
+                let extensions = try ISO.`8825`.DER.sequence(of: RFC_5280.Extension.self, identifier: .sequence, rootNode: node)
                 guard !extensions.isEmpty else {
-                    throw ISO_8824.Error.invalidASN1Object(reason: "Extensions is SEQUENCE SIZE (1..MAX); an empty list must be encoded as an absent field")
+                    throw ISO.`8824`.Error.invalidASN1Object(reason: "Extensions is SEQUENCE SIZE (1..MAX); an empty list must be encoded as an absent field")
                 }
                 return extensions
             }
@@ -122,8 +122,8 @@ extension RFC_5280.TBSCertificate: ISO_8825.DER.ImplicitlyTaggable {
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             if self.version != .v1 {
                 try coder.serialize(self.version.rawValue, explicitlyTaggedWithTagNumber: 0, tagClass: .contextSpecific)
             }
@@ -135,15 +135,15 @@ extension RFC_5280.TBSCertificate: ISO_8825.DER.ImplicitlyTaggable {
             try coder.serialize(self.subjectPublicKeyInfo)
             try coder.serializeOptionalImplicitlyTagged(
                 self.issuerUniqueID,
-                withIdentifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
+                withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)
             )
             try coder.serializeOptionalImplicitlyTagged(
                 self.subjectUniqueID,
-                withIdentifier: ISO_8824.Identifier(tagWithNumber: 2, tagClass: .contextSpecific)
+                withIdentifier: ISO.`8824`.Identifier(tagWithNumber: 2, tagClass: .contextSpecific)
             )
             if !self.extensions.isEmpty {
-                try coder.serialize(explicitlyTaggedWithTagNumber: 3, tagClass: .contextSpecific) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
-                    try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+                try coder.serialize(explicitlyTaggedWithTagNumber: 3, tagClass: .contextSpecific) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
+                    try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
                         for `extension` in self.extensions {
                             try coder.serialize(`extension`)
                         }

@@ -17,8 +17,8 @@ extension `RFC_5280.CertificatePolicies Tests` {
 }
 
 // A policy OID from the example arc used throughout RFC 5280's own text.
-private let examplePolicy: ISO_8824.ObjectIdentifier = [2, 16, 840, 1, 101, 3, 2, 1, 48, 1]
-private let otherPolicy: ISO_8824.ObjectIdentifier = [2, 16, 840, 1, 101, 3, 2, 1, 48, 2]
+private let examplePolicy: ISO.`8824`.ObjectIdentifier = [2, 16, 840, 1, 101, 3, 2, 1, 48, 1]
+private let otherPolicy: ISO.`8824`.ObjectIdentifier = [2, 16, 840, 1, 101, 3, 2, 1, 48, 2]
 
 // MARK: - Unit Tests
 
@@ -41,7 +41,7 @@ extension `RFC_5280.CertificatePolicies Tests`.Test.Unit {
                 policyQualifiers: [
                     RFC_5280.PolicyQualifierInfo(
                         policyQualifierID: RFC_5280.PolicyQualifierInfo.ID.cps,
-                        qualifier: try ISO_8825.`Any`(erasing: ISO_8824.IA5String("https://example.com/cps"))
+                        qualifier: try ISO.`8825`.`Any`(erasing: ISO.`8824`.IA5String("https://example.com/cps"))
                     )
                 ]
             )
@@ -50,19 +50,19 @@ extension `RFC_5280.CertificatePolicies Tests`.Test.Unit {
 
         let qualifier = try #require(policies.policies.first?.policyQualifiers?.first)
         #expect(qualifier.isRFC5280Conformant)
-        #expect(try qualifier.cpsURI() == (try ISO_8824.IA5String("https://example.com/cps")))
+        #expect(try qualifier.cpsURI() == (try ISO.`8824`.IA5String("https://example.com/cps")))
     }
 
     @Test
     func `A user-notice qualifier round-trips`() throws {
-        let notice = RFC_5280.UserNotice(explicitText: .utf8String(ISO_8824.UTF8String("Example notice")))
+        let notice = RFC_5280.UserNotice(explicitText: .utf8String(ISO.`8824`.UTF8String("Example notice")))
         let policies = RFC_5280.CertificatePolicies([
             RFC_5280.PolicyInformation(
                 policyIdentifier: examplePolicy,
                 policyQualifiers: [
                     RFC_5280.PolicyQualifierInfo(
                         policyQualifierID: RFC_5280.PolicyQualifierInfo.ID.unotice,
-                        qualifier: try ISO_8825.`Any`(erasing: notice)
+                        qualifier: try ISO.`8825`.`Any`(erasing: notice)
                     )
                 ]
             )
@@ -109,10 +109,10 @@ extension `RFC_5280.CertificatePolicies Tests`.Test.`Edge Case` {
     // §4.2.1.4: SEQUENCE SIZE (1..MAX)
     @Test
     func `An empty policy sequence is rejected`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.CertificatePolicies(derEncoded: [0x30, 0x00])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.CertificatePolicies([]))
         }
     }
@@ -123,7 +123,7 @@ extension `RFC_5280.CertificatePolicies Tests`.Test.`Edge Case` {
         let policies = RFC_5280.CertificatePolicies([
             RFC_5280.PolicyInformation(policyIdentifier: examplePolicy, policyQualifiers: [])
         ])
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: policies)
         }
     }
@@ -165,7 +165,7 @@ extension `RFC_5280.CertificatePolicies Tests`.Test.`Edge Case` {
                 policyQualifiers: [
                     RFC_5280.PolicyQualifierInfo(
                         policyQualifierID: [1, 3, 6, 1, 4, 1, 99999, 7],
-                        qualifier: try ISO_8825.`Any`(erasing: ISO_8824.UTF8String("opaque"))
+                        qualifier: try ISO.`8825`.`Any`(erasing: ISO.`8824`.UTF8String("opaque"))
                     )
                 ]
             )
@@ -179,7 +179,7 @@ extension `RFC_5280.CertificatePolicies Tests`.Test.`Edge Case` {
     func `An unknown qualifier type is preserved but flagged`() throws {
         let qualifier = RFC_5280.PolicyQualifierInfo(
             policyQualifierID: [1, 3, 6, 1, 4, 1, 99999, 7],
-            qualifier: try ISO_8825.`Any`(erasing: ISO_8824.UTF8String("opaque"))
+            qualifier: try ISO.`8825`.`Any`(erasing: ISO.`8824`.UTF8String("opaque"))
         )
         #expect(!qualifier.isRFC5280Conformant)
         let policies = RFC_5280.CertificatePolicies([

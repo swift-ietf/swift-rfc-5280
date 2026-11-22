@@ -69,7 +69,7 @@ extension `RFC_5280.DirectoryString Tests`.Test.Unit {
 
     @Test
     func `Rejects a non-DirectoryString field`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             // IA5String is not a DirectoryString arm.
             _ = try RFC_5280.DirectoryString(derEncoded: [0x16, 0x01, 0x41])
         }
@@ -77,7 +77,7 @@ extension `RFC_5280.DirectoryString Tests`.Test.Unit {
 
     @Test
     func `Round-trips`() throws {
-        #expect(try roundTrips(RFC_5280.DirectoryString.utf8String(ISO_8824.UTF8String("Zürich"))))
-        #expect(try roundTrips(RFC_5280.DirectoryString.printableString(try ISO_8824.PrintableString("Zurich"))))
+        #expect(try roundTrips(RFC_5280.DirectoryString.utf8String(ISO.`8824`.UTF8String("Zürich"))))
+        #expect(try roundTrips(RFC_5280.DirectoryString.printableString(try ISO.`8824`.PrintableString("Zurich"))))
     }
 }

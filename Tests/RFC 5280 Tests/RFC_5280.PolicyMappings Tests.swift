@@ -16,8 +16,8 @@ extension `RFC_5280.PolicyMappings Tests` {
     }
 }
 
-private let issuerPolicy: ISO_8824.ObjectIdentifier = [2, 16, 840, 1, 101, 3, 2, 1, 48, 1]
-private let subjectPolicy: ISO_8824.ObjectIdentifier = [2, 16, 840, 1, 101, 3, 2, 1, 48, 2]
+private let issuerPolicy: ISO.`8824`.ObjectIdentifier = [2, 16, 840, 1, 101, 3, 2, 1, 48, 1]
+private let subjectPolicy: ISO.`8824`.ObjectIdentifier = [2, 16, 840, 1, 101, 3, 2, 1, 48, 2]
 
 // MARK: - Unit Tests
 
@@ -71,10 +71,10 @@ extension `RFC_5280.PolicyMappings Tests`.Test.`Edge Case` {
     // §4.2.1.5: SEQUENCE SIZE (1..MAX)
     @Test
     func `An empty mapping sequence is rejected`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.PolicyMappings(derEncoded: [0x30, 0x00])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.PolicyMappings([]))
         }
     }
@@ -109,10 +109,10 @@ extension `RFC_5280.PolicyMappings Tests`.Test.`Edge Case` {
     // SkipCerts ::= INTEGER (0..MAX)
     @Test
     func `A negative InhibitAnyPolicy is rejected`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.InhibitAnyPolicy(skipCerts: -1))
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.InhibitAnyPolicy(derEncoded: [0x02, 0x01, 0xFF])
         }
     }

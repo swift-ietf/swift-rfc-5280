@@ -71,26 +71,26 @@ extension RFC_5280.RelativeDistinguishedName: Hashable {
     }
 }
 
-extension RFC_5280.RelativeDistinguishedName: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.RelativeDistinguishedName: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .set
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        let attributes = try ISO_8825.DER.set(
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        let attributes = try ISO.`8825`.DER.set(
             of: RFC_5280.AttributeTypeAndValue.self,
             identifier: identifier,
             rootNode: node
         )
         guard !attributes.isEmpty else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "RelativeDistinguishedName must contain at least one attribute")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "RelativeDistinguishedName must contain at least one attribute")
         }
         self.attributes = attributes
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard !self.attributes.isEmpty else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "RelativeDistinguishedName must contain at least one attribute")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "RelativeDistinguishedName must contain at least one attribute")
         }
         try coder.serializeSetOf(self.attributes, identifier: identifier)
     }

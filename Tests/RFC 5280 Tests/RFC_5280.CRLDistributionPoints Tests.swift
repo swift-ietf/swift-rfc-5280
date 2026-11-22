@@ -29,7 +29,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
         let points = RFC_5280.CRLDistributionPoints([
             RFC_5280.DistributionPoint(
                 distributionPoint: .fullName([
-                    .uniformResourceIdentifier(ISO_8824.IA5String("http://a.com/c"))
+                    .uniformResourceIdentifier(ISO.`8824`.IA5String("http://a.com/c"))
                 ])
             )
         ])
@@ -49,8 +49,8 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
     func `A nameRelativeToCRLIssuer distribution point round-trips`() throws {
         let rdn = RFC_5280.RelativeDistinguishedName([
             RFC_5280.AttributeTypeAndValue(
-                type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("CRL1"))
+                type: ISO.`8824`.ObjectIdentifier.NameAttributes.commonName,
+                value: try ISO.`8825`.`Any`(erasing: ISO.`8824`.PrintableString("CRL1"))
             )
         ])
         let points = RFC_5280.CRLDistributionPoints([
@@ -68,10 +68,10 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
         let points = RFC_5280.CRLDistributionPoints([
             RFC_5280.DistributionPoint(
                 distributionPoint: .fullName([
-                    .uniformResourceIdentifier(ISO_8824.IA5String("http://example.com/crl"))
+                    .uniformResourceIdentifier(ISO.`8824`.IA5String("http://example.com/crl"))
                 ]),
                 reasons: reasons,
-                cRLIssuer: [.dNSName(ISO_8824.IA5String("crl.example.com"))]
+                cRLIssuer: [.dNSName(ISO.`8824`.IA5String("crl.example.com"))]
             )
         ])
         #expect(try roundTrips(points))
@@ -89,7 +89,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
         let points = RFC_5280.CRLDistributionPoints([
             RFC_5280.DistributionPoint(
                 distributionPoint: .fullName([
-                    .uniformResourceIdentifier(ISO_8824.IA5String("http://example.com/crl"))
+                    .uniformResourceIdentifier(ISO.`8824`.IA5String("http://example.com/crl"))
                 ])
             )
         ])
@@ -105,7 +105,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.Unit {
         let freshest = RFC_5280.FreshestCRL([
             RFC_5280.DistributionPoint(
                 distributionPoint: .fullName([
-                    .uniformResourceIdentifier(ISO_8824.IA5String("http://example.com/delta"))
+                    .uniformResourceIdentifier(ISO.`8824`.IA5String("http://example.com/delta"))
                 ])
             )
         ])
@@ -124,10 +124,10 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
     // §4.2.1.13: SEQUENCE SIZE (1..MAX)
     @Test
     func `An empty distribution point sequence is rejected`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.CRLDistributionPoints(derEncoded: [0x30, 0x00])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.CRLDistributionPoints([]))
         }
     }
@@ -137,7 +137,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
     func `A reasons-only distribution point is rejected`() {
         var reasons = RFC_5280.ReasonFlags()
         reasons.superseded = true
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.DistributionPoint(reasons: reasons))
         }
     }
@@ -145,7 +145,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
     // ReasonFlags named bits stop at aACompromise(8)
     @Test
     func `ReasonFlags rejects bits beyond aACompromise`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             // BIT STRING with 0 padding bits and a set bit at position 9.
             _ = try RFC_5280.ReasonFlags(derEncoded: [0x03, 0x03, 0x00, 0x00, 0x40])
         }
@@ -154,7 +154,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
     @Test
     func `ReasonFlags refuses bits beyond aACompromise on serialize`() {
         (9...15).forEach { bit in
-            #expect(throws: ISO_8824.Error.self, "bit \(bit)") {
+            #expect(throws: ISO.`8824`.Error.self, "bit \(bit)") {
                 _ = try derBytes(of: RFC_5280.ReasonFlags(rawValue: 0x8000 >> UInt16(bit)))
             }
         }
@@ -169,7 +169,7 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
 
     @Test
     func `A distribution point name must carry a context tag`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             // A bare SEQUENCE is not a DistributionPointName.
             _ = try RFC_5280.DistributionPoint.Name(derEncoded: [0x30, 0x00])
         }
@@ -185,14 +185,14 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
             RFC_5280.Name([
                 RFC_5280.RelativeDistinguishedName([
                     RFC_5280.AttributeTypeAndValue(
-                        type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                        value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Issuer"))
+                        type: ISO.`8824`.ObjectIdentifier.NameAttributes.commonName,
+                        value: try ISO.`8825`.`Any`(erasing: ISO.`8824`.PrintableString("Issuer"))
                     )
                 ])
             ])
         )
         let uri = RFC_5280.GeneralName.uniformResourceIdentifier(
-            ISO_8824.IA5String("http://example.com/crl")
+            ISO.`8824`.IA5String("http://example.com/crl")
         )
 
         let conformant = RFC_5280.DistributionPoint(
@@ -208,8 +208,8 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
             distributionPoint: .nameRelativeToCRLIssuer(
                 RFC_5280.RelativeDistinguishedName([
                     RFC_5280.AttributeTypeAndValue(
-                        type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                        value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("CRL1"))
+                        type: ISO.`8824`.ObjectIdentifier.NameAttributes.commonName,
+                        value: try ISO.`8825`.`Any`(erasing: ISO.`8824`.PrintableString("CRL1"))
                     )
                 ])
             )
@@ -232,10 +232,10 @@ extension `RFC_5280.CRLDistributionPoints Tests`.Test.`Edge Case` {
     func `An empty cRLIssuer is refused on parse and serialize and is not conformant`() {
         let empty = RFC_5280.DistributionPoint(cRLIssuer: [])
         #expect(!empty.isRFC5280Conformant)
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: empty)
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.DistributionPoint(derEncoded: [0x30, 0x02, 0xa2, 0x00])
         }
     }

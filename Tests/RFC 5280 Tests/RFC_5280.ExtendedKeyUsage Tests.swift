@@ -55,10 +55,10 @@ extension `RFC_5280.ExtendedKeyUsage Tests`.Test.`Edge Case` {
     // RFC 5280 §4.2.1.12: SEQUENCE SIZE (1..MAX)
     @Test
     func `An empty sequence is rejected at the wire boundary`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.ExtendedKeyUsage(derEncoded: [0x30, 0x00])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.ExtendedKeyUsage([]))
         }
     }

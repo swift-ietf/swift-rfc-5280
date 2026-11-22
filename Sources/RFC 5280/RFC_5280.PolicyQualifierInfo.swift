@@ -18,12 +18,12 @@ extension RFC_5280 {
     /// be identified by OID alone.
     public struct PolicyQualifierInfo: Hashable, Sendable {
         /// The OBJECT IDENTIFIER naming the qualifier's syntax.
-        public var policyQualifierID: ISO_8824.ObjectIdentifier
+        public var policyQualifierID: ISO.`8824`.ObjectIdentifier
 
         /// The qualifier value, exactly as encoded.
-        public var qualifier: ISO_8825.`Any`
+        public var qualifier: ISO.`8825`.`Any`
 
-        public init(policyQualifierID: ISO_8824.ObjectIdentifier, qualifier: ISO_8825.`Any`) {
+        public init(policyQualifierID: ISO.`8824`.ObjectIdentifier, qualifier: ISO.`8825`.`Any`) {
             self.policyQualifierID = policyQualifierID
             self.qualifier = qualifier
         }
@@ -35,15 +35,15 @@ extension RFC_5280.PolicyQualifierInfo {
     ///
     /// Throws when the qualifier is not an `IA5String`; check
     /// ``policyQualifierID`` against ``ID/cps`` first.
-    public func cpsURI() throws(ISO_8824.Error) -> ISO_8824.IA5String {
-        try ISO_8824.IA5String(asn1Any: self.qualifier)
+    public func cpsURI() throws(ISO.`8824`.Error) -> ISO.`8824`.IA5String {
+        try ISO.`8824`.IA5String(asn1Any: self.qualifier)
     }
 
     /// Interprets the qualifier as a ``RFC_5280/UserNotice``.
     ///
     /// Throws when the qualifier is not a `UserNotice`; check
     /// ``policyQualifierID`` against ``ID/unotice`` first.
-    public func userNotice() throws(ISO_8824.Error) -> RFC_5280.UserNotice {
+    public func userNotice() throws(ISO.`8824`.Error) -> RFC_5280.UserNotice {
         try RFC_5280.UserNotice(asn1Any: self.qualifier)
     }
 
@@ -55,23 +55,23 @@ extension RFC_5280.PolicyQualifierInfo {
     }
 }
 
-extension RFC_5280.PolicyQualifierInfo: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.PolicyQualifierInfo: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let policyQualifierID = try ISO_8824.ObjectIdentifier(derEncoded: &nodes)
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let policyQualifierID = try ISO.`8824`.ObjectIdentifier(derEncoded: &nodes)
             guard let qualifierNode = nodes.next() else {
-                throw ISO_8824.Error.invalidASN1Object(reason: "PolicyQualifierInfo is missing its qualifier")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "PolicyQualifierInfo is missing its qualifier")
             }
-            return Self(policyQualifierID: policyQualifierID, qualifier: ISO_8825.`Any`(derEncoded: qualifierNode))
+            return Self(policyQualifierID: policyQualifierID, qualifier: ISO.`8825`.`Any`(derEncoded: qualifierNode))
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serialize(self.policyQualifierID)
             try coder.serialize(self.qualifier)
         }

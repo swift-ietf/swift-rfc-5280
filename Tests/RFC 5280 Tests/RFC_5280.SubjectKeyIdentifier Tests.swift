@@ -23,7 +23,7 @@ extension `RFC_5280.SubjectKeyIdentifier Tests`.Test.Unit {
     @Test
     func `Serializes to a bare OCTET STRING`() throws {
         let ski = RFC_5280.SubjectKeyIdentifier(
-            keyIdentifier: ISO_8824.OctetString(contentBytes: [0xde, 0xad, 0xbe, 0xef])
+            keyIdentifier: ISO.`8824`.OctetString(contentBytes: [0xde, 0xad, 0xbe, 0xef])
         )
         let fixture: [UInt8] = [0x04, 0x04, 0xde, 0xad, 0xbe, 0xef]
         #expect(try derBytes(of: ski) == fixture)
@@ -34,7 +34,7 @@ extension `RFC_5280.SubjectKeyIdentifier Tests`.Test.Unit {
     @Test
     func `The extension bridge defaults to non-critical`() throws {
         let ski = RFC_5280.SubjectKeyIdentifier(
-            keyIdentifier: ISO_8824.OctetString(contentBytes: [0x01, 0x02, 0x03])
+            keyIdentifier: ISO.`8824`.OctetString(contentBytes: [0x01, 0x02, 0x03])
         )
         let certificateExtension = try ski.makeExtension()
         #expect(!certificateExtension.critical)

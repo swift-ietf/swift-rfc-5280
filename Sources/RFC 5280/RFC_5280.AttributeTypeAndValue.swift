@@ -13,12 +13,12 @@ extension RFC_5280 {
     /// ``directoryStringValue()`` offers the profile's typed view on demand.
     public struct AttributeTypeAndValue: Hashable, Sendable {
         /// The attribute type OBJECT IDENTIFIER.
-        public var type: ISO_8824.ObjectIdentifier
+        public var type: ISO.`8824`.ObjectIdentifier
 
         /// The attribute value, exactly as encoded.
-        public var value: ISO_8825.`Any`
+        public var value: ISO.`8825`.`Any`
 
-        public init(type: ISO_8824.ObjectIdentifier, value: ISO_8825.`Any`) {
+        public init(type: ISO.`8824`.ObjectIdentifier, value: ISO.`8825`.`Any`) {
             self.type = type
             self.value = value
         }
@@ -30,28 +30,28 @@ extension RFC_5280.AttributeTypeAndValue {
     ///
     /// Throws when the encoded value is not one of the five
     /// `DirectoryString` arms.
-    public func directoryStringValue() throws(ISO_8824.Error) -> RFC_5280.DirectoryString {
+    public func directoryStringValue() throws(ISO.`8824`.Error) -> RFC_5280.DirectoryString {
         try RFC_5280.DirectoryString(asn1Any: self.value)
     }
 }
 
-extension RFC_5280.AttributeTypeAndValue: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.AttributeTypeAndValue: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let type = try ISO_8824.ObjectIdentifier(derEncoded: &nodes)
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let type = try ISO.`8824`.ObjectIdentifier(derEncoded: &nodes)
             guard let valueNode = nodes.next() else {
-                throw ISO_8824.Error.invalidASN1Object(reason: "AttributeTypeAndValue is missing its value")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "AttributeTypeAndValue is missing its value")
             }
-            return Self(type: type, value: ISO_8825.`Any`(derEncoded: valueNode))
+            return Self(type: type, value: ISO.`8825`.`Any`(derEncoded: valueNode))
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serialize(self.type)
             try coder.serialize(self.value)
         }

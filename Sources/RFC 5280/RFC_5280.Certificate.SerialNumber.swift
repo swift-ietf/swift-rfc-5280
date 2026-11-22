@@ -56,22 +56,22 @@ extension RFC_5280.Certificate.SerialNumber {
     }
 }
 
-extension RFC_5280.Certificate.SerialNumber: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.Certificate.SerialNumber: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .integer
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard node.identifier == identifier else {
-            throw ISO_8824.Error.unexpectedFieldType(node.identifier)
+            throw ISO.`8824`.Error.unexpectedFieldType(node.identifier)
         }
         guard case .primitive(let content) = node.content else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "CertificateSerialNumber INTEGER must be primitively encoded")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "CertificateSerialNumber INTEGER must be primitively encoded")
         }
         self.bytes = content
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         coder.appendPrimitiveNode(identifier: identifier) { (bytes: inout [UInt8]) in
             bytes.append(contentsOf: self.bytes)
         }

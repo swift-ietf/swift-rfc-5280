@@ -14,11 +14,11 @@ extension RFC_5280 {
     /// ``utf8String(_:)`` otherwise; ``isRFC5280Preferred`` reports which
     /// arm a parsed value used.
     public enum DirectoryString: Hashable, Sendable {
-        case teletexString(ISO_8824.TeletexString)
-        case printableString(ISO_8824.PrintableString)
-        case universalString(ISO_8824.UniversalString)
-        case utf8String(ISO_8824.UTF8String)
-        case bmpString(ISO_8824.BMPString)
+        case teletexString(ISO.`8824`.TeletexString)
+        case printableString(ISO.`8824`.PrintableString)
+        case universalString(ISO.`8824`.UniversalString)
+        case utf8String(ISO.`8824`.UTF8String)
+        case bmpString(ISO.`8824`.BMPString)
     }
 }
 
@@ -33,25 +33,25 @@ extension RFC_5280.DirectoryString {
     }
 }
 
-extension RFC_5280.DirectoryString: ISO_8825.DER.Parseable, ISO_8825.DER.Serializable {
-    public init(derEncoded node: ISO_8825.Node) throws(ISO_8824.Error) {
+extension RFC_5280.DirectoryString: ISO.`8825`.DER.Parseable, ISO.`8825`.DER.Serializable {
+    public init(derEncoded node: ISO.`8825`.Node) throws(ISO.`8824`.Error) {
         switch node.identifier {
-        case ISO_8824.TeletexString.defaultIdentifier:
-            self = .teletexString(try ISO_8824.TeletexString(derEncoded: node))
-        case ISO_8824.PrintableString.defaultIdentifier:
-            self = .printableString(try ISO_8824.PrintableString(derEncoded: node))
-        case ISO_8824.UniversalString.defaultIdentifier:
-            self = .universalString(try ISO_8824.UniversalString(derEncoded: node))
-        case ISO_8824.UTF8String.defaultIdentifier:
-            self = .utf8String(try ISO_8824.UTF8String(derEncoded: node))
-        case ISO_8824.BMPString.defaultIdentifier:
-            self = .bmpString(try ISO_8824.BMPString(derEncoded: node))
+        case ISO.`8824`.TeletexString.defaultIdentifier:
+            self = .teletexString(try ISO.`8824`.TeletexString(derEncoded: node))
+        case ISO.`8824`.PrintableString.defaultIdentifier:
+            self = .printableString(try ISO.`8824`.PrintableString(derEncoded: node))
+        case ISO.`8824`.UniversalString.defaultIdentifier:
+            self = .universalString(try ISO.`8824`.UniversalString(derEncoded: node))
+        case ISO.`8824`.UTF8String.defaultIdentifier:
+            self = .utf8String(try ISO.`8824`.UTF8String(derEncoded: node))
+        case ISO.`8824`.BMPString.defaultIdentifier:
+            self = .bmpString(try ISO.`8824`.BMPString(derEncoded: node))
         default:
-            throw ISO_8824.Error.unexpectedFieldType(node.identifier)
+            throw ISO.`8824`.Error.unexpectedFieldType(node.identifier)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) {
         switch self {
         case .teletexString(let string):
             try coder.serialize(string)

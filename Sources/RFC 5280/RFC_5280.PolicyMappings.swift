@@ -33,32 +33,32 @@ extension RFC_5280.PolicyMappings {
     }
 }
 
-extension RFC_5280.PolicyMappings: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.PolicyMappings: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        let mappings = try ISO_8825.DER.sequence(
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        let mappings = try ISO.`8825`.DER.sequence(
             of: RFC_5280.PolicyMappings.Mapping.self,
             identifier: identifier,
             rootNode: node
         )
         guard !mappings.isEmpty else {
-            throw ISO_8824.Error.invalidASN1Object(
+            throw ISO.`8824`.Error.invalidASN1Object(
                 reason: "PolicyMappings is SEQUENCE SIZE (1..MAX); got an empty sequence"
             )
         }
         self.mappings = mappings
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard !self.mappings.isEmpty else {
-            throw ISO_8824.Error.invalidASN1Object(
+            throw ISO.`8824`.Error.invalidASN1Object(
                 reason: "PolicyMappings is SEQUENCE SIZE (1..MAX); got an empty sequence"
             )
         }
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             for mapping in self.mappings {
                 try coder.serialize(mapping)
             }
@@ -68,14 +68,14 @@ extension RFC_5280.PolicyMappings: ISO_8825.DER.ImplicitlyTaggable {
 
 extension RFC_5280.PolicyMappings {
     /// `id-ce-policyMappings` (§4.2.1.5).
-    public static var extensionID: ISO_8824.ObjectIdentifier {
+    public static var extensionID: ISO.`8824`.ObjectIdentifier {
         RFC_5280.Extension.ID.policyMappings
     }
 
     /// Decodes the typed value from a generic ``RFC_5280/Extension``.
-    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO_8824.Error) {
+    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO.`8824`.Error) {
         guard certificateExtension.extnID == Self.extensionID else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "Expected id-ce-policyMappings, got \(certificateExtension.extnID)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "Expected id-ce-policyMappings, got \(certificateExtension.extnID)")
         }
         self = try Self(derEncoded: certificateExtension.extnValue.bytes)
     }
@@ -84,13 +84,13 @@ extension RFC_5280.PolicyMappings {
     ///
     /// §4.2.1.5 criticality law: conforming CAs SHOULD mark this extension
     /// critical, hence the default.
-    public func makeExtension(critical: Bool = true) throws(ISO_8824.Error) -> RFC_5280.Extension {
-        var serializer = ISO_8825.DER.Serializer()
+    public func makeExtension(critical: Bool = true) throws(ISO.`8824`.Error) -> RFC_5280.Extension {
+        var serializer = ISO.`8825`.DER.Serializer()
         try serializer.serialize(self)
         return RFC_5280.Extension(
             extnID: Self.extensionID,
             critical: critical,
-            extnValue: ISO_8824.OctetString(contentBytes: serializer.serializedBytes[...])
+            extnValue: ISO.`8824`.OctetString(contentBytes: serializer.serializedBytes[...])
         )
     }
 }

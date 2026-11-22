@@ -13,14 +13,14 @@ extension RFC_5280.PolicyMappings {
     /// special value `anyPolicy` (``isRFC5280Conformant``).
     public struct Mapping: Hashable, Sendable {
         /// A policy of the issuer's domain.
-        public var issuerDomainPolicy: ISO_8824.ObjectIdentifier
+        public var issuerDomainPolicy: ISO.`8824`.ObjectIdentifier
 
         /// The subject-domain policy it is considered equivalent to.
-        public var subjectDomainPolicy: ISO_8824.ObjectIdentifier
+        public var subjectDomainPolicy: ISO.`8824`.ObjectIdentifier
 
         public init(
-            issuerDomainPolicy: ISO_8824.ObjectIdentifier,
-            subjectDomainPolicy: ISO_8824.ObjectIdentifier
+            issuerDomainPolicy: ISO.`8824`.ObjectIdentifier,
+            subjectDomainPolicy: ISO.`8824`.ObjectIdentifier
         ) {
             self.issuerDomainPolicy = issuerDomainPolicy
             self.subjectDomainPolicy = subjectDomainPolicy
@@ -37,21 +37,21 @@ extension RFC_5280.PolicyMappings.Mapping {
     }
 }
 
-extension RFC_5280.PolicyMappings.Mapping: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.PolicyMappings.Mapping: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let issuerDomainPolicy = try ISO_8824.ObjectIdentifier(derEncoded: &nodes)
-            let subjectDomainPolicy = try ISO_8824.ObjectIdentifier(derEncoded: &nodes)
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let issuerDomainPolicy = try ISO.`8824`.ObjectIdentifier(derEncoded: &nodes)
+            let subjectDomainPolicy = try ISO.`8824`.ObjectIdentifier(derEncoded: &nodes)
             return Self(issuerDomainPolicy: issuerDomainPolicy, subjectDomainPolicy: subjectDomainPolicy)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serialize(self.issuerDomainPolicy)
             try coder.serialize(self.subjectDomainPolicy)
         }

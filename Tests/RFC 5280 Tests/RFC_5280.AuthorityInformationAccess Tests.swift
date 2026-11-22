@@ -26,7 +26,7 @@ extension `RFC_5280.AuthorityInformationAccess Tests`.Test.Unit {
         let aia = RFC_5280.AuthorityInformationAccess([
             RFC_5280.AccessDescription(
                 accessMethod: RFC_5280.AccessDescription.ID.ocsp,
-                accessLocation: .uniformResourceIdentifier(ISO_8824.IA5String("http://ocsp.example.com"))
+                accessLocation: .uniformResourceIdentifier(ISO.`8824`.IA5String("http://ocsp.example.com"))
             )
         ])
         let fixture: [UInt8] = [
@@ -52,11 +52,11 @@ extension `RFC_5280.AuthorityInformationAccess Tests`.Test.Unit {
         let aia = RFC_5280.AuthorityInformationAccess([
             RFC_5280.AccessDescription(
                 accessMethod: RFC_5280.AccessDescription.ID.ocsp,
-                accessLocation: .uniformResourceIdentifier(ISO_8824.IA5String("http://ocsp.example.com"))
+                accessLocation: .uniformResourceIdentifier(ISO.`8824`.IA5String("http://ocsp.example.com"))
             ),
             RFC_5280.AccessDescription(
                 accessMethod: RFC_5280.AccessDescription.ID.caIssuers,
-                accessLocation: .uniformResourceIdentifier(ISO_8824.IA5String("http://ca.example.com/issuers"))
+                accessLocation: .uniformResourceIdentifier(ISO.`8824`.IA5String("http://ca.example.com/issuers"))
             ),
         ])
         #expect(try roundTrips(aia))
@@ -70,10 +70,10 @@ extension `RFC_5280.AuthorityInformationAccess Tests`.Test.`Edge Case` {
     // RFC 5280 §4.2.2.1: SEQUENCE SIZE (1..MAX)
     @Test
     func `An empty AIA is rejected at the wire boundary`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.AuthorityInformationAccess(derEncoded: [0x30, 0x00])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.AuthorityInformationAccess([]))
         }
     }
@@ -84,7 +84,7 @@ extension `RFC_5280.AuthorityInformationAccess Tests`.Test.`Edge Case` {
         let aia = RFC_5280.AuthorityInformationAccess([
             RFC_5280.AccessDescription(
                 accessMethod: RFC_5280.AccessDescription.ID.ocsp,
-                accessLocation: .uniformResourceIdentifier(ISO_8824.IA5String("http://ocsp.example.com"))
+                accessLocation: .uniformResourceIdentifier(ISO.`8824`.IA5String("http://ocsp.example.com"))
             )
         ])
         let certificateExtension = try aia.makeExtension()

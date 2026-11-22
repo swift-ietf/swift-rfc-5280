@@ -25,12 +25,12 @@ extension RFC_5280 {
         public var signatureAlgorithm: RFC_5280.AlgorithmIdentifier
 
         /// The signature over the DER encoding of ``tbsCertList``.
-        public var signatureValue: ISO_8824.BitString
+        public var signatureValue: ISO.`8824`.BitString
 
         public init(
             tbsCertList: RFC_5280.TBSCertList,
             signatureAlgorithm: RFC_5280.AlgorithmIdentifier,
-            signatureValue: ISO_8824.BitString
+            signatureValue: ISO.`8824`.BitString
         ) {
             self.tbsCertList = tbsCertList
             self.signatureAlgorithm = signatureAlgorithm
@@ -50,16 +50,16 @@ extension RFC_5280.CertificateList {
     }
 }
 
-extension RFC_5280.CertificateList: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.CertificateList: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
             let tbsCertList = try RFC_5280.TBSCertList(derEncoded: &nodes)
             let signatureAlgorithm = try RFC_5280.AlgorithmIdentifier(derEncoded: &nodes)
-            let signatureValue = try ISO_8824.BitString(derEncoded: &nodes)
+            let signatureValue = try ISO.`8824`.BitString(derEncoded: &nodes)
             return Self(
                 tbsCertList: tbsCertList,
                 signatureAlgorithm: signatureAlgorithm,
@@ -68,8 +68,8 @@ extension RFC_5280.CertificateList: ISO_8825.DER.ImplicitlyTaggable {
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serialize(self.tbsCertList)
             try coder.serialize(self.signatureAlgorithm)
             try coder.serialize(self.signatureValue)

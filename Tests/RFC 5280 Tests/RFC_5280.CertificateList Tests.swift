@@ -21,22 +21,22 @@ extension `RFC_5280.CertificateList Tests` {
 
 private let ecdsaWithSHA256 = RFC_5280.AlgorithmIdentifier(algorithm: [1, 2, 840, 10045, 4, 3, 2])
 
-private func issuerName() throws(ISO_8824.Error) -> RFC_5280.Name {
+private func issuerName() throws(ISO.`8824`.Error) -> RFC_5280.Name {
     RFC_5280.Name([
         RFC_5280.RelativeDistinguishedName([
             RFC_5280.AttributeTypeAndValue(
-                type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Test CA"))
+                type: ISO.`8824`.ObjectIdentifier.NameAttributes.commonName,
+                value: try ISO.`8825`.`Any`(erasing: ISO.`8824`.PrintableString("Test CA"))
             )
         ])
     ])
 }
 
-private func thisUpdate() throws(ISO_8824.Error) -> RFC_5280.Time {
+private func thisUpdate() throws(ISO.`8824`.Error) -> RFC_5280.Time {
     try RFC_5280.Time(year: 2026, month: 7, day: 24, hours: 0, minutes: 0, seconds: 0)
 }
 
-private func nextUpdate() throws(ISO_8824.Error) -> RFC_5280.Time {
+private func nextUpdate() throws(ISO.`8824`.Error) -> RFC_5280.Time {
     try RFC_5280.Time(year: 2026, month: 8, day: 24, hours: 0, minutes: 0, seconds: 0)
 }
 
@@ -201,7 +201,7 @@ extension `RFC_5280.CertificateList Tests`.Test.`Edge Case` {
 
         // DER forbids encoding a DEFAULT at its default value: an explicit
         // FALSE for onlyContainsUserCerts must be rejected, not accepted.
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.IssuingDistributionPoint(derEncoded: [0x30, 0x03, 0x81, 0x01, 0x00])
         }
     }
@@ -234,7 +234,7 @@ extension `RFC_5280.CertificateList Tests`.Test.`Edge Case` {
         #expect(try conformant.makeExtension().critical)
 
         let nonConformant = RFC_5280.CertificateIssuer([
-            .dNSName(ISO_8824.IA5String("ca.example.com"))
+            .dNSName(ISO.`8824`.IA5String("ca.example.com"))
         ])
         #expect(!nonConformant.isRFC5280Conformant)
         #expect(try roundTrips(nonConformant))
@@ -254,7 +254,7 @@ extension `RFC_5280.CertificateList Tests`.Test.Integration {
             crlEntryExtensions: [
                 try RFC_5280.CRLReason.cessationOfOperation.makeExtension(),
                 try RFC_5280.InvalidityDate(
-                    date: try ISO_8824.GeneralizedTime(
+                    date: try ISO.`8824`.GeneralizedTime(
                         year: 2026,
                         month: 7,
                         day: 20,
@@ -279,7 +279,7 @@ extension `RFC_5280.CertificateList Tests`.Test.Integration {
                 try RFC_5280.CRLNumber(UInt64(42)).makeExtension(),
                 try RFC_5280.IssuingDistributionPoint(
                     distributionPoint: .fullName([
-                        .uniformResourceIdentifier(ISO_8824.IA5String("http://example.com/crl"))
+                        .uniformResourceIdentifier(ISO.`8824`.IA5String("http://example.com/crl"))
                     ]),
                     onlyContainsUserCerts: true
                 ).makeExtension(),
@@ -289,7 +289,7 @@ extension `RFC_5280.CertificateList Tests`.Test.Integration {
         let list = RFC_5280.CertificateList(
             tbsCertList: tbsCertList,
             signatureAlgorithm: ecdsaWithSHA256,
-            signatureValue: try ISO_8824.BitString(bytes: [0x01, 0x02, 0x03, 0x04], paddingBits: 0)
+            signatureValue: try ISO.`8824`.BitString(bytes: [0x01, 0x02, 0x03, 0x04], paddingBits: 0)
         )
 
         #expect(try roundTrips(list))
@@ -322,7 +322,7 @@ extension `RFC_5280.CertificateList Tests`.Test.Integration {
                 thisUpdate: try thisUpdate()
             ),
             signatureAlgorithm: RFC_5280.AlgorithmIdentifier(algorithm: [1, 2, 840, 10045, 4, 3, 3]),
-            signatureValue: try ISO_8824.BitString(bytes: [0x00], paddingBits: 0)
+            signatureValue: try ISO.`8824`.BitString(bytes: [0x00], paddingBits: 0)
         )
         #expect(!list.hasConsistentSignatureAlgorithm)
         #expect(try roundTrips(list))

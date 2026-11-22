@@ -61,10 +61,10 @@ extension `RFC_5280.PolicyConstraints Tests`.Test.`Edge Case` {
     // §4.2.1.11: conforming CAs MUST NOT issue an empty policy constraints
     @Test
     func `An empty PolicyConstraints is rejected at the wire boundary`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.PolicyConstraints(derEncoded: [0x30, 0x00])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.PolicyConstraints())
         }
     }
@@ -72,11 +72,11 @@ extension `RFC_5280.PolicyConstraints Tests`.Test.`Edge Case` {
     // SkipCerts ::= INTEGER (0..MAX)
     @Test
     func `A negative SkipCerts is rejected`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.PolicyConstraints(requireExplicitPolicy: -1))
         }
         // [0] IMPLICIT INTEGER -1
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.PolicyConstraints(derEncoded: [0x30, 0x03, 0x80, 0x01, 0xFF])
         }
     }

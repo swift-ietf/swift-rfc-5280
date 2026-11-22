@@ -14,14 +14,14 @@ extension RFC_5280 {
     /// than by qualifier.
     public struct PolicyInformation: Hashable, Sendable {
         /// The policy OBJECT IDENTIFIER.
-        public var policyIdentifier: ISO_8824.ObjectIdentifier
+        public var policyIdentifier: ISO.`8824`.ObjectIdentifier
 
         /// The policy qualifiers (`nil` means the field is absent; when
         /// present it must hold at least one qualifier).
         public var policyQualifiers: [RFC_5280.PolicyQualifierInfo]?
 
         public init(
-            policyIdentifier: ISO_8824.ObjectIdentifier,
+            policyIdentifier: ISO.`8824`.ObjectIdentifier,
             policyQualifiers: [RFC_5280.PolicyQualifierInfo]? = nil
         ) {
             self.policyIdentifier = policyIdentifier
@@ -47,23 +47,23 @@ extension RFC_5280.PolicyInformation {
     }
 }
 
-extension RFC_5280.PolicyInformation: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.PolicyInformation: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let policyIdentifier = try ISO_8824.ObjectIdentifier(derEncoded: &nodes)
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let policyIdentifier = try ISO.`8824`.ObjectIdentifier(derEncoded: &nodes)
             var policyQualifiers: [RFC_5280.PolicyQualifierInfo]?
             if let qualifiersNode = nodes.next() {
-                let qualifiers = try ISO_8825.DER.sequence(
+                let qualifiers = try ISO.`8825`.DER.sequence(
                     of: RFC_5280.PolicyQualifierInfo.self,
                     identifier: .sequence,
                     rootNode: qualifiersNode
                 )
                 guard !qualifiers.isEmpty else {
-                    throw ISO_8824.Error.invalidASN1Object(
+                    throw ISO.`8824`.Error.invalidASN1Object(
                         reason: "policyQualifiers is SEQUENCE SIZE (1..MAX) OF PolicyQualifierInfo; got an empty sequence"
                     )
                 }
@@ -73,16 +73,16 @@ extension RFC_5280.PolicyInformation: ISO_8825.DER.ImplicitlyTaggable {
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serialize(self.policyIdentifier)
             if let policyQualifiers = self.policyQualifiers {
                 guard !policyQualifiers.isEmpty else {
-                    throw ISO_8824.Error.invalidASN1Object(
+                    throw ISO.`8824`.Error.invalidASN1Object(
                         reason: "policyQualifiers is SEQUENCE SIZE (1..MAX) OF PolicyQualifierInfo; got an empty sequence"
                     )
                 }
-                try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+                try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
                     for qualifier in policyQualifiers {
                         try coder.serialize(qualifier)
                     }

@@ -55,10 +55,10 @@ extension `RFC_5280.AlgorithmIdentifier Tests`.Test.`Edge Case` {
     // Wire fidelity: NULL parameters and absent parameters are distinct encodings
     @Test
     func `NULL and absent parameters are distinct values`() throws {
-        let algorithm: ISO_8824.ObjectIdentifier = [1, 2, 840, 113549, 1, 1, 11]
+        let algorithm: ISO.`8824`.ObjectIdentifier = [1, 2, 840, 113549, 1, 1, 11]
         let withNull = RFC_5280.AlgorithmIdentifier(
             algorithm: algorithm,
-            parameters: try ISO_8825.`Any`(erasing: ISO_8824.Null())
+            parameters: try ISO.`8825`.`Any`(erasing: ISO.`8824`.Null())
         )
         let absent = RFC_5280.AlgorithmIdentifier(algorithm: algorithm)
         #expect(withNull != absent)

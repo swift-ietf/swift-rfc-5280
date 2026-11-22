@@ -14,10 +14,10 @@ extension RFC_5280 {
     /// preserved and the profile judgment is reported by
     /// ``isRFC5280Conformant``.
     public enum DisplayText: Hashable, Sendable {
-        case ia5String(ISO_8824.IA5String)
-        case visibleString(ISO_8824.VisibleString)
-        case bmpString(ISO_8824.BMPString)
-        case utf8String(ISO_8824.UTF8String)
+        case ia5String(ISO.`8824`.IA5String)
+        case visibleString(ISO.`8824`.VisibleString)
+        case bmpString(ISO.`8824`.BMPString)
+        case utf8String(ISO.`8824`.UTF8String)
     }
 }
 
@@ -57,23 +57,23 @@ extension RFC_5280.DisplayText {
     }
 }
 
-extension RFC_5280.DisplayText: ISO_8825.DER.Parseable, ISO_8825.DER.Serializable {
-    public init(derEncoded node: ISO_8825.Node) throws(ISO_8824.Error) {
+extension RFC_5280.DisplayText: ISO.`8825`.DER.Parseable, ISO.`8825`.DER.Serializable {
+    public init(derEncoded node: ISO.`8825`.Node) throws(ISO.`8824`.Error) {
         switch node.identifier {
-        case ISO_8824.IA5String.defaultIdentifier:
-            self = .ia5String(try ISO_8824.IA5String(derEncoded: node))
-        case ISO_8824.VisibleString.defaultIdentifier:
-            self = .visibleString(try ISO_8824.VisibleString(derEncoded: node))
-        case ISO_8824.BMPString.defaultIdentifier:
-            self = .bmpString(try ISO_8824.BMPString(derEncoded: node))
-        case ISO_8824.UTF8String.defaultIdentifier:
-            self = .utf8String(try ISO_8824.UTF8String(derEncoded: node))
+        case ISO.`8824`.IA5String.defaultIdentifier:
+            self = .ia5String(try ISO.`8824`.IA5String(derEncoded: node))
+        case ISO.`8824`.VisibleString.defaultIdentifier:
+            self = .visibleString(try ISO.`8824`.VisibleString(derEncoded: node))
+        case ISO.`8824`.BMPString.defaultIdentifier:
+            self = .bmpString(try ISO.`8824`.BMPString(derEncoded: node))
+        case ISO.`8824`.UTF8String.defaultIdentifier:
+            self = .utf8String(try ISO.`8824`.UTF8String(derEncoded: node))
         default:
-            throw ISO_8824.Error.unexpectedFieldType(node.identifier)
+            throw ISO.`8824`.Error.unexpectedFieldType(node.identifier)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) {
         switch self {
         case .ia5String(let text):
             try coder.serialize(text)

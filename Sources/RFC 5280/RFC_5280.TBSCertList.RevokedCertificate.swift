@@ -40,24 +40,24 @@ extension RFC_5280.TBSCertList {
     }
 }
 
-extension RFC_5280.TBSCertList.RevokedCertificate: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.TBSCertList.RevokedCertificate: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
             let userCertificate = try RFC_5280.Certificate.SerialNumber(derEncoded: &nodes)
             let revocationDate = try RFC_5280.Time(derEncoded: &nodes)
             var crlEntryExtensions: [RFC_5280.Extension] = []
             if let extensionsNode = nodes.next() {
-                crlEntryExtensions = try ISO_8825.DER.sequence(
+                crlEntryExtensions = try ISO.`8825`.DER.sequence(
                     of: RFC_5280.Extension.self,
                     identifier: .sequence,
                     rootNode: extensionsNode
                 )
                 guard !crlEntryExtensions.isEmpty else {
-                    throw ISO_8824.Error.invalidASN1Object(
+                    throw ISO.`8824`.Error.invalidASN1Object(
                         reason: "Extensions is SEQUENCE SIZE (1..MAX); an empty list must be encoded as an absent field"
                     )
                 }
@@ -70,12 +70,12 @@ extension RFC_5280.TBSCertList.RevokedCertificate: ISO_8825.DER.ImplicitlyTaggab
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serialize(self.userCertificate)
             try coder.serialize(self.revocationDate)
             if !self.crlEntryExtensions.isEmpty {
-                try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+                try coder.appendConstructedNode(identifier: .sequence) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
                     for entryExtension in self.crlEntryExtensions {
                         try coder.serialize(entryExtension)
                     }

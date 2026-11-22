@@ -18,22 +18,22 @@ extension RFC_5280 {
     /// seconds (§4.1.2.5.2); ``isRFC5280Conformant`` reports violations of
     /// the cutover and fractional-second laws that survive DER parsing.
     public enum Time: Hashable, Sendable {
-        case utcTime(ISO_8824.UTCTime)
-        case generalTime(ISO_8824.GeneralizedTime)
+        case utcTime(ISO.`8824`.UTCTime)
+        case generalTime(ISO.`8824`.GeneralizedTime)
     }
 }
 
 extension RFC_5280.Time {
     /// Creates the §4.1.2.5-conformant encoding choice for a calendar date:
     /// `UTCTime` for 1950–2049, `GeneralizedTime` otherwise.
-    public init(year: Int, month: Int, day: Int, hours: Int, minutes: Int, seconds: Int) throws(ISO_8824.Error) {
+    public init(year: Int, month: Int, day: Int, hours: Int, minutes: Int, seconds: Int) throws(ISO.`8824`.Error) {
         if (1950...2049).contains(year) {
             self = .utcTime(
-                try ISO_8824.UTCTime(year: year, month: month, day: day, hours: hours, minutes: minutes, seconds: seconds)
+                try ISO.`8824`.UTCTime(year: year, month: month, day: day, hours: hours, minutes: minutes, seconds: seconds)
             )
         } else {
             self = .generalTime(
-                try ISO_8824.GeneralizedTime(
+                try ISO.`8824`.GeneralizedTime(
                     year: year,
                     month: month,
                     day: day,
@@ -124,19 +124,19 @@ extension RFC_5280.Time: Comparable {
     }
 }
 
-extension RFC_5280.Time: ISO_8825.DER.Parseable, ISO_8825.DER.Serializable {
-    public init(derEncoded node: ISO_8825.Node) throws(ISO_8824.Error) {
+extension RFC_5280.Time: ISO.`8825`.DER.Parseable, ISO.`8825`.DER.Serializable {
+    public init(derEncoded node: ISO.`8825`.Node) throws(ISO.`8824`.Error) {
         switch node.identifier {
-        case ISO_8824.UTCTime.defaultIdentifier:
-            self = .utcTime(try ISO_8824.UTCTime(derEncoded: node))
-        case ISO_8824.GeneralizedTime.defaultIdentifier:
-            self = .generalTime(try ISO_8824.GeneralizedTime(derEncoded: node))
+        case ISO.`8824`.UTCTime.defaultIdentifier:
+            self = .utcTime(try ISO.`8824`.UTCTime(derEncoded: node))
+        case ISO.`8824`.GeneralizedTime.defaultIdentifier:
+            self = .generalTime(try ISO.`8824`.GeneralizedTime(derEncoded: node))
         default:
-            throw ISO_8824.Error.unexpectedFieldType(node.identifier)
+            throw ISO.`8824`.Error.unexpectedFieldType(node.identifier)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) {
         switch self {
         case .utcTime(let time):
             try coder.serialize(time)

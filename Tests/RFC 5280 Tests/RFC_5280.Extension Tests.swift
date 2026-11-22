@@ -26,7 +26,7 @@ extension `RFC_5280.Extension Tests`.Test.Unit {
         let certificateExtension = RFC_5280.Extension(
             extnID: RFC_5280.Extension.ID.basicConstraints,
             critical: true,
-            extnValue: ISO_8824.OctetString(contentBytes: [0x30, 0x00])
+            extnValue: ISO.`8824`.OctetString(contentBytes: [0x30, 0x00])
         )
         let fixture: [UInt8] = [
             0x30, 0x0c,
@@ -44,7 +44,7 @@ extension `RFC_5280.Extension Tests`.Test.Unit {
         let certificateExtension = RFC_5280.Extension(
             extnID: RFC_5280.Extension.ID.basicConstraints,
             critical: false,
-            extnValue: ISO_8824.OctetString(contentBytes: [0x30, 0x00])
+            extnValue: ISO.`8824`.OctetString(contentBytes: [0x30, 0x00])
         )
         let fixture: [UInt8] = [
             0x30, 0x09,
@@ -81,7 +81,7 @@ extension `RFC_5280.Extension Tests`.Test.`Edge Case` {
             0x01, 0x01, 0x00,
             0x04, 0x02, 0x30, 0x00,
         ]
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.Extension(derEncoded: bytes)
         }
     }
@@ -90,7 +90,7 @@ extension `RFC_5280.Extension Tests`.Test.`Edge Case` {
     @Test
     func `Typed decode rejects a mismatched extnID`() throws {
         let keyUsageExtension = try RFC_5280.KeyUsage(rawValue: 0x8000).makeExtension()
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.BasicConstraints(keyUsageExtension)
         }
     }

@@ -23,7 +23,7 @@ extension `RFC_5280.GeneralName Tests`.Test.Unit {
     // RFC 5280 §4.2.1.6: dNSName is an implicitly [2]-tagged IA5String
     @Test
     func `dNSName serializes with implicit context tag 2`() throws {
-        let name = RFC_5280.GeneralName.dNSName(ISO_8824.IA5String("example.com"))
+        let name = RFC_5280.GeneralName.dNSName(ISO.`8824`.IA5String("example.com"))
         let fixture: [UInt8] = [
             0x82, 0x0b,
             0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63, 0x6f, 0x6d,
@@ -35,7 +35,7 @@ extension `RFC_5280.GeneralName Tests`.Test.Unit {
     // RFC 5280 §4.2.1.6: iPAddress is 4 octets for IPv4, network byte order
     @Test
     func `iPAddress serializes with implicit context tag 7`() throws {
-        let name = RFC_5280.GeneralName.iPAddress(ISO_8824.OctetString(contentBytes: [0xc0, 0x00, 0x02, 0x01]))
+        let name = RFC_5280.GeneralName.iPAddress(ISO.`8824`.OctetString(contentBytes: [0xc0, 0x00, 0x02, 0x01]))
         let fixture: [UInt8] = [0x87, 0x04, 0xc0, 0x00, 0x02, 0x01]
         #expect(try derBytes(of: name) == fixture)
         #expect(try RFC_5280.GeneralName(derEncoded: fixture) == name)
@@ -48,8 +48,8 @@ extension `RFC_5280.GeneralName Tests`.Test.Unit {
         let directoryName = RFC_5280.Name([
             RFC_5280.RelativeDistinguishedName([
                 RFC_5280.AttributeTypeAndValue(
-                    type: ISO_8824.ObjectIdentifier.NameAttributes.commonName,
-                    value: try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("Test"))
+                    type: ISO.`8824`.ObjectIdentifier.NameAttributes.commonName,
+                    value: try ISO.`8825`.`Any`(erasing: ISO.`8824`.PrintableString("Test"))
                 )
             ])
         ])
@@ -68,15 +68,15 @@ extension `RFC_5280.GeneralName Tests`.Test.Unit {
 
     @Test
     func `All constructed arms round-trip`() throws {
-        #expect(try roundTrips(RFC_5280.GeneralName.rfc822Name(try ISO_8824.IA5String("user@example.com"))))
-        #expect(try roundTrips(RFC_5280.GeneralName.uniformResourceIdentifier(try ISO_8824.IA5String("https://example.com/"))))
+        #expect(try roundTrips(RFC_5280.GeneralName.rfc822Name(try ISO.`8824`.IA5String("user@example.com"))))
+        #expect(try roundTrips(RFC_5280.GeneralName.uniformResourceIdentifier(try ISO.`8824`.IA5String("https://example.com/"))))
         #expect(try roundTrips(RFC_5280.GeneralName.registeredID([1, 3, 6, 1, 4, 1, 99999])))
         #expect(
             try roundTrips(
                 RFC_5280.GeneralName.otherName(
                     RFC_5280.OtherName(
                         typeID: [1, 3, 6, 1, 4, 1, 99999, 1],
-                        value: try ISO_8825.`Any`(erasing: ISO_8824.UTF8String("value"))
+                        value: try ISO.`8825`.`Any`(erasing: ISO.`8824`.UTF8String("value"))
                     )
                 )
             )
@@ -85,8 +85,8 @@ extension `RFC_5280.GeneralName Tests`.Test.Unit {
             try roundTrips(
                 RFC_5280.GeneralName.ediPartyName(
                     RFC_5280.EDIPartyName(
-                        nameAssigner: .printableString(try ISO_8824.PrintableString("Assigner")),
-                        partyName: .utf8String(ISO_8824.UTF8String("Party"))
+                        nameAssigner: .printableString(try ISO.`8824`.PrintableString("Assigner")),
+                        partyName: .utf8String(ISO.`8824`.UTF8String("Party"))
                     )
                 )
             )
@@ -94,7 +94,7 @@ extension `RFC_5280.GeneralName Tests`.Test.Unit {
         #expect(
             try roundTrips(
                 RFC_5280.GeneralName.ediPartyName(
-                    RFC_5280.EDIPartyName(partyName: .utf8String(ISO_8824.UTF8String("Party")))
+                    RFC_5280.EDIPartyName(partyName: .utf8String(ISO.`8824`.UTF8String("Party")))
                 )
             )
         )
@@ -107,7 +107,7 @@ extension `RFC_5280.GeneralName Tests`.Test.`Edge Case` {
 
     @Test
     func `Rejects a universal-class node`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             // A bare IA5String without a context tag is not a GeneralName.
             _ = try RFC_5280.GeneralName(derEncoded: [0x16, 0x01, 0x41])
         }
@@ -115,7 +115,7 @@ extension `RFC_5280.GeneralName Tests`.Test.`Edge Case` {
 
     @Test
     func `Rejects an unknown context tag`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.GeneralName(derEncoded: [0x89, 0x01, 0x41])
         }
     }

@@ -45,56 +45,56 @@ extension RFC_5280.NameConstraints {
     }
 }
 
-extension RFC_5280.NameConstraints: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.NameConstraints: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let permittedSubtrees = try ISO_8825.DER.optionalImplicitlyTagged(&nodes, tagNumber: 0, tagClass: .contextSpecific) {
-                (node: ISO_8825.Node) throws(ISO_8824.Error) -> [RFC_5280.GeneralSubtree] in
-                try ISO_8825.DER.sequence(
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let permittedSubtrees = try ISO.`8825`.DER.optionalImplicitlyTagged(&nodes, tagNumber: 0, tagClass: .contextSpecific) {
+                (node: ISO.`8825`.Node) throws(ISO.`8824`.Error) -> [RFC_5280.GeneralSubtree] in
+                try ISO.`8825`.DER.sequence(
                     of: RFC_5280.GeneralSubtree.self,
-                    identifier: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific),
+                    identifier: ISO.`8824`.Identifier(tagWithNumber: 0, tagClass: .contextSpecific),
                     rootNode: node
                 )
             }
-            let excludedSubtrees = try ISO_8825.DER.optionalImplicitlyTagged(&nodes, tagNumber: 1, tagClass: .contextSpecific) {
-                (node: ISO_8825.Node) throws(ISO_8824.Error) -> [RFC_5280.GeneralSubtree] in
-                try ISO_8825.DER.sequence(
+            let excludedSubtrees = try ISO.`8825`.DER.optionalImplicitlyTagged(&nodes, tagNumber: 1, tagClass: .contextSpecific) {
+                (node: ISO.`8825`.Node) throws(ISO.`8824`.Error) -> [RFC_5280.GeneralSubtree] in
+                try ISO.`8825`.DER.sequence(
                     of: RFC_5280.GeneralSubtree.self,
-                    identifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific),
+                    identifier: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific),
                     rootNode: node
                 )
             }
             guard permittedSubtrees != nil || excludedSubtrees != nil else {
-                throw ISO_8824.Error.invalidASN1Object(reason: "NameConstraints must contain at least one of permittedSubtrees and excludedSubtrees")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "NameConstraints must contain at least one of permittedSubtrees and excludedSubtrees")
             }
             guard permittedSubtrees.map({ !$0.isEmpty }) ?? true, excludedSubtrees.map({ !$0.isEmpty }) ?? true else {
-                throw ISO_8824.Error.invalidASN1Object(reason: "GeneralSubtrees is SEQUENCE SIZE (1..MAX) OF GeneralSubtree; got an empty sequence")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "GeneralSubtrees is SEQUENCE SIZE (1..MAX) OF GeneralSubtree; got an empty sequence")
             }
             return Self(permittedSubtrees: permittedSubtrees, excludedSubtrees: excludedSubtrees)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard self.permittedSubtrees != nil || self.excludedSubtrees != nil else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "NameConstraints must contain at least one of permittedSubtrees and excludedSubtrees")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "NameConstraints must contain at least one of permittedSubtrees and excludedSubtrees")
         }
         guard self.permittedSubtrees.map({ !$0.isEmpty }) ?? true, self.excludedSubtrees.map({ !$0.isEmpty }) ?? true else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "GeneralSubtrees is SEQUENCE SIZE (1..MAX) OF GeneralSubtree; got an empty sequence")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "GeneralSubtrees is SEQUENCE SIZE (1..MAX) OF GeneralSubtree; got an empty sequence")
         }
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             if let permittedSubtrees = self.permittedSubtrees {
-                try coder.appendConstructedNode(identifier: ISO_8824.Identifier(tagWithNumber: 0, tagClass: .contextSpecific)) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+                try coder.appendConstructedNode(identifier: ISO.`8824`.Identifier(tagWithNumber: 0, tagClass: .contextSpecific)) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
                     for subtree in permittedSubtrees {
                         try coder.serialize(subtree)
                     }
                 }
             }
             if let excludedSubtrees = self.excludedSubtrees {
-                try coder.appendConstructedNode(identifier: ISO_8824.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+                try coder.appendConstructedNode(identifier: ISO.`8824`.Identifier(tagWithNumber: 1, tagClass: .contextSpecific)) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
                     for subtree in excludedSubtrees {
                         try coder.serialize(subtree)
                     }
@@ -106,14 +106,14 @@ extension RFC_5280.NameConstraints: ISO_8825.DER.ImplicitlyTaggable {
 
 extension RFC_5280.NameConstraints {
     /// `id-ce-nameConstraints` (§4.2.1.10).
-    public static var extensionID: ISO_8824.ObjectIdentifier {
+    public static var extensionID: ISO.`8824`.ObjectIdentifier {
         RFC_5280.Extension.ID.nameConstraints
     }
 
     /// Decodes the typed value from a generic ``RFC_5280/Extension``.
-    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO_8824.Error) {
+    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO.`8824`.Error) {
         guard certificateExtension.extnID == Self.extensionID else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "Expected id-ce-nameConstraints, got \(certificateExtension.extnID)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "Expected id-ce-nameConstraints, got \(certificateExtension.extnID)")
         }
         self = try Self(derEncoded: certificateExtension.extnValue.bytes)
     }
@@ -122,13 +122,13 @@ extension RFC_5280.NameConstraints {
     ///
     /// §4.2.1.10 criticality law: conforming CAs MUST mark this extension
     /// critical, hence the default.
-    public func makeExtension(critical: Bool = true) throws(ISO_8824.Error) -> RFC_5280.Extension {
-        var serializer = ISO_8825.DER.Serializer()
+    public func makeExtension(critical: Bool = true) throws(ISO.`8824`.Error) -> RFC_5280.Extension {
+        var serializer = ISO.`8825`.DER.Serializer()
         try serializer.serialize(self)
         return RFC_5280.Extension(
             extnID: Self.extensionID,
             critical: critical,
-            extnValue: ISO_8824.OctetString(contentBytes: serializer.serializedBytes[...])
+            extnValue: ISO.`8824`.OctetString(contentBytes: serializer.serializedBytes[...])
         )
     }
 }

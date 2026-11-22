@@ -30,7 +30,7 @@ extension RFC_5280.CertificatePolicies {
     /// Whether any policy OID appears more than once, which §4.2.1.4
     /// forbids.
     public var hasDuplicatePolicies: Bool {
-        var seen: Set<ISO_8824.ObjectIdentifier> = []
+        var seen: Set<ISO.`8824`.ObjectIdentifier> = []
         for policy in self.policies where !seen.insert(policy.policyIdentifier).inserted {
             return true
         }
@@ -53,32 +53,32 @@ extension RFC_5280.CertificatePolicies {
     }
 }
 
-extension RFC_5280.CertificatePolicies: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.CertificatePolicies: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        let policies = try ISO_8825.DER.sequence(
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        let policies = try ISO.`8825`.DER.sequence(
             of: RFC_5280.PolicyInformation.self,
             identifier: identifier,
             rootNode: node
         )
         guard !policies.isEmpty else {
-            throw ISO_8824.Error.invalidASN1Object(
+            throw ISO.`8824`.Error.invalidASN1Object(
                 reason: "certificatePolicies is SEQUENCE SIZE (1..MAX) OF PolicyInformation; got an empty sequence"
             )
         }
         self.policies = policies
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard !self.policies.isEmpty else {
-            throw ISO_8824.Error.invalidASN1Object(
+            throw ISO.`8824`.Error.invalidASN1Object(
                 reason: "certificatePolicies is SEQUENCE SIZE (1..MAX) OF PolicyInformation; got an empty sequence"
             )
         }
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             for policy in self.policies {
                 try coder.serialize(policy)
             }
@@ -88,14 +88,14 @@ extension RFC_5280.CertificatePolicies: ISO_8825.DER.ImplicitlyTaggable {
 
 extension RFC_5280.CertificatePolicies {
     /// `id-ce-certificatePolicies` (§4.2.1.4).
-    public static var extensionID: ISO_8824.ObjectIdentifier {
+    public static var extensionID: ISO.`8824`.ObjectIdentifier {
         RFC_5280.Extension.ID.certificatePolicies
     }
 
     /// Decodes the typed value from a generic ``RFC_5280/Extension``.
-    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO_8824.Error) {
+    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO.`8824`.Error) {
         guard certificateExtension.extnID == Self.extensionID else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "Expected id-ce-certificatePolicies, got \(certificateExtension.extnID)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "Expected id-ce-certificatePolicies, got \(certificateExtension.extnID)")
         }
         self = try Self(derEncoded: certificateExtension.extnValue.bytes)
     }
@@ -104,13 +104,13 @@ extension RFC_5280.CertificatePolicies {
     ///
     /// §4.2.1.4 criticality law: conforming CAs SHOULD mark this extension
     /// non-critical, hence the default.
-    public func makeExtension(critical: Bool = false) throws(ISO_8824.Error) -> RFC_5280.Extension {
-        var serializer = ISO_8825.DER.Serializer()
+    public func makeExtension(critical: Bool = false) throws(ISO.`8824`.Error) -> RFC_5280.Extension {
+        var serializer = ISO.`8825`.DER.Serializer()
         try serializer.serialize(self)
         return RFC_5280.Extension(
             extnID: Self.extensionID,
             critical: critical,
-            extnValue: ISO_8824.OctetString(contentBytes: serializer.serializedBytes[...])
+            extnValue: ISO.`8824`.OctetString(contentBytes: serializer.serializedBytes[...])
         )
     }
 }

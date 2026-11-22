@@ -27,32 +27,32 @@ extension RFC_5280 {
     }
 }
 
-extension RFC_5280.BasicConstraints: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.BasicConstraints: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let isCA = try ISO_8825.DER.decodeDefault(&nodes, defaultValue: false)
-            let pathLenConstraint: Int? = try ISO_8825.DER.optionalImplicitlyTagged(&nodes)
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let isCA = try ISO.`8825`.DER.decodeDefault(&nodes, defaultValue: false)
+            let pathLenConstraint: Int? = try ISO.`8825`.DER.optionalImplicitlyTagged(&nodes)
             if let pathLenConstraint {
                 guard pathLenConstraint >= 0 else {
-                    throw ISO_8824.Error.invalidASN1Object(reason: "pathLenConstraint is INTEGER (0..MAX); got \(pathLenConstraint)")
+                    throw ISO.`8824`.Error.invalidASN1Object(reason: "pathLenConstraint is INTEGER (0..MAX); got \(pathLenConstraint)")
                 }
             }
             return Self(isCA: isCA, pathLenConstraint: pathLenConstraint)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             if self.isCA {
                 try coder.serialize(true)
             }
             if let pathLenConstraint = self.pathLenConstraint {
                 guard pathLenConstraint >= 0 else {
-                    throw ISO_8824.Error.invalidASN1Object(reason: "pathLenConstraint is INTEGER (0..MAX); got \(pathLenConstraint)")
+                    throw ISO.`8824`.Error.invalidASN1Object(reason: "pathLenConstraint is INTEGER (0..MAX); got \(pathLenConstraint)")
                 }
                 try coder.serialize(pathLenConstraint)
             }
@@ -62,14 +62,14 @@ extension RFC_5280.BasicConstraints: ISO_8825.DER.ImplicitlyTaggable {
 
 extension RFC_5280.BasicConstraints {
     /// `id-ce-basicConstraints` (§4.2.1.9).
-    public static var extensionID: ISO_8824.ObjectIdentifier {
+    public static var extensionID: ISO.`8824`.ObjectIdentifier {
         RFC_5280.Extension.ID.basicConstraints
     }
 
     /// Decodes the typed value from a generic ``RFC_5280/Extension``.
-    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO_8824.Error) {
+    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO.`8824`.Error) {
         guard certificateExtension.extnID == Self.extensionID else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "Expected id-ce-basicConstraints, got \(certificateExtension.extnID)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "Expected id-ce-basicConstraints, got \(certificateExtension.extnID)")
         }
         self = try Self(derEncoded: certificateExtension.extnValue.bytes)
     }
@@ -78,13 +78,13 @@ extension RFC_5280.BasicConstraints {
     ///
     /// §4.2.1.9 criticality law: CA certificates whose key validates
     /// signatures MUST mark this extension critical, hence the default.
-    public func makeExtension(critical: Bool = true) throws(ISO_8824.Error) -> RFC_5280.Extension {
-        var serializer = ISO_8825.DER.Serializer()
+    public func makeExtension(critical: Bool = true) throws(ISO.`8824`.Error) -> RFC_5280.Extension {
+        var serializer = ISO.`8825`.DER.Serializer()
         try serializer.serialize(self)
         return RFC_5280.Extension(
             extnID: Self.extensionID,
             critical: critical,
-            extnValue: ISO_8824.OctetString(contentBytes: serializer.serializedBytes[...])
+            extnValue: ISO.`8824`.OctetString(contentBytes: serializer.serializedBytes[...])
         )
     }
 }

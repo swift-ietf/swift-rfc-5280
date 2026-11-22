@@ -24,7 +24,7 @@ extension `RFC_5280.AuthorityKeyIdentifier Tests`.Test.Unit {
     @Test
     func `Serializes a keyIdentifier-only value to the known DER bytes`() throws {
         let aki = RFC_5280.AuthorityKeyIdentifier(
-            keyIdentifier: ISO_8824.OctetString(contentBytes: [0x01, 0x02, 0x03, 0x04])
+            keyIdentifier: ISO.`8824`.OctetString(contentBytes: [0x01, 0x02, 0x03, 0x04])
         )
         let fixture: [UInt8] = [0x30, 0x06, 0x80, 0x04, 0x01, 0x02, 0x03, 0x04]
         #expect(try derBytes(of: aki) == fixture)
@@ -34,8 +34,8 @@ extension `RFC_5280.AuthorityKeyIdentifier Tests`.Test.Unit {
     @Test
     func `Round-trips all three fields`() throws {
         let aki = RFC_5280.AuthorityKeyIdentifier(
-            keyIdentifier: ISO_8824.OctetString(contentBytes: [0xde, 0xad, 0xbe, 0xef]),
-            authorityCertIssuer: [.dNSName(ISO_8824.IA5String("ca.example.com"))],
+            keyIdentifier: ISO.`8824`.OctetString(contentBytes: [0xde, 0xad, 0xbe, 0xef]),
+            authorityCertIssuer: [.dNSName(ISO.`8824`.IA5String("ca.example.com"))],
             authorityCertSerialNumber: RFC_5280.Certificate.SerialNumber(UInt64(5))
         )
         #expect(try roundTrips(aki))
@@ -57,7 +57,7 @@ extension `RFC_5280.AuthorityKeyIdentifier Tests`.Test.`Edge Case` {
     @Test
     func `The extension bridge defaults to non-critical`() throws {
         let aki = RFC_5280.AuthorityKeyIdentifier(
-            keyIdentifier: ISO_8824.OctetString(contentBytes: [0x01, 0x02])
+            keyIdentifier: ISO.`8824`.OctetString(contentBytes: [0x01, 0x02])
         )
         let certificateExtension = try aki.makeExtension()
         #expect(!certificateExtension.critical)
@@ -68,10 +68,10 @@ extension `RFC_5280.AuthorityKeyIdentifier Tests`.Test.`Edge Case` {
     // RFC 5280 §4.2.1.6: GeneralNames is SEQUENCE SIZE (1..MAX)
     @Test
     func `An empty authorityCertIssuer is refused on parse and serialize`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.AuthorityKeyIdentifier(derEncoded: [0x30, 0x02, 0xa1, 0x00])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.AuthorityKeyIdentifier(authorityCertIssuer: []))
         }
     }

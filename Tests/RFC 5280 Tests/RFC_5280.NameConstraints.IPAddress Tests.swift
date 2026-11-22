@@ -26,7 +26,7 @@ extension `RFC_5280.NameConstraints.IPAddress Tests`.Test.Unit {
     @Test
     func `Splits an IPv4 constraint into base and mask halves`() throws {
         let range = try RFC_5280.NameConstraints.IPAddress(
-            constraint: ISO_8824.OctetString(contentBytes: [10, 0, 0, 0, 255, 0, 0, 0])
+            constraint: ISO.`8824`.OctetString(contentBytes: [10, 0, 0, 0, 255, 0, 0, 0])
         )
         #expect(range == .v4(base: RFC_791.IPv4.Address(10, 0, 0, 0), mask: RFC_791.IPv4.Address(255, 0, 0, 0)))
         #expect(range.isIPv4)
@@ -36,7 +36,7 @@ extension `RFC_5280.NameConstraints.IPAddress Tests`.Test.Unit {
     @Test
     func `Contains masks the address before comparing`() throws {
         let range = try RFC_5280.NameConstraints.IPAddress(
-            constraint: ISO_8824.OctetString(contentBytes: [192, 0, 2, 0, 255, 255, 255, 0])
+            constraint: ISO.`8824`.OctetString(contentBytes: [192, 0, 2, 0, 255, 255, 255, 0])
         )
         #expect(range.contains(RFC_791.IPv4.Address(192, 0, 2, 1)))
         #expect(range.contains([192, 0, 2, 255]))
@@ -52,7 +52,7 @@ extension `RFC_5280.NameConstraints.IPAddress Tests`.Test.Unit {
         constraint[3] = 0xb8
         constraint.replaceSubrange(16..<20, with: repeatElement(0xFF, count: 4))
         let range = try RFC_5280.NameConstraints.IPAddress(
-            constraint: ISO_8824.OctetString(contentBytes: constraint[...])
+            constraint: ISO.`8824`.OctetString(contentBytes: constraint[...])
         )
         #expect(!range.isIPv4)
         #expect(range.prefixLength == 32)
@@ -75,14 +75,14 @@ extension `RFC_5280.NameConstraints.IPAddress Tests`.Test.`Edge Case` {
     // RFC 5280 §4.2.1.10 length law
     @Test
     func `Rejects constraint lengths other than 8 and 32`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.NameConstraints.IPAddress(
-                constraint: ISO_8824.OctetString(contentBytes: [10, 0, 0, 0])
+                constraint: ISO.`8824`.OctetString(contentBytes: [10, 0, 0, 0])
             )
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.NameConstraints.IPAddress(
-                constraint: ISO_8824.OctetString(contentBytes: [10, 0, 0, 0, 255, 0, 0, 0, 0])
+                constraint: ISO.`8824`.OctetString(contentBytes: [10, 0, 0, 0, 255, 0, 0, 0, 0])
             )
         }
     }
@@ -90,7 +90,7 @@ extension `RFC_5280.NameConstraints.IPAddress Tests`.Test.`Edge Case` {
     @Test
     func `An address of the wrong family never matches`() throws {
         let range = try RFC_5280.NameConstraints.IPAddress(
-            constraint: ISO_8824.OctetString(contentBytes: [10, 0, 0, 0, 255, 0, 0, 0])
+            constraint: ISO.`8824`.OctetString(contentBytes: [10, 0, 0, 0, 255, 0, 0, 0])
         )
         #expect(!range.contains(ArraySlice([UInt8](repeating: 0, count: 16))))
         #expect(!range.contains(RFC_4291.IPv6.Address.loopback))
@@ -150,7 +150,7 @@ extension `RFC_5280.NameConstraints.IPAddress Tests`.Test.`Edge Case` {
         octets[16] = 0xFF
         octets[24] = 0xFF
         let range = try RFC_5280.NameConstraints.IPAddress(
-            constraint: ISO_8824.OctetString(contentBytes: octets[...])
+            constraint: ISO.`8824`.OctetString(contentBytes: octets[...])
         )
         #expect(!range.isCIDRConformant)
         #expect(range.prefixLength == nil)

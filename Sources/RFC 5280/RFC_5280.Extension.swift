@@ -14,16 +14,16 @@ extension RFC_5280 {
     /// on parse by the substrate's DEFAULT handling).
     public struct Extension: Hashable, Sendable {
         /// The OBJECT IDENTIFIER naming the extension.
-        public var extnID: ISO_8824.ObjectIdentifier
+        public var extnID: ISO.`8824`.ObjectIdentifier
 
         /// Whether the extension is critical (§4.2 criticality law).
         public var critical: Bool
 
         /// The DER encoding of the extension value, wrapped in the wire's
         /// OCTET STRING.
-        public var extnValue: ISO_8824.OctetString
+        public var extnValue: ISO.`8824`.OctetString
 
-        public init(extnID: ISO_8824.ObjectIdentifier, critical: Bool, extnValue: ISO_8824.OctetString) {
+        public init(extnID: ISO.`8824`.ObjectIdentifier, critical: Bool, extnValue: ISO.`8824`.OctetString) {
             self.extnID = extnID
             self.critical = critical
             self.extnValue = extnValue
@@ -31,22 +31,22 @@ extension RFC_5280 {
     }
 }
 
-extension RFC_5280.Extension: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
+extension RFC_5280.Extension: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
         .sequence
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        self = try ISO_8825.DER.sequence(node, identifier: identifier) { (nodes: inout ISO_8825.Node.Collection.Iterator) throws(ISO_8824.Error) -> Self in
-            let extnID = try ISO_8824.ObjectIdentifier(derEncoded: &nodes)
-            let critical = try ISO_8825.DER.decodeDefault(&nodes, defaultValue: false)
-            let extnValue = try ISO_8824.OctetString(derEncoded: &nodes)
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        self = try ISO.`8825`.DER.sequence(node, identifier: identifier) { (nodes: inout ISO.`8825`.Node.Collection.Iterator) throws(ISO.`8824`.Error) -> Self in
+            let extnID = try ISO.`8824`.ObjectIdentifier(derEncoded: &nodes)
+            let critical = try ISO.`8825`.DER.decodeDefault(&nodes, defaultValue: false)
+            let extnValue = try ISO.`8824`.OctetString(derEncoded: &nodes)
             return Self(extnID: extnID, critical: critical, extnValue: extnValue)
         }
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO_8825.DER.Serializer) throws(ISO_8824.Error) in
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        try coder.appendConstructedNode(identifier: identifier) { (coder: inout ISO.`8825`.DER.Serializer) throws(ISO.`8824`.Error) in
             try coder.serialize(self.extnID)
             if self.critical {
                 try coder.serialize(true)

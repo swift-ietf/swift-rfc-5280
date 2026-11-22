@@ -96,42 +96,42 @@ extension RFC_5280.KeyUsage {
     }
 }
 
-extension RFC_5280.KeyUsage: ISO_8825.DER.ImplicitlyTaggable {
-    public static var defaultIdentifier: ISO_8824.Identifier {
-        ISO_8824.BitString.defaultIdentifier
+extension RFC_5280.KeyUsage: ISO.`8825`.DER.ImplicitlyTaggable {
+    public static var defaultIdentifier: ISO.`8824`.Identifier {
+        ISO.`8824`.BitString.defaultIdentifier
     }
 
-    public init(derEncoded node: ISO_8825.Node, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
-        let bits = try ISO_8824.BitString(derEncoded: node, withIdentifier: identifier)
+    public init(derEncoded node: ISO.`8825`.Node, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
+        let bits = try ISO.`8824`.BitString(derEncoded: node, withIdentifier: identifier)
         guard bits.bytes.count <= 2 else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "KeyUsage defines named bits 0–8; got \(bits.bytes.count) content octets")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "KeyUsage defines named bits 0–8; got \(bits.bytes.count) content octets")
         }
         var rawValue: UInt16 = 0
         for (offset, byte) in bits.bytes.enumerated() {
             rawValue |= UInt16(byte) << (8 * (1 - offset))
         }
         guard rawValue & 0x007F == 0 else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "KeyUsage carries set bits beyond decipherOnly(8)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "KeyUsage carries set bits beyond decipherOnly(8)")
         }
         self.rawValue = rawValue
     }
 
-    public func serialize(into coder: inout ISO_8825.DER.Serializer, withIdentifier identifier: ISO_8824.Identifier) throws(ISO_8824.Error) {
+    public func serialize(into coder: inout ISO.`8825`.DER.Serializer, withIdentifier identifier: ISO.`8824`.Identifier) throws(ISO.`8824`.Error) {
         guard self.rawValue & 0x007F == 0 else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "KeyUsage carries set bits beyond decipherOnly(8)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "KeyUsage carries set bits beyond decipherOnly(8)")
         }
-        let bits: ISO_8824.BitString
+        let bits: ISO.`8824`.BitString
         if self.rawValue == 0 {
-            bits = try ISO_8824.BitString(bytes: [], paddingBits: 0)
+            bits = try ISO.`8824`.BitString(bytes: [], paddingBits: 0)
         } else {
             let highestSetBit = 15 - self.rawValue.trailingZeroBitCount
             if highestSetBit <= 7 {
-                bits = try ISO_8824.BitString(
+                bits = try ISO.`8824`.BitString(
                     bytes: [UInt8(self.rawValue >> 8)],
                     paddingBits: 7 - highestSetBit
                 )
             } else {
-                bits = try ISO_8824.BitString(
+                bits = try ISO.`8824`.BitString(
                     bytes: [UInt8(self.rawValue >> 8), UInt8(truncatingIfNeeded: self.rawValue)],
                     paddingBits: 15 - highestSetBit
                 )
@@ -143,14 +143,14 @@ extension RFC_5280.KeyUsage: ISO_8825.DER.ImplicitlyTaggable {
 
 extension RFC_5280.KeyUsage {
     /// `id-ce-keyUsage` (§4.2.1.3).
-    public static var extensionID: ISO_8824.ObjectIdentifier {
+    public static var extensionID: ISO.`8824`.ObjectIdentifier {
         RFC_5280.Extension.ID.keyUsage
     }
 
     /// Decodes the typed value from a generic ``RFC_5280/Extension``.
-    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO_8824.Error) {
+    public init(_ certificateExtension: RFC_5280.Extension) throws(ISO.`8824`.Error) {
         guard certificateExtension.extnID == Self.extensionID else {
-            throw ISO_8824.Error.invalidASN1Object(reason: "Expected id-ce-keyUsage, got \(certificateExtension.extnID)")
+            throw ISO.`8824`.Error.invalidASN1Object(reason: "Expected id-ce-keyUsage, got \(certificateExtension.extnID)")
         }
         self = try Self(derEncoded: certificateExtension.extnValue.bytes)
     }
@@ -159,13 +159,13 @@ extension RFC_5280.KeyUsage {
     ///
     /// §4.2.1.3 criticality law: when used, this extension SHOULD be
     /// critical, hence the default.
-    public func makeExtension(critical: Bool = true) throws(ISO_8824.Error) -> RFC_5280.Extension {
-        var serializer = ISO_8825.DER.Serializer()
+    public func makeExtension(critical: Bool = true) throws(ISO.`8824`.Error) -> RFC_5280.Extension {
+        var serializer = ISO.`8825`.DER.Serializer()
         try serializer.serialize(self)
         return RFC_5280.Extension(
             extnID: Self.extensionID,
             critical: critical,
-            extnValue: ISO_8824.OctetString(contentBytes: serializer.serializedBytes[...])
+            extnValue: ISO.`8824`.OctetString(contentBytes: serializer.serializedBytes[...])
         )
     }
 }

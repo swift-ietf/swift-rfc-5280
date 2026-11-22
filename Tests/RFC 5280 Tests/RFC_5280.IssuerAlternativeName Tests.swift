@@ -24,7 +24,7 @@ extension `RFC_5280.IssuerAlternativeName Tests`.Test.Unit {
     @Test
     func `A dNSName issuer alternative name round-trips`() throws {
         let names = RFC_5280.IssuerAlternativeName([
-            .dNSName(ISO_8824.IA5String("ca.example.com"))
+            .dNSName(ISO.`8824`.IA5String("ca.example.com"))
         ])
         #expect(try roundTrips(names))
     }
@@ -33,7 +33,7 @@ extension `RFC_5280.IssuerAlternativeName Tests`.Test.Unit {
     @Test
     func `The extension bridge defaults to non-critical`() throws {
         let names = RFC_5280.IssuerAlternativeName([
-            .rfc822Name(ISO_8824.IA5String("ca@example.com"))
+            .rfc822Name(ISO.`8824`.IA5String("ca@example.com"))
         ])
         let certificateExtension = try names.makeExtension()
         #expect(!certificateExtension.critical)
@@ -47,7 +47,7 @@ extension `RFC_5280.IssuerAlternativeName Tests`.Test.Unit {
         let attributes = RFC_5280.SubjectDirectoryAttributes([
             RFC_5280.Attribute(
                 type: [2, 5, 4, 6],
-                values: [try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("NL"))]
+                values: [try ISO.`8825`.`Any`(erasing: ISO.`8824`.PrintableString("NL"))]
             )
         ])
         #expect(try roundTrips(attributes))
@@ -65,8 +65,8 @@ extension `RFC_5280.IssuerAlternativeName Tests`.Test.Unit {
     // originally supplied.
     @Test
     func `An attribute with several values canonicalises their order`() throws {
-        let netherlands = try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("NL"))
-        let belgium = try ISO_8825.`Any`(erasing: ISO_8824.PrintableString("BE"))
+        let netherlands = try ISO.`8825`.`Any`(erasing: ISO.`8824`.PrintableString("NL"))
+        let belgium = try ISO.`8825`.`Any`(erasing: ISO.`8824`.PrintableString("BE"))
 
         let unordered = RFC_5280.SubjectDirectoryAttributes([
             RFC_5280.Attribute(type: [2, 5, 4, 6], values: [netherlands, belgium])
@@ -93,10 +93,10 @@ extension `RFC_5280.IssuerAlternativeName Tests`.Test.`Edge Case` {
     // §4.2.1.7: GeneralNames is SEQUENCE SIZE (1..MAX)
     @Test
     func `An empty issuer alternative name is rejected`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.IssuerAlternativeName(derEncoded: [0x30, 0x00])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.IssuerAlternativeName([]))
         }
     }
@@ -104,10 +104,10 @@ extension `RFC_5280.IssuerAlternativeName Tests`.Test.`Edge Case` {
     // §4.2.1.8: SEQUENCE SIZE (1..MAX)
     @Test
     func `Empty subject directory attributes are rejected`() {
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try RFC_5280.SubjectDirectoryAttributes(derEncoded: [0x30, 0x00])
         }
-        #expect(throws: ISO_8824.Error.self) {
+        #expect(throws: ISO.`8824`.Error.self) {
             _ = try derBytes(of: RFC_5280.SubjectDirectoryAttributes([]))
         }
     }

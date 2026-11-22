@@ -10,9 +10,9 @@ extension RFC_5280.AccessDescription {
 extension RFC_5280.AccessDescription.ID {
     /// `id-ad-ocsp OBJECT IDENTIFIER ::= { id-ad 1 }` — the OCSP responder
     /// for this certificate; the location is a URI.
-    public static let ocsp: ISO_8824.ObjectIdentifier = [1, 3, 6, 1, 5, 5, 7, 48, 1]
+    public static let ocsp: ISO.`8824`.ObjectIdentifier = [1, 3, 6, 1, 5, 5, 7, 48, 1]
 
     /// `id-ad-caIssuers OBJECT IDENTIFIER ::= { id-ad 2 }` — where
     /// certificates issued to this certificate's issuer may be obtained.
-    public static let caIssuers: ISO_8824.ObjectIdentifier = [1, 3, 6, 1, 5, 5, 7, 48, 2]
+    public static let caIssuers: ISO.`8824`.ObjectIdentifier = [1, 3, 6, 1, 5, 5, 7, 48, 2]
 }

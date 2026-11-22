@@ -8,5 +8,5 @@ extension RFC_5280.PolicyInformation {
 extension RFC_5280.PolicyInformation.ID {
     /// `anyPolicy OBJECT IDENTIFIER ::= { id-ce-certificatePolicies 0 }`
     /// (§4.2.1.4) — asserts no restriction on the certificate's policy set.
-    public static let anyPolicy: ISO_8824.ObjectIdentifier = [2, 5, 29, 32, 0]
+    public static let anyPolicy: ISO.`8824`.ObjectIdentifier = [2, 5, 29, 32, 0]
 }

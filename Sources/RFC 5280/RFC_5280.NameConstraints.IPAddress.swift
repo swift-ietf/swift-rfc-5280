@@ -32,7 +32,7 @@ extension RFC_5280.NameConstraints.IPAddress {
     ///
     /// §4.2.1.10 length law: 8 octets for an IPv4 range, 32 for IPv6;
     /// any other length is rejected.
-    public init(constraint: ISO_8824.OctetString) throws(ISO_8824.Error) {
+    public init(constraint: ISO.`8824`.OctetString) throws(ISO.`8824`.Error) {
         let octets = constraint.bytes
         switch octets.count {
         case 8:
@@ -42,7 +42,7 @@ extension RFC_5280.NameConstraints.IPAddress {
                     mask: try RFC_791.IPv4.Address(binary: Self.byteDomain(octets.suffix(4)))
                 )
             } catch {
-                throw ISO_8824.Error.invalidASN1Object(reason: "Malformed IPv4 iPAddress name constraint")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "Malformed IPv4 iPAddress name constraint")
             }
         case 32:
             do throws(RFC_4291.IPv6.Address.Error) {
@@ -51,10 +51,10 @@ extension RFC_5280.NameConstraints.IPAddress {
                     mask: try RFC_4291.IPv6.Address(binary: Self.byteDomain(octets.suffix(16)))
                 )
             } catch {
-                throw ISO_8824.Error.invalidASN1Object(reason: "Malformed IPv6 iPAddress name constraint")
+                throw ISO.`8824`.Error.invalidASN1Object(reason: "Malformed IPv6 iPAddress name constraint")
             }
         default:
-            throw ISO_8824.Error.invalidASN1Object(
+            throw ISO.`8824`.Error.invalidASN1Object(
                 reason: "An iPAddress name constraint is 8 octets (IPv4) or 32 octets (IPv6); got \(octets.count)"
             )
         }
